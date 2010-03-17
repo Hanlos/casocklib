@@ -46,7 +46,7 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace base {
-        RPCCommunicator::RPCCommunicator (const casock::base::FileDescriptor* const pFD) : Communicator (pFD)
+        RPCCommunicator::RPCCommunicator (const casock::base::FileDescriptor* const pFD) : casock::base::Communicator (pFD)
         {
           size = 0;
         }
@@ -63,10 +63,12 @@ namespace casock {
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - ! size\n", __FUNCTION__);
             s = Communicator::read (reinterpret_cast<char *>(&size), sizeof (int));
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - s [%Zu]\n", __FUNCTION__, s);
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - s [%zd]\n", __FUNCTION__, s);
 
             if (! s)
               throw (casock::base::CASClosedConnectionException ());
+            else if (s < 0)
+              throw (casock::rpc::protobuf::base::CASRPCUnfinishedMessageException ());
 
             size = ntohl (size);
 
