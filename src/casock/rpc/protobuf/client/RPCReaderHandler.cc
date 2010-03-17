@@ -74,13 +74,13 @@ namespace casock {
           }
           catch (casock::base::CASClosedConnectionException& e)
           {
-            LOGMSG (HIGH_LEVEL, "RPCReaderHandler::%s () - catch CASClosedCConnectionException\n", __FUNCTION__);
+            LOGMSG (HIGH_LEVEL, "RPCReaderHandler::%s () - CASClosedCConnectionException [%s]\n", __FUNCTION__, e.what());
             unregister ();
             destroy ();
           }
           catch (casock::rpc::protobuf::base::CASRPCUnfinishedMessageException& e)
           {
-            LOGMSG (HIGH_LEVEL, "RPCReaderHandler::%s () - catch CASRPCUnfinishedMessageException\n", __FUNCTION__);
+            LOGMSG (HIGH_LEVEL, "RPCReaderHandler::%s () - CASRPCUnfinishedMessageException\n", __FUNCTION__);
           }
         }
       }
