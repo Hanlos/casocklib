@@ -1,4 +1,4 @@
-SUBDIRS = rpc
+SUBDIRS = rpc ftp proactor
 
 SRCS_CLIENT = client.cc ClientSockReaderHandler.cc
 SRCS_SERVER = server.cc ServerSockAcceptorHandler.cc ServerSockReaderHandler.cc

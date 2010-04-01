@@ -121,5 +121,12 @@ namespace casock {
       int buff = htonl (buffer);
       mpFD->write (reinterpret_cast<char *>(&buff), sizeof (int));
     }
+
+    void Communicator::write (const size_t& buffer)
+    {
+      LOGMSG (HIGH_LEVEL, "Communicator::%s () - writing size_t [%d]\n", __FUNCTION__, buffer);
+      size_t buff = htonl (buffer);
+      mpFD->write (reinterpret_cast<char *>(&buff), sizeof (size_t));
+    }
   }
 }

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/base/Communicator.h
+ * \file casock/proactor/asio/server/SocketSession.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,37 +30,29 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
-#define __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
+#include "casock/proactor/asio/server/SocketSession.h"
 
-#include <unistd.h>
-
-#include <sstream>
-using std::stringstream;
+//#include <asio.hpp>
+//#include <boost/bind.hpp>
+//
+//#include "casock/util/Logger.h"
+//#include "casock/proactor/asio/base/AsyncProcessor.h"
 
 namespace casock {
-  namespace base {
-    class FileDescriptor;
+  namespace proactor {
+    namespace asio {
+      namespace server {
+        SocketSession::SocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
+          //: m_socket (rAsyncProcessor.service ())
+          : casock::proactor::asio::base::SocketChannel (rAsyncProcessor)
+        { }
 
-    class Communicator
-    {
-      public:
-        Communicator (const FileDescriptor* const pFD) : mpFD (pFD) { };
-
-      public:
-        virtual const ssize_t read (char* buffer, const size_t& len);
-        virtual const ssize_t read (stringstream& buffer);
-        virtual const ssize_t read (stringstream& buffer, const size_t& len);
-
-        virtual void write (const char* buffer, const size_t& len);
-        virtual void write (const stringstream& buffer);
-        virtual void write (const int& buffer);
-        virtual void write (const size_t& buffer);
-
-      private:
-        const FileDescriptor* const mpFD;
-    };
+        void SocketSession::onConnectionFailure ()
+        {
+          LOGMSG (LOW_LEVEL, "SocketSession::%s ()\n", __FUNCTION__);
+          delete this;
+        }
+      }
+    }
   }
 }
-
-#endif // __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_

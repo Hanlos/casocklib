@@ -71,23 +71,34 @@ namespace casock {
     {
       LOGMSG (HIGH_LEVEL, "Dispatcher::%s ()\n", __FUNCTION__);
 
-      /*
-      m_sigaction.sa_sigaction = Dispatcher::func_sigaction;
-      sigemptyset (&(m_sigaction.sa_mask));
-      m_sigaction.sa_flags = SA_SIGINFO;
-      sigaction (SIGIO, &m_sigaction, NULL);
-//      sigaction (SIGURG, &m_sigaction, NULL);
-
-      m_sigaction2.sa_handler = Dispatcher::func_handler;
-      sigemptyset (&(m_sigaction2.sa_mask)); // TODO: ? antes não tinha o 2
-      m_sigaction2.sa_flags = 0; // TODO: ? antes não tinha o 2
-      sigaction (SIGALRM, &m_sigaction2, NULL);
-      */
-
       struct sigaction act_SIGIO;
+
+      /*
+       * If SA_SIGINFO is specified in sa_flags, then sa_sigaction (instead of sa_handler) specifies the signal-handling function for signum.
+       * This function receives the signal number as its first argument, a pointer to a siginfo_t as its second argument and a pointer to a ucontext_t (cast to void *) as its third argument.
+       */
       act_SIGIO.sa_sigaction  = Dispatcher::func_sigaction;
+
+      /*
+       * sa_flags specifies a set of flags which modify the behavior of the signal
+       * SA_SIGINFO (since Linux 2.2):
+       *   The signal handler takes 3 arguments, not one.
+       *   In this case, sa_sigaction should be set instead of sa_handler.
+       *   This flag is only meaningful when establishing a signal handler.
+       */
       act_SIGIO.sa_flags      = SA_SIGINFO;
+
+      /*
+       * sa_mask specifies a mask of signals which should be blocked (i.e., added to the signal mask of the thread in which the signal handler is invoked) during execution of the signal handler.
+       * In addition, the signal which triggered the handler will be blocked, unless the SA_NODEFER flag is used.
+       * sigemptyset() initializes the signal set given by set to empty, with all signals excluded from the set.
+       */
       sigemptyset (&(act_SIGIO.sa_mask));
+
+      /*
+       * The sigaction() system call is used to change the action taken by a process on receipt of a specific signal.
+       * SIGIO: I/O now possible (4.2BSD)
+       */
       sigaction (SIGIO, &act_SIGIO, NULL);
 //      sigaction (SIGURG, &act_SIGIO, NULL);
 
@@ -114,7 +125,7 @@ namespace casock {
 
     void Dispatcher::func_sigaction (int signum, siginfo_t* p_siginfo, void* p_data)
     {
-      LOGMSG (LOW_LEVEL, "Dispatcher::%s () - signum [%d], fd [%d]\n", __FUNCTION__, signum, p_siginfo->si_fd);
+      LOGMSG (MEDIUM_LEVEL, "Dispatcher::%s () - signum [%d], fd [%d]\n", __FUNCTION__, signum, p_siginfo->si_fd);
       Dispatcher::getInstance ()->handle (signum, p_siginfo, p_data);
     }
 
@@ -174,7 +185,7 @@ namespace casock {
 
       while (m_active)
       {
-        LOGMSG (LOW_LEVEL, "Dispatcher::%s () - pause...\n", __FUNCTION__);
+        LOGMSG (MEDIUM_LEVEL, "Dispatcher::%s () - pause...\n", __FUNCTION__);
         alarm (timeout);
 
         /*
@@ -186,7 +197,7 @@ namespace casock {
         pause ();
         */
         sigsuspend (&m_oldmask);
-        LOGMSG (LOW_LEVEL, "Dispatcher::%s () - returning from pause!\n", __FUNCTION__);
+        LOGMSG (MEDIUM_LEVEL, "Dispatcher::%s () - returning from pause!\n", __FUNCTION__);
       }
 
 //      sigprocmask (SIG_UNBLOCK, &mask, NULL);
@@ -209,7 +220,7 @@ namespace casock {
 
       while (m_active)
       {
-        LOGMSG (LOW_LEVEL, "Dispatcher::%s () - pause...\n", __FUNCTION__);
+        LOGMSG (MEDIUM_LEVEL, "Dispatcher::%s () - pause...\n", __FUNCTION__);
 
         /*
         sigset_t sigio_set;
@@ -221,7 +232,7 @@ namespace casock {
         pause ();
         */
         sigsuspend (&m_oldmask);
-        LOGMSG (LOW_LEVEL, "Dispatcher::%s () - returning from pause!\n", __FUNCTION__);
+        LOGMSG (MEDIUM_LEVEL, "Dispatcher::%s () - returning from pause!\n", __FUNCTION__);
       }
 
 //      sigprocmask (SIG_UNBLOCK, &mask, NULL);

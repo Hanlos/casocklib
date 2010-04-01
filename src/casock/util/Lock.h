@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/base/Communicator.h
+ * \file casock/util/Lockable.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,37 +30,21 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
-#define __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL_LOCK_H_
+#define __CASOCKLIB__CASOCK_UTIL_LOCK_H_
 
-#include <unistd.h>
-
-#include <sstream>
-using std::stringstream;
+#include "casock/util/Lockable.h"
 
 namespace casock {
-  namespace base {
-    class FileDescriptor;
-
-    class Communicator
+  namespace util {
+    class Lock : private Lockable
     {
       public:
-        Communicator (const FileDescriptor* const pFD) : mpFD (pFD) { };
-
-      public:
-        virtual const ssize_t read (char* buffer, const size_t& len);
-        virtual const ssize_t read (stringstream& buffer);
-        virtual const ssize_t read (stringstream& buffer, const size_t& len);
-
-        virtual void write (const char* buffer, const size_t& len);
-        virtual void write (const stringstream& buffer);
-        virtual void write (const int& buffer);
-        virtual void write (const size_t& buffer);
-
-      private:
-        const FileDescriptor* const mpFD;
+        void get () { lock (); }
+        void release () { unlock (); }
     };
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
+
+#endif // __CASOCKLIB__CASOCK_UTIL_LOCK_H_

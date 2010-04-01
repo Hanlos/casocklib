@@ -51,15 +51,16 @@ namespace casock {
     void FileDescriptor::write (const char* buff, const size_t& len) const
     {
       casock::util::SafeLock lock (*this);
-      LOGMSG (LOW_LEVEL, "FileDescriptor::%s () - len [%zu]\n", __FUNCTION__, len);
+      LOGMSG (MEDIUM_LEVEL, "FileDescriptor::%s () - len [%zu]\n", __FUNCTION__, len);
       ::write (m_fd, buff, len);
+      ::fsync (m_fd);
     }
 
     const ssize_t FileDescriptor::read (char* buff, const size_t& len) const
     {
       casock::util::SafeLock lock (*this);
       ssize_t s = ::read (m_fd, buff, len);
-      LOGMSG (LOW_LEVEL, "FileDescriptor::%s () - len [%zu], s [%zd]\n", __FUNCTION__, len, s);
+      LOGMSG (MEDIUM_LEVEL, "FileDescriptor::%s () - len [%zu], s [%zd]\n", __FUNCTION__, len, s);
       return s;
     }
 

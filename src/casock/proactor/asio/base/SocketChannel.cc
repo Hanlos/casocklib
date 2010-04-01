@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/base/Communicator.h
+ * \file casock/proactor/asio/base/SocketChannel.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,37 +30,20 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
-#define __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
-
-#include <unistd.h>
-
-#include <sstream>
-using std::stringstream;
+#include "casock/proactor/asio/base/SocketChannel.h"
+#include "casock/proactor/asio/base/AsyncProcessor.h"
+#include "casock/util/Logger.h"
 
 namespace casock {
-  namespace base {
-    class FileDescriptor;
-
-    class Communicator
-    {
-      public:
-        Communicator (const FileDescriptor* const pFD) : mpFD (pFD) { };
-
-      public:
-        virtual const ssize_t read (char* buffer, const size_t& len);
-        virtual const ssize_t read (stringstream& buffer);
-        virtual const ssize_t read (stringstream& buffer, const size_t& len);
-
-        virtual void write (const char* buffer, const size_t& len);
-        virtual void write (const stringstream& buffer);
-        virtual void write (const int& buffer);
-        virtual void write (const size_t& buffer);
-
-      private:
-        const FileDescriptor* const mpFD;
-    };
+  namespace proactor {
+    namespace asio {
+      namespace base {
+        SocketChannel::SocketChannel (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
+          : m_socket (rAsyncProcessor.service ())
+        {
+          LOGMSG (LOW_LEVEL, "SocketChannel::SocketChannel ()\n");
+        }
+      }
+    }
   }
 }
-
-#endif // __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_

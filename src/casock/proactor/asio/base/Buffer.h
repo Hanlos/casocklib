@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/base/Communicator.h
+ * \file casock/proactor/asio/base/Buffer.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,37 +30,35 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
-#define __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
+#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_BUFFER_H_
+#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_BUFFER_H_
 
-#include <unistd.h>
-
-#include <sstream>
-using std::stringstream;
+#include <cstring>
 
 namespace casock {
-  namespace base {
-    class FileDescriptor;
+  namespace proactor {
+    namespace asio {
+      namespace base {
+        class Buffer
+        {
+          public:
+            Buffer (const unsigned int& s = DEFAULT_SIZE);
+            Buffer (const char* buffer, const unsigned int& s);
+            virtual ~Buffer ();
 
-    class Communicator
-    {
-      public:
-        Communicator (const FileDescriptor* const pFD) : mpFD (pFD) { };
+          public:
+            void clear ();
 
-      public:
-        virtual const ssize_t read (char* buffer, const size_t& len);
-        virtual const ssize_t read (stringstream& buffer);
-        virtual const ssize_t read (stringstream& buffer, const size_t& len);
+          public:
+            char* buff;
+            unsigned long size;
 
-        virtual void write (const char* buffer, const size_t& len);
-        virtual void write (const stringstream& buffer);
-        virtual void write (const int& buffer);
-        virtual void write (const size_t& buffer);
-
-      private:
-        const FileDescriptor* const mpFD;
-    };
+          public:
+            static const size_t DEFAULT_SIZE = 1024;
+        };
+      }
+    }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
+#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_BUFFER_H_

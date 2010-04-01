@@ -1,0 +1,107 @@
+#ifndef __CASOCKLIB__EXAMPLES_FTP_FTP_COMMUNICATOR_H_
+#define __CASOCKLIB__EXAMPLES_FTP_FTP_COMMUNICATOR_H_
+
+#include <string.h>
+#include <arpa/inet.h>
+
+#include <sstream>
+using std::stringstream;
+
+#include "casock/base/Communicator.h"
+#include "casock/base/CASException.h"
+#include "casock/base/CASClosedConnectionException.h"
+#include "casock/util/Logger.h"
+#include "FTPFile.h"
+
+class FTPCommunicator : public casock::base::Communicator
+{
+  public:
+    FTPCommunicator (const casock::base::FileDescriptor* const pFD) : casock::base::Communicator (pFD) { }
+
+  public:
+    void sendFile (const FTPFile& rFile)
+    {
+      const size_t size = rFile.getSize ();
+      const char* buffer = rFile.getBuffer ();
+
+      write (size);
+
+      //write (buffer, size);
+
+      unsigned int i = 0;
+
+      for (i = 0; i+BUFFSIZE <= size; i += BUFFSIZE)
+      {
+        LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - sending [%u/%u]\n", __FUNCTION__, i+BUFFSIZE, size);
+        write (&(buffer [i]), BUFFSIZE);
+        sleep(1);
+      }
+
+      if (i < size)
+      {
+        LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - sending [%u/%u]\n", __FUNCTION__, size, size);
+        write (&(buffer [i]), size-i);
+      }
+    };
+
+    FTPFile* getFile (const unsigned int& counter)
+    {
+      ssize_t s = 0;
+
+      if (! size)
+      {
+        LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - ! size\n", __FUNCTION__);
+        s = Communicator::read (reinterpret_cast<char *>(&size), sizeof (size_t));
+        LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - s [%zd]\n", __FUNCTION__, s);
+
+        if (! s)
+          throw (casock::base::CASClosedConnectionException ());
+        else if (s < 0)
+          throw (casock::base::CASException ("Unfinished message!"));
+
+        size = ntohl (size);
+
+        LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - receiving message with %Zu bytes\n", __FUNCTION__, size);
+      }
+
+      do
+      {
+        s = Communicator::read (buffer, size - buffer.str ().length ());
+        LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - s [%zd]\n", __FUNCTION__, s);
+      } while (s > 0 && buffer.str ().length () < size);
+
+      LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - received %zu/%zu bytes\n", __FUNCTION__, buffer.str ().length (), size);
+
+      if (buffer.str ().length () < (size_t) size)
+        throw (casock::base::CASException ("Unfinished message!"));
+
+      char* ftpbuff = new char [size];
+      strncpy (ftpbuff, buffer.str ().c_str (), size);
+
+      stringstream ss;
+      ss << "file_";
+      ss << counter;
+      ss << ".ftp";
+
+      string filename = ss.str ();
+
+      FTPFile* pFile = new FTPFile (filename);
+      pFile->setSize (size);
+      pFile->setBuffer (ftpbuff);
+
+      size = 0;
+
+      return pFile;
+    }
+
+    const size_t& getSize () { return size; }
+    const size_t getBuffSize () { return buffer.str ().length (); }
+
+  private:
+    size_t size;
+    stringstream buffer;
+
+    static const unsigned int BUFFSIZE = BUFSIZ/32;
+};
+
+#endif // __CASOCKLIB__EXAMPLES_FTP_FTP_COMMUNICATOR_H_

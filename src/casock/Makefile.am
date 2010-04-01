@@ -1,1 +1,1 @@
-SUBDIRS = base client server rpc util
+SUBDIRS = base client proactor server util rpc

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/base/Communicator.h
+ * \file casock/proactor/asio/base/AsyncProcessor.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,37 +30,39 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
-#define __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
+#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_ASYNC_PROCESSOR_H_
+#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_ASYNC_PROCESSOR_H_
 
-#include <unistd.h>
-
-#include <sstream>
-using std::stringstream;
+#include <asio.hpp>
 
 namespace casock {
-  namespace base {
-    class FileDescriptor;
+  namespace proactor {
+    namespace asio {
+      namespace base {
+        class SocketChannel;
 
-    class Communicator
-    {
-      public:
-        Communicator (const FileDescriptor* const pFD) : mpFD (pFD) { };
+        class AsyncProcessor
+        {
+          public:
+            static AsyncProcessor* getInstance ();
+            static void initialize ();
+            static void destroy ();
 
-      public:
-        virtual const ssize_t read (char* buffer, const size_t& len);
-        virtual const ssize_t read (stringstream& buffer);
-        virtual const ssize_t read (stringstream& buffer, const size_t& len);
+          public:
+            ::asio::io_service& service () { return m_service; }
 
-        virtual void write (const char* buffer, const size_t& len);
-        virtual void write (const stringstream& buffer);
-        virtual void write (const int& buffer);
-        virtual void write (const size_t& buffer);
+          public:
+            void run ();
 
-      private:
-        const FileDescriptor* const mpFD;
-    };
+          private:
+            static AsyncProcessor* mpAsyncProcessor;
+
+          private:
+            ::asio::io_service m_service;
+        };
+      }
+    }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_BASE_COMMUNICATOR_H_
+#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_ASYNC_PROCESSOR_H_
