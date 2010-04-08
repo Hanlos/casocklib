@@ -1,1 +1,1 @@
-SUBDIRS = base client proactor server util rpc
+SUBDIRS = util sigio proactor rpc
