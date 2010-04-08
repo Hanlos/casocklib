@@ -82,20 +82,26 @@ AC_SUBST(INCLUDES)
 AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/casock/Makefile
-                 src/casock/base/Makefile
-                 src/casock/client/Makefile
                  src/casock/proactor/Makefile
                  src/casock/proactor/asio/Makefile
                  src/casock/proactor/asio/base/Makefile
                  src/casock/proactor/asio/client/Makefile
                  src/casock/proactor/asio/server/Makefile
                  src/casock/rpc/Makefile
+                 src/casock/rpc/asio/Makefile
+                 src/casock/rpc/asio/protobuf/Makefile
+                 src/casock/rpc/asio/protobuf/server/Makefile
                  src/casock/rpc/protobuf/Makefile
                  src/casock/rpc/protobuf/api/Makefile
-                 src/casock/rpc/protobuf/base/Makefile
-                 src/casock/rpc/protobuf/client/Makefile
-                 src/casock/rpc/protobuf/server/Makefile
-                 src/casock/server/Makefile
+                 src/casock/rpc/sigio/Makefile
+                 src/casock/rpc/sigio/protobuf/Makefile
+                 src/casock/rpc/sigio/protobuf/base/Makefile
+                 src/casock/rpc/sigio/protobuf/client/Makefile
+                 src/casock/rpc/sigio/protobuf/server/Makefile
+                 src/casock/sigio/Makefile
+                 src/casock/sigio/base/Makefile
+                 src/casock/sigio/client/Makefile
+                 src/casock/sigio/server/Makefile
                  src/casock/util/Makefile
                  src/examples/Makefile
                  src/examples/ftp/Makefile
