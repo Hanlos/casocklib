@@ -1,9 +1,11 @@
 #include "casock/util/Logger.h"
-#include "casock/base/Dispatcher.h"
+#include "casock/sigio/base/Dispatcher.h"
 #include "casock/server/CASServerException.h"
-#include "casock/rpc/protobuf/server/RPCServerProxy.h"
+#include "casock/rpc/sigio/protobuf/server/RPCServerProxy.h"
 
 #include "api/rpc_hello.pb.h"
+
+using casock::sigio::base::Dispatcher;
 
 class HelloServiceImpl : public  HelloService
 {
@@ -25,14 +27,15 @@ int main ()
   LOGGER->setDebugLevel (LOW_LEVEL);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
-  casock::base::Dispatcher::initialize ();
+  Dispatcher::initialize ();
+  Dispatcher* pDispatcher = Dispatcher::getInstance ();
 
   try
   {
-    casock::rpc::protobuf::server::RPCServerProxy proxy (2000, new HelloServiceImpl ());
+    casock::rpc::sigio::protobuf::server::RPCServerProxy proxy (*pDispatcher, 2000, new HelloServiceImpl ());
     proxy.start ();
 
-    casock::base::Dispatcher::getInstance ()->waitForever ();
+    pDispatcher->waitForever ();
   }
   catch (casock::server::CASServerException& e)
   {
@@ -43,5 +46,5 @@ int main ()
     LOGMSG (NO_DEBUG, "%s () - CASException [%s]\n", __FUNCTION__, e.what ());
   }
 
-  casock::base::Dispatcher::destroy ();
+  Dispatcher::destroy ();
 }

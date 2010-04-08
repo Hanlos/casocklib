@@ -3,26 +3,36 @@
 
 #include <stdlib.h>
 
-#include "casock/base/Handler.h"
+#include "casock/sigio/base/Handler.h"
 #include "FTPCommunicator.h"
 
-class FTPServerSockReaderHandler : public casock::base::Handler
-{
-  public:
-    FTPServerSockReaderHandler (const int& fd);
+namespace casock {
+  namespace base {
+    class Dispatcher;
+  }
+}
 
-  private:
-    void destroy () { delete this; }
+namespace examples {
+  namespace ftp {
+    class FTPServerSockReaderHandler : public casock::sigio::base::Handler
+    {
+      public:
+        FTPServerSockReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const int& fd);
 
-  public:
-    void handle ();
+      private:
+        void destroy () { delete this; }
 
-  private:
-    FTPCommunicator mCommunicator;
-    size_t received;
+      public:
+        void handle ();
 
-    static unsigned int counter;
-};
+      private:
+        FTPCommunicator mCommunicator;
+        size_t received;
+
+        static unsigned int counter;
+    };
+  }
+}
 
 
 #endif // __CASOCKLIB__EXAMPLES_FTP_FTP_SERVER_SOCK_READER_HANDLER_H_

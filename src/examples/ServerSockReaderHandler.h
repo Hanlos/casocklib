@@ -1,26 +1,33 @@
-#ifndef _SERVER_SOCK_READER_HANDLER_H_
-#define _SERVER_SOCK_READER_HANDLER_H_
+#ifndef __CASOCKLIB__EXAMPLES_SERVER_SOCK_READER_HANDLER_H_
+#define __CASOCKLIB__EXAMPLES_SERVER_SOCK_READER_HANDLER_H_
 
 #include <stdlib.h>
 
-#include "casock/base/Handler.h"
-#include "casock/base/Communicator.h"
+#include "casock/sigio/base/Handler.h"
+#include "casock/sigio/base/Communicator.h"
 
-class ServerSockReaderHandler : public casock::base::Handler
-{
-  public:
-    ServerSockReaderHandler (const int& fd);
+namespace casock {
+  namespace base {
+    class Dispatcher;
+  }
+}
 
-  private:
-    void destroy () { delete this; }
+namespace examples {
+  class ServerSockReaderHandler : public casock::sigio::base::Handler
+  {
+    public:
+      ServerSockReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const int& fd);
 
-  public:
-    void handle ();
+    private:
+      void destroy () { delete this; }
 
-  private:
-    casock::base::Communicator mCommunicator;
-    size_t received;
-};
+    public:
+      void handle ();
 
+    private:
+      casock::sigio::base::Communicator mCommunicator;
+      size_t received;
+  };
+}
 
-#endif // _SERVER_SOCK_READER_HANDLER_H_
+#endif // __CASOCKLIB__EXAMPLES_SERVER_SOCK_READER_HANDLER_H_

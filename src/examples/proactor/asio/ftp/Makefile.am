@@ -1,4 +1,4 @@
-SRCS_CLIENT = ftpclient.cc
+SRCS_CLIENT = ftpclient.cc #FTPSocketClient.cc
 SRCS_SERVER = ftpserver.cc
 
 LIB_UTIL    = $(top_srcdir)/src/casock/util/libcasutil.la

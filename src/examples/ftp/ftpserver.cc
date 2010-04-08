@@ -1,11 +1,13 @@
 #include <stdlib.h>
 
 #include "casock/util/Logger.h"
-#include "casock/base/Dispatcher.h"
+#include "casock/sigio/base/Dispatcher.h"
 #include "casock/base/CASException.h"
-#include "casock/server/ServerSocket.h"
+#include "casock/sigio/server/SocketServer.h"
 #include "casock/server/CASServerException.h"
 #include "FTPServerSockAcceptorHandler.h"
+
+using casock::sigio::base::Dispatcher;
 
 void waitforfiles (const unsigned short& port);
 
@@ -28,16 +30,17 @@ int main (int argc, char* argv[])
 
 void waitforfiles (const unsigned short& port)
 {
-  casock::base::Dispatcher::initialize ();
+  Dispatcher::initialize ();
+  Dispatcher* pDispatcher = Dispatcher::getInstance ();
 
   try
   {
-    casock::server::ServerSocket server (port);
+    casock::sigio::server::SocketServer server (*pDispatcher, port);
 
     server.listen ();
 
-    FTPServerSockAcceptorHandler handler (&server);
-    casock::base::Dispatcher::getInstance ()->waitForever ();
+    examples::ftp::FTPServerSockAcceptorHandler handler (*pDispatcher, &server);
+    pDispatcher->waitForever ();
 
     server.close ();
     handler.unregister ();
@@ -51,5 +54,5 @@ void waitforfiles (const unsigned short& port)
     LOGMSG (NO_DEBUG, "main () - CASException [%s]\n", e.what ());
   }
 
-  casock::base::Dispatcher::destroy ();
+  Dispatcher::destroy ();
 }

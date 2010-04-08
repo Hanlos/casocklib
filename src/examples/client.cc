@@ -4,46 +4,35 @@
 #include <string>
 
 #include "casock/util/Logger.h"
-#include "casock/base/Dispatcher.h"
-#include "casock/base/Communicator.h"
+#include "casock/sigio/base/Dispatcher.h"
+#include "casock/sigio/base/Communicator.h"
 #include "casock/base/CASException.h"
 #include "casock/base/CASClosedConnectionException.h"
-#include "casock/client/ClientSocket.h"
+#include "casock/sigio/client/ClientSocket.h"
 #include "casock/client/CASClientException.h"
 #include "ClientSockReaderHandler.h"
 
 using std::string;
+using casock::sigio::base::Dispatcher;
+using examples::ClientSockReaderHandler;
 
 int main ()
 {
   LOGGER->setDebugLevel (MAX_LEVEL);
   LOGMSG (LOW_LEVEL, "main () - start\n");
 
-  casock::base::Dispatcher::initialize ();
+  Dispatcher::initialize ();
+  Dispatcher* pDispatcher = Dispatcher::getInstance ();
 
   try
   {
-    casock::client::ClientSocket client ("localhost", 2000);
+    casock::sigio::client::ClientSocket client (*pDispatcher, "localhost", 2000);
     client.connect ();
-    ClientSockReaderHandler handler (&client);
-    casock::base::Communicator& communicator = handler.communicator ();
+    ClientSockReaderHandler handler (*pDispatcher, &client);
+    casock::sigio::base::Communicator& communicator = handler.communicator ();
 
     if (client.connected ())
     {
-      //    string s = "Hello World!";
-      //    communicator.write (s.c_str (), s.length ());
-      //    string s2 = "";
-      //    communicator.write (s2.c_str (), s2.length ());
-
-//      string s (8 * BUFSIZ, 'a');
-//      communicator.write (s.c_str (), s.length ());
-
-//      string s2 (8 * BUFSIZ, 'a');
-//      communicator.write (s2.c_str (), s2.length ());
-
-      //Dispatcher::getInstance ()->wait (10);
-      //Dispatcher::getInstance ()->waitForever ();
-
       size_t sent = 0;
 
       while (true)
@@ -54,7 +43,7 @@ int main ()
 
         printf ("main () - sent: %Zu\n", sent);
 
-        casock::base::Dispatcher::getInstance ()->wait (10);
+        pDispatcher->wait (10);
       }
 
       client.close ();
@@ -66,16 +55,16 @@ int main ()
   }
   catch (casock::base::CASClosedConnectionException& e)
   {
-    printf ("main () - casock::client::CASClosedConnectionException [%s]\n", e.what ());
+    printf ("main () - CASClosedConnectionException [%s]\n", e.what ());
   }
   catch (casock::client::CASClientException& e)
   {
-    printf ("main () - casock::client::CASClientException [%s]\n", e.what ());
+    printf ("main () - CASClientException [%s]\n", e.what ());
   }
   catch (casock::base::CASException& e)
   {
-    printf ("main () - casock::base::CASException [%s]\n", e.what ());
+    printf ("main () - CASException [%s]\n", e.what ());
   }
 
-  casock::base::Dispatcher::destroy ();
+  Dispatcher::destroy ();
 }

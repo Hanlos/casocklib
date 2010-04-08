@@ -1,30 +1,35 @@
 #ifndef __CASOCKLIB__EXAMPLES_FTP_FTP_CLIENT_SOCK_READER_HANDLER_H_
 #define __CASOCKLIB__EXAMPLES_FTP_FTP_CLIENT_SOCK_READER_HANDLER_H_
 
-#include "casock/base/Handler.h"
+#include "casock/sigio/base/Handler.h"
 #include "FTPCommunicator.h"
 
 namespace casock {
   namespace base {
+    class Dispatcher;
     class FileDescriptor;
   }
 }
 
-class FTPClientSockReaderHandler : public casock::base::Handler
-{
-  public:
-    FTPClientSockReaderHandler (const casock::base::FileDescriptor* const pFileDescriptor) : Handler (pFileDescriptor), mCommunicator (mpFileDescriptor) { }
+namespace examples {
+  namespace ftp {
+    class FTPClientSockReaderHandler : public casock::sigio::base::Handler
+    {
+      public:
+        FTPClientSockReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor) : Handler (rDispatcher, pFileDescriptor), mCommunicator (mpFileDescriptor) { }
 
-//  private:
-//    void destroy () { delete this; }
+        //  private:
+        //    void destroy () { delete this; }
 
-  public:
-    void handle ();
-    FTPCommunicator& communicator () { return mCommunicator; }
+      public:
+        void handle ();
+        FTPCommunicator& communicator () { return mCommunicator; }
 
-  private:
-    FTPCommunicator mCommunicator;
-};
+      private:
+        FTPCommunicator mCommunicator;
+    };
+  }
+}
 
 
 #endif // __CASOCKLIB__EXAMPLES_FTP_FTP_CLIENT_SOCK_READER_HANDLER_H_

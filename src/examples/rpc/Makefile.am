@@ -4,8 +4,8 @@ SRCS_RPCCLIENT = rpcclient.cc
 SRCS_RPCSERVER = rpcserver.cc
 
 LIB_UTIL      = $(top_srcdir)/src/casock/util/libcasutil.la
-LIB_RPCCLIENT = $(top_srcdir)/src/casock/rpc/protobuf/client/libcasrpcpbclient.la
-LIB_RPCSERVER = $(top_srcdir)/src/casock/rpc/protobuf/server/libcasrpcpbserver.la
+LIB_RPCCLIENT = $(top_srcdir)/src/casock/rpc/sigio/protobuf/client/libcasrpcsiopbclient.la
+LIB_RPCSERVER = $(top_srcdir)/src/casock/rpc/sigio/protobuf/server/libcasrpcsiopbserver.la
 LIB_PROTOBUF	= @LIB_PROTOBUF_PATH@/libprotobuf.a
 LIB_RPCHELLO  = api/libcasrpcpbexapi.la
 

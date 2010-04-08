@@ -1,30 +1,33 @@
-#ifndef _CLIENT_SOCK_READER_HANDLER_H_
-#define _CLIENT_SOCK_READER_HANDLER_H_
+#ifndef __CASOCKLIB__EXAMPLES__CLIENT_SOCK_READER_HANDLER_H_
+#define __CASOCKLIB__EXAMPLES__CLIENT_SOCK_READER_HANDLER_H_
 
-#include "casock/base/Handler.h"
-#include "casock/base/Communicator.h"
+#include "casock/sigio/base/Handler.h"
+#include "casock/sigio/base/Communicator.h"
 
 namespace casock {
   namespace base {
+    class Dispatcher;
     class FileDescriptor;
   }
 }
 
-class ClientSockReaderHandler : public casock::base::Handler
-{
-  public:
-    ClientSockReaderHandler (const casock::base::FileDescriptor* const pFileDescriptor) : Handler (pFileDescriptor), mCommunicator (mpFileDescriptor) { }
+namespace examples {
+  class ClientSockReaderHandler : public casock::sigio::base::Handler
+  {
+    public:
+      ClientSockReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor) : Handler (rDispatcher, pFileDescriptor), mCommunicator (mpFileDescriptor) { }
 
-//  private:
-//    void destroy () { delete this; }
+      //  private:
+      //    void destroy () { delete this; }
 
-  public:
-    void handle ();
-    casock::base::Communicator& communicator () { return mCommunicator; }
+    public:
+      void handle ();
+      casock::sigio::base::Communicator& communicator () { return mCommunicator; }
 
-  private:
-    casock::base::Communicator mCommunicator;
-};
+    private:
+      casock::sigio::base::Communicator mCommunicator;
+  };
+}
 
 
-#endif // _CLIENT_SOCK_READER_HANDLER_H_
+#endif // __CASOCKLIB__EXAMPLES__CLIENT_SOCK_READER_HANDLER_H_

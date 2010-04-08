@@ -1,26 +1,29 @@
 #include "casock/util/Logger.h"
-#include "casock/base/Dispatcher.h"
+#include "casock/sigio/base/Dispatcher.h"
 #include "casock/base/CASException.h"
-#include "casock/server/ServerSocket.h"
+#include "casock/sigio/server/SocketServer.h"
 #include "casock/server/CASServerException.h"
 #include "ServerSockAcceptorHandler.h"
+
+using casock::sigio::base::Dispatcher;
+using examples::ServerSockAcceptorHandler;
 
 int main ()
 {
   LOGGER->setDebugLevel (MAX_LEVEL);
   LOGMSG (LOW_LEVEL, "main () - start\n");
 
-  casock::base::Dispatcher::initialize ();
+  Dispatcher::initialize ();
+  Dispatcher* pDispatcher = Dispatcher::getInstance ();
 
   try
   {
-    casock::server::ServerSocket server (2000);
+    casock::sigio::server::SocketServer server (*pDispatcher, 2000);
 
     server.listen ();
 
-    ServerSockAcceptorHandler handler (&server); //, &communicator);
-    //Dispatcher::getInstance ()->wait (10);
-    casock::base::Dispatcher::getInstance ()->waitForever ();
+    ServerSockAcceptorHandler handler (*pDispatcher, &server);
+    pDispatcher->waitForever ();
 
     server.close ();
 
@@ -35,5 +38,5 @@ int main ()
     LOGMSG (NO_DEBUG, "main () - CASException [%s]\n", e.what ());
   }
 
-  casock::base::Dispatcher::destroy ();
+  Dispatcher::destroy ();
 }

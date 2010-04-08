@@ -30,13 +30,14 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_MY_SOCKET_CLIENT_H_
-#define __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_MY_SOCKET_CLIENT_H_
+#ifndef __CASOCKLIB__EXAMPLES_PROACTOR_ASIO__MY_SOCKET_CLIENT_H_
+#define __CASOCKLIB__EXAMPLES_PROACTOR_ASIO__MY_SOCKET_CLIENT_H_
 
 #include <boost/bind.hpp>
 
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/Buffer.h"
+#include "casock/proactor/asio/base/Communicator.h"
 #include "casock/proactor/asio/client/SocketClient.h"
 
 namespace examples {
@@ -46,7 +47,7 @@ namespace examples {
       {
         public:
           MySocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port)
-            : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port)
+            : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mCommunicator (this)
           {
             LOGMSG (LOW_LEVEL, "MySocketClient::MySocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
           }
@@ -55,7 +56,8 @@ namespace examples {
           void onConnect ()
           {
             LOGMSG (LOW_LEVEL, "MySocketClient::%s ()\n", __FUNCTION__);
-            write ("HELLO", 6, ::boost::bind (&MySocketClient::onSentBuffer, this, ::asio::placeholders::error));
+            //write ("HELLO", 6, ::boost::bind (&MySocketClient::onSentBuffer, this, ::asio::placeholders::error));
+            mCommunicator.write ("HELLO", 6, ::boost::bind (&MySocketClient::onSentBuffer, this, ::asio::placeholders::error));
           }
 
           void onConnectionFailure ()
@@ -68,7 +70,8 @@ namespace examples {
             if (! error)
             {
               LOGMSG (LOW_LEVEL, "MySocketClient::%s () - NO ERROR!\n", __FUNCTION__);
-              readsome (buffer.buff, buffer.size, ::boost::bind (&MySocketClient::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+              //readsome (mBuffer.buff, mBuffer.size, ::boost::bind (&MySocketClient::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+              mCommunicator.readsome (mBuffer.buff, mBuffer.size, ::boost::bind (&MySocketClient::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
             }
             else
             {
@@ -79,15 +82,16 @@ namespace examples {
 
           void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
           {
-            LOGMSG (LOW_LEVEL, "MySocketClient::%s () - bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, bytes_transferred, buffer.buff);
+            LOGMSG (LOW_LEVEL, "MySocketClient::%s () - bytes_transferred [%zu], mBuffer [%s]\n", __FUNCTION__, bytes_transferred, mBuffer.buff);
             close ();
           }
 
         private:
-          casock::proactor::asio::base::Buffer buffer;
+          casock::proactor::asio::base::Buffer        mBuffer;
+          casock::proactor::asio::base::Communicator  mCommunicator;
       };
     }
   }
 }
 
-#endif // __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_MY_SOCKET_CLIENT_H_
+#endif // __CASOCKLIB__EXAMPLES_PROACTOR_ASIO__MY_SOCKET_CLIENT_H_

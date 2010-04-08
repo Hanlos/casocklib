@@ -30,13 +30,14 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP_FTP_SOCKET_CLIENT_H_
-#define __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP_FTP_SOCKET_CLIENT_H_
+#ifndef __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP__FTP_SOCKET_CLIENT_H_
+#define __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP__FTP_SOCKET_CLIENT_H_
 
 #include <boost/bind.hpp>
 
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/client/SocketClient.h"
+#include "examples/proactor/asio/ftp/FTPCommunicator.h"
 #include "examples/proactor/asio/ftp/FTPFile.h"
 
 namespace examples {
@@ -47,17 +48,31 @@ namespace examples {
         {
           public:
             FTPSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, const FTPFile& rFile)
-              : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mrFile (rFile)
+              : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mrFile (rFile), mCommunicator (this)
             {
               LOGMSG (LOW_LEVEL, "FTPSocketClient::FTPSocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
-              mCounter = 0;
+            }
+
+          public:
+            void onSentFile (const ::asio::error_code& error)
+            {
+              if (! error)
+              {
+                LOGMSG (LOW_LEVEL, "FTPSocketClient::%s () - NO ERROR!\n", __FUNCTION__);
+              }
+              else
+              {
+                LOGMSG (LOW_LEVEL, "FTPSocketClient::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+              }
+
+              close ();
             }
 
           protected:
             void onConnect ()
             {
               LOGMSG (LOW_LEVEL, "FTPSocketClient::%s ()\n", __FUNCTION__);
-              write (mrFile.getSize (), ::boost::bind (&FTPSocketClient::onSentSize, this, ::asio::placeholders::error));
+              mCommunicator.sendFile (mrFile, ::boost::bind (&FTPSocketClient::onSentFile, this, ::asio::placeholders::error));
             }
 
             void onConnectionFailure ()
@@ -65,39 +80,13 @@ namespace examples {
               LOGMSG (LOW_LEVEL, "FTPSocketClient::%s ()\n", __FUNCTION__);
             }
 
-            void onSentSize (const ::asio::error_code& error)
-            {
-              if (! error)
-              {
-                write (mrFile.getBuffer (), mrFile.getSize (), ::boost::bind (&FTPSocketClient::onSentBuffer, this, ::asio::placeholders::error));
-              }
-              else
-              {
-                LOGMSG (LOW_LEVEL, "FTPSocketSession::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
-              }
-            }
-
-            void onSentBuffer (const ::asio::error_code& error)
-            {
-              if (! error)
-              {
-                LOGMSG (LOW_LEVEL, "FTPSocketSession::%s () - NO ERROR!\n", __FUNCTION__);
-              }
-              else
-              {
-                LOGMSG (LOW_LEVEL, "FTPSocketSession::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
-              }
-
-              close ();
-            }
-
           private:
             const FTPFile& mrFile;
-            unsigned char mCounter;
+            examples::proactor::asio::ftp::FTPCommunicator mCommunicator;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP_FTP_SOCKET_CLIENT_H_
+#endif // __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP__FTP_SOCKET_CLIENT_H_

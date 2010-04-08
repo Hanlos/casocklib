@@ -7,10 +7,10 @@
 #include <iostream>
 
 #include "casock/util/Logger.h"
-#include "casock/base/Dispatcher.h"
+#include "casock/sigio/base/Dispatcher.h"
 #include "casock/base/CASException.h"
 #include "casock/base/CASClosedConnectionException.h"
-#include "casock/client/ClientSocket.h"
+#include "casock/sigio/client/ClientSocket.h"
 #include "casock/client/CASClientException.h"
 #include "FTPClientSockReaderHandler.h"
 #include "FTPCommunicator.h"
@@ -18,6 +18,10 @@
 
 using std::string;
 using std::ifstream;
+using casock::sigio::base::Dispatcher;
+using examples::ftp::FTPFile;
+using examples::ftp::FTPClientSockReaderHandler;
+using examples::ftp::FTPCommunicator;
 
 FTPFile* readfile (string& filename);
 void sendfile (const string& server, const unsigned short& port, const FTPFile& rFile);
@@ -72,13 +76,14 @@ FTPFile* readfile (string& filename)
 
 void sendfile (const string& server, const unsigned short& port, const FTPFile& rFile)
 {
-  casock::base::Dispatcher::initialize ();
+  Dispatcher::initialize ();
+  Dispatcher* pDispatcher = Dispatcher::getInstance ();
 
   try
   {
-    casock::client::ClientSocket client ("localhost", 2000);
+    casock::sigio::client::ClientSocket client (*pDispatcher, "localhost", 2000);
     client.connect ();
-    FTPClientSockReaderHandler handler (&client);
+    FTPClientSockReaderHandler handler (*pDispatcher, &client);
     FTPCommunicator& communicator = handler.communicator ();
 
     if (client.connected ())
@@ -87,7 +92,7 @@ void sendfile (const string& server, const unsigned short& port, const FTPFile& 
 
       do
       {
-        casock::base::Dispatcher::getInstance ()->wait (10);
+        pDispatcher->wait (10);
       } while (false);
 
       client.close ();
@@ -99,7 +104,7 @@ void sendfile (const string& server, const unsigned short& port, const FTPFile& 
   }
   catch (casock::base::CASClosedConnectionException& e)
   {
-    printf ("main () - casock::client::CASClosedConnectionException [%s]\n", e.what ());
+    printf ("main () - CASClosedConnectionException [%s]\n", e.what ());
   }
   catch (casock::client::CASClientException& e)
   {
@@ -110,5 +115,5 @@ void sendfile (const string& server, const unsigned short& port, const FTPFile& 
     printf ("main () - casock::base::CASException [%s]\n", e.what ());
   }
 
-  casock::base::Dispatcher::destroy ();
+  Dispatcher::destroy ();
 }
