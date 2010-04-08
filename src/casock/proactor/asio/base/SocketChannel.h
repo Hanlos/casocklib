@@ -109,7 +109,7 @@ namespace casock {
                     );
               }
 
-          protected:
+          public:
             /*!
              * read data of specific type
              */
