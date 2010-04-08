@@ -62,6 +62,13 @@ namespace casock {
                 mpChannel->read (buffer, size, handler);
               }
 
+            template<typename _Type, typename ReadHandler>
+              void read (_Type& buffer, ReadHandler handler)
+              {
+                mpChannel->read (buffer, handler);
+              }
+
+
             template<typename _WriteHandler>
               void write (const char* buffer, const size_t& size, _WriteHandler handler)
               {

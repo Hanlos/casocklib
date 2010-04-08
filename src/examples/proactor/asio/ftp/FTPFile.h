@@ -46,7 +46,7 @@ namespace examples {
           public:
             FTPFile (const std::string& name) : mName (name) , mSize (0), mBuffer (NULL) { }
 
-            void setSize (size_t& size) { mSize = size; }
+            void setSize (const size_t& size) { mSize = size; }
             void setBuffer (char* buffer) { mBuffer = buffer; }
 
             const char* getBuffer () const { return mBuffer; }

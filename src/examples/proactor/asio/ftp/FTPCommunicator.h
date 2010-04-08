@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file examples/proactor/asio/ftp/FTPSocketClient.h
+ * \file examples/proactor/asio/ftp/FTPCommunicator.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -50,11 +50,11 @@ namespace examples {
   namespace proactor {
     namespace asio {
       namespace ftp {
-        class FTPCommunicator : public casock::proactor::asio::base::Communicator
+        class FTPCommunicator : private casock::proactor::asio::base::Communicator
         {
           public:
             FTPCommunicator (casock::proactor::asio::base::SocketChannel* const pChannel)
-              : casock::proactor::asio::base::Communicator (pChannel)
+              : casock::proactor::asio::base::Communicator (pChannel), mSize (0)
             { }
 
           private:
@@ -72,11 +72,7 @@ namespace examples {
 
             void onSentBuffer (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&)> handler)
             {
-              if (! error)
-              {
-                LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - NO ERROR!\n", __FUNCTION__);
-              }
-              else
+              if (error)
               {
                 LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
               }
@@ -84,71 +80,61 @@ namespace examples {
               handler (error);
             }
  
+            void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, FTPFile* pFile)> handler)
+            {
+              if (! error)
+              {
+                char* buffer = new char [mSize];
+                read (buffer, mSize, ::boost::bind (&FTPCommunicator::onReadBuffer, this, ::asio::placeholders::error, buffer, handler));
+              }
+              else
+              {
+                LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+              }
+            }
+
+            void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, FTPFile* pFile)> handler)
+            {
+              FTPFile* pFile = NULL;
+
+              if (! error)
+              {
+                stringstream ss;
+                ss << "file_";
+                ss << ++mCounter;
+                ss << ".ftp";
+
+                string filename = ss.str ();
+
+                pFile = new FTPFile (filename);
+                pFile->setSize (mSize);
+                pFile->setBuffer (buffer);
+              }
+              else
+              {
+                LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+              }
+
+              handler (error, pFile);
+            }
+
           public:
             void sendFile (const FTPFile& rFile, ::boost::function<void(const ::asio::error_code&)> handler)
             {
               write (rFile.getSize (), ::boost::bind (&FTPCommunicator::onSentSize, this, ::asio::placeholders::error, rFile, handler));
             }
 
-            /*
-            FTPFile* getFile (const unsigned int& counter)
+            void getFile (::boost::function<void(const ::asio::error_code&, FTPFile* pFile)> handler)
             {
-              ssize_t s = 0;
-
-              if (! size)
-              {
-                LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - ! size\n", __FUNCTION__);
-                s = Communicator::read (reinterpret_cast<char *>(&size), sizeof (size_t));
-                LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - s [%zd]\n", __FUNCTION__, s);
-
-                if (! s)
-                  throw (casock::base::CASClosedConnectionException ());
-                else if (s < 0)
-                  throw (casock::base::CASException ("Unfinished message!"));
-
-                size = ntohl (size);
-
-                LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - receiving message with %Zu bytes\n", __FUNCTION__, size);
-              }
-
-              do
-              {
-                s = Communicator::read (buffer, size - buffer.str ().length ());
-                LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - s [%zd]\n", __FUNCTION__, s);
-              } while (s > 0 && buffer.str ().length () < size);
-
-              LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - received %zu/%zu bytes\n", __FUNCTION__, buffer.str ().length (), size);
-
-              if (buffer.str ().length () < (size_t) size)
-                throw (casock::base::CASException ("Unfinished message!"));
-
-              char* ftpbuff = new char [size];
-              strncpy (ftpbuff, buffer.str ().c_str (), size);
-
-              stringstream ss;
-              ss << "file_";
-              ss << counter;
-              ss << ".ftp";
-
-              string filename = ss.str ();
-
-              FTPFile* pFile = new FTPFile (filename);
-              pFile->setSize (size);
-              pFile->setBuffer (ftpbuff);
-
-              size = 0;
-
-              return pFile;
+              read (mSize, ::boost::bind (&FTPCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
             }
 
-            const size_t& getSize () { return size; }
-            const size_t getBuffSize () { return buffer.str ().length (); }
-
           private:
-            size_t size;
-            stringstream buffer;
-            */
+            size_t mSize;
+            static unsigned long mCounter;
         };
+
+        unsigned long FTPCommunicator::mCounter = 0;
       }
     }
   }
