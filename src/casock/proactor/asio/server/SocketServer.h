@@ -59,6 +59,7 @@ namespace casock {
 
           public:
             void start ();
+            void close ();
 
           private:
             casock::proactor::asio::base::AsyncProcessor& mrAsyncProcessor;

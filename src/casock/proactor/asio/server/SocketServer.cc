@@ -76,8 +76,13 @@ namespace casock {
         void SocketServer::start ()
         {
           LOGMSG (LOW_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
-
           asyncAccept ();
+        }
+
+        void SocketServer::close ()
+        {
+          LOGMSG (LOW_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
+          m_acceptor.close ();
         }
       }
     }
