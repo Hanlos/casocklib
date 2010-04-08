@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER_RPC_CALL_QUEUE_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER_RPC_CALL_QUEUE_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_QUEUE_H_
+#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_QUEUE_H_
 
 #include "casock/util/LockableQueue.h"
 
@@ -39,11 +39,14 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace server {
-        class RPCCall;
-        class RPCCallQueue : public casock::util::LockableQueue<RPCCall*> { };
+        template<typename _TpResponseHandler>
+          class RPCCall;
+
+        template<typename _TpResponseHandler>
+          class RPCCallQueue : public casock::util::LockableQueue<RPCCall<_TpResponseHandler>*> { };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER_RPC_CALL_QUEUE_H_
+#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_QUEUE_H_

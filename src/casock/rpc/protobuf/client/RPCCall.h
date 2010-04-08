@@ -30,10 +30,17 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_CALL_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_CALL_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_H_
+#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_H_
 
 #include "casock/util/Lockable.h"
+
+namespace google {
+  namespace protobuf {
+    class Closure;
+    class RpcController;
+  }
+}
 
 namespace casock {
   namespace rpc {
@@ -41,7 +48,9 @@ namespace casock {
       namespace api {
         class RpcResponse;
       }
+    }
 
+    namespace protobuf {
       namespace client {
         class RPCReaderHandler;
         using casock::rpc::protobuf::api::RpcResponse;
@@ -75,4 +84,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_CALL_H_
+#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_H_

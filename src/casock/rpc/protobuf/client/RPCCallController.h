@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_CALL_CONTROLLER_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_CALL_CONTROLLER_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_CONTROLLER_H_
+#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_CONTROLLER_H_
 
 #include <string>
 #include <list>
@@ -45,16 +45,56 @@ namespace casock {
         class RPCCallController : public google::protobuf::RpcController
         {
           public:
-            RPCCallController ();
+            RPCCallController ()
+            {
+              Reset ();
+            }
 
           public:
-            void Reset(); // from google::protobuf::RpcController
-            bool Failed() const; // from google::protobuf::RpcController
-            std::string ErrorText() const; // from google::protobuf::RpcController
-            void StartCancel(); // from google::protobuf::RpcController
-            void SetFailed(const std::string&); // from google::protobuf::RpcController
-            bool IsCanceled() const; // from google::protobuf::RpcController
-            void NotifyOnCancel(google::protobuf::Closure*); // from google::protobuf::RpcController
+            void Reset() // from google::protobuf::RpcController
+            {
+              failed = false;
+              reason = "";
+              canceled = false;
+              cancelListeners.clear ();
+            }
+
+            bool Failed() const // from google::protobuf::RpcController
+            {
+              return failed;
+            }
+
+            std::string ErrorText() const // from google::protobuf::RpcController
+            {
+              return reason;
+            }
+
+            void StartCancel() // from google::protobuf::RpcController
+            {
+              canceled = true;
+
+              std::list<google::protobuf::Closure*>::const_iterator it;
+              std::list<google::protobuf::Closure*>::const_iterator itEnd = cancelListeners.end ();
+
+              for (it = cancelListeners.begin (); it != itEnd; ++it)
+                (*it)->Run ();
+            }
+
+            void SetFailed(const std::string& reason) // from google::protobuf::RpcController
+            {
+              failed = true;
+              this->reason = reason;
+            }
+
+            bool IsCanceled() const // from google::protobuf::RpcController
+            {
+              return canceled;
+            }
+
+            void NotifyOnCancel(google::protobuf::Closure* callback) // from google::protobuf::RpcController
+            {
+              cancelListeners.push_back (callback);
+            }
 
           private:
             bool failed;
@@ -67,4 +107,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_CALL_CONTROLLER_H_
+#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_CONTROLLER_H_

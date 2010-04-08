@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/server/RPCService.h
+ * \file casock/rpc/sigio/protobuf/server/RPCService.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -38,13 +38,14 @@
 class RPCService : public casock::rpc::protobuf::api::RpcService
 {
   public:
-    RPCService ();
-
-  public:
     void RpcCall(::google::protobuf::RpcController* controller,
         const ::casock::rpc::protobuf::api::RpcRequest* request,
         ::casock::rpc::protobuf::api::RpcResponse* response,
-        ::google::protobuf::Closure* done);
+        ::google::protobuf::Closure* done)
+    {
+      response->set_id (10);
+      done->Run ();
+    }
 };
 
 #endif // _RPC_SERVICE_H_

@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_RESPONSE_HANDLER_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_RESPONSE_HANDLER_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_RESPONSE_HANDLER_H_
+#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_RESPONSE_HANDLER_H_
 
 
 namespace casock {
@@ -39,6 +39,12 @@ namespace casock {
     namespace protobuf {
       namespace client {
         class RPCCallController;
+      }
+    }
+
+    namespace protobuf {
+      namespace client {
+        using casock::rpc::protobuf::client::RPCCallController;
 
         class RPCResponseHandler
         {
@@ -62,4 +68,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT_RPC_RESPONSE_HANDLER_H_
+#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_RESPONSE_HANDLER_H_
