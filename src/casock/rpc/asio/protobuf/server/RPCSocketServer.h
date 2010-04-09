@@ -30,24 +30,28 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PRORPC_SERVER_RPC_SOCKET_SERVER_H_
-#define __CASOCKLIB__CASOCK_PRORPC_SERVER_RPC_SOCKET_SERVER_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_H_
+#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_H_
 
 #include "casock/proactor/asio/server/SocketServer.h"
 
 namespace casock {
-  namespace prorpc {
-    namespace server {
-      class RPCSocketServer : public casock::proactor::asio::server::SocketServer
-      {
-        public:
-          RPCSocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port);
+  namespace rpc {
+    namespace asio {
+      namespace protobuf {
+        namespace server {
+          class RPCSocketServer : public casock::proactor::asio::server::SocketServer
+          {
+            public:
+              RPCSocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port);
 
-        private:
-          casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor);
-      };
+            private:
+              casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor);
+          };
+        }
+      }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_PRORPC_SERVER_RPC_SOCKET_SERVER_H_
+#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_H_

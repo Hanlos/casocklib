@@ -33,6 +33,7 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_H_
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_H_
 
+#include "casock/util/Logger.h"
 #include "casock/util/Lockable.h"
 #include "casock/util/SafeLock.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"

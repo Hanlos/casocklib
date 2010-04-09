@@ -1,8 +1,10 @@
 SRCS = RPCServerProxy.cc RPCSocketSession.cc
 
-LIBS = $(top_srcdir)/src/casock/proactor/asio/server/libcasproasioserver.la
+LIBS = $(top_srcdir)/src/casock/proactor/asio/server/libcasproasioserver.la \
+       $(top_srcdir)/src/casock/rpc/asio/protobuf/base/libcasrpcaiopbbase.la \
+       $(top_srcdir)/src/casock/rpc/protobuf/server/libcasrpcpbserver.la
 
-noinst_LTLIBRARIES = libcasprorpcserver.la
+noinst_LTLIBRARIES = libcasrpcaiopbserver.la
 
-libcasprorpcserver_la_SOURCES = $(SRCS)
-libcasprorpcserver_la_LIBADD  = $(LIBS)
+libcasrpcaiopbserver_la_SOURCES = $(SRCS)
+libcasrpcaiopbserver_la_LIBADD  = $(LIBS)

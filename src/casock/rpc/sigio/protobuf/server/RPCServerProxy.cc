@@ -45,16 +45,13 @@ namespace casock {
     namespace sigio {
       namespace protobuf {
         namespace server {
-          RPCServerProxy::RPCServerProxy (casock::sigio::base::Dispatcher& rDispatcher, const uint32& port, google::protobuf::Service* pService) : mrDispatcher (rDispatcher), mpService (pService)
+          RPCServerProxy::RPCServerProxy (casock::sigio::base::Dispatcher& rDispatcher, const uint32& port, google::protobuf::Service* pService)
+            : casock::rpc::protobuf::server::RPCServerProxy (pService), mrDispatcher (rDispatcher)
           {
             LOGMSG (HIGH_LEVEL, "RPCServerProxy::RPCServerProxy (const uint32&) - port [%u]\n", port);
 
             mpSocketServer = new casock::sigio::server::SocketServer (mrDispatcher, port);
             mpAcceptorHandler = NULL;
-            mpCallQueue = new RPCCallQueue<RPCCallResponseHandler> ();
-            mpCallHandler = new RPCCallHandler<RPCCallResponseHandler> (*mpCallQueue, mpService);
-
-            m_running = false;
           }
 
           RPCServerProxy::~RPCServerProxy ()
@@ -62,7 +59,6 @@ namespace casock {
             if (m_running)
               stop ();
 
-            delete mpCallHandler;
             delete mpSocketServer;
           }
 

@@ -35,28 +35,32 @@
 #include "casock/rpc/asio/protobuf/server/RPCSocketSession.h"
 
 namespace casock {
-  namespace prorpc {
-    namespace server {
-      RPCSocketSession::RPCSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue)
-        : casock::proactor::asio::server::SocketSession (rAsyncProcessor), mrCallQueue (rCallQueue)
-      { }
+  namespace rpc {
+    namespace asio {
+      namespace protobuf {
+        namespace server {
+          RPCSocketSession::RPCSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue)
+            : casock::proactor::asio::server::SocketSession (rAsyncProcessor), mrCallQueue (rCallQueue)
+          { }
 
-      void RPCSocketSession::onConnect ()
-      {
-        LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
-        readsome (buffer.buff, buffer.size, ::boost::bind (&RPCSocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
-      }
+          void RPCSocketSession::onConnect ()
+          {
+            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
+            readsome (buffer.buff, buffer.size, ::boost::bind (&RPCSocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+          }
 
-      void RPCSocketSession::onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
-      {
-        LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, bytes_transferred, buffer.buff);
-        // TODO: create a RpcRequest with the buffer and put it in the queue
-        readsome (buffer.buff, buffer.size, ::boost::bind (&RPCSocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
-      }
+          void RPCSocketSession::onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
+          {
+            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, bytes_transferred, buffer.buff);
+            // TODO: create a RpcRequest with the buffer and put it in the queue
+            readsome (buffer.buff, buffer.size, ::boost::bind (&RPCSocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+          }
 
-      void RPCSocketSession::callback (const RpcResponse* const pResponse)
-      {
-        // TODO: asynchronously write response
+          void RPCSocketSession::callback (const RpcResponse* const pResponse)
+          {
+            // TODO: asynchronously write response
+          }
+        }
       }
     }
   }

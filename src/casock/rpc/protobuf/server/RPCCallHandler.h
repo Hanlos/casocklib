@@ -35,6 +35,7 @@
 
 #include <google/protobuf/descriptor.h>
 
+#include "casock/util/Logger.h"
 #include "casock/util/Thread.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/server/RPCCall.h"

@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PRORPC_SERVER__RPC_SOCKET_SESSION_H_
-#define __CASOCKLIB__CASOCK_PRORPC_SERVER__RPC_SOCKET_SESSION_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SESSION_H_
+#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SESSION_H_
 
 #include "casock/proactor/asio/base/Buffer.h"
 #include "casock/proactor/asio/server/SocketSession.h"
@@ -52,30 +52,34 @@ namespace casock {
     }
   }
 
-  namespace prorpc {
-    namespace server {
-      using casock::rpc::protobuf::api::RpcResponse;
-      using casock::rpc::protobuf::server::RPCCallQueue;
-      using casock::rpc::protobuf::server::RPCCallResponseHandler;
+  namespace rpc {
+    namespace asio {
+      namespace protobuf {
+        namespace server {
+          using casock::rpc::protobuf::api::RpcResponse;
+          using casock::rpc::protobuf::server::RPCCallQueue;
+          using casock::rpc::protobuf::server::RPCCallResponseHandler;
 
-      class RPCSocketSession : public casock::proactor::asio::server::SocketSession, public RPCCallResponseHandler
-      {
-        public:
-          RPCSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
+          class RPCSocketSession : public casock::proactor::asio::server::SocketSession, public RPCCallResponseHandler
+          {
+            public:
+              RPCSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
 
-        private:
-          void onConnect ();
-          void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred);
+            private:
+              void onConnect ();
+              void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred);
 
-        public:
-          void callback (const RpcResponse* const pResponse);
+            public:
+              void callback (const RpcResponse* const pResponse);
 
-        private:
-          casock::proactor::asio::base::Buffer  buffer;
-          RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
-      };
+            private:
+              casock::proactor::asio::base::Buffer  buffer;
+              RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
+          };
+        }
+      }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_PRORPC_SERVER__RPC_SOCKET_SESSION_H_
+#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SESSION_H_

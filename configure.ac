@@ -90,9 +90,11 @@ AC_CONFIG_FILES([Makefile
                  src/casock/rpc/Makefile
                  src/casock/rpc/asio/Makefile
                  src/casock/rpc/asio/protobuf/Makefile
+                 src/casock/rpc/asio/protobuf/base/Makefile
                  src/casock/rpc/asio/protobuf/server/Makefile
                  src/casock/rpc/protobuf/Makefile
                  src/casock/rpc/protobuf/api/Makefile
+                 src/casock/rpc/protobuf/server/Makefile
                  src/casock/rpc/sigio/Makefile
                  src/casock/rpc/sigio/protobuf/Makefile
                  src/casock/rpc/sigio/protobuf/base/Makefile

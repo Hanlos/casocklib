@@ -1,1 +1,1 @@
-SUBDIRS = server
+SUBDIRS = base server

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/sigio/protobuf/server/RPCServerProxy.h
+ * \file casock/rpc/asio/protobuf/base/RPCCommunicator.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,42 +30,50 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
-#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_BASE__RPC_COMMUNICATOR_H_
+#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_BASE__RPC_COMMUNICATOR_H_
 
-#include "casock/rpc/protobuf/server/RPCServerProxy.h"
+#include <sstream>
+using std::stringstream;
+
+#include "casock/proactor/asio/base/Communicator.h"
+
+namespace google {
+  namespace protobuf {
+    class Message;
+  }
+}
 
 namespace casock {
-  namespace sigio {
-    namespace base {
-      class Dispatcher;
-    }
-
-    namespace server {
-      class SocketServer;
+  namespace proactor {
+    namespace asio {
+      namespace base {
+        class SocketChannel;
+      }
     }
   }
 
   namespace rpc {
-    namespace sigio {
+    namespace asio {
       namespace protobuf {
-        namespace server {
-          class RPCAcceptorHandler;
+        namespace base {
+          using casock::proactor::asio::base::SocketChannel;
 
-          class RPCServerProxy : public casock::rpc::protobuf::server::RPCServerProxy
+          class RPCCommunicator : public casock::proactor::asio::base::Communicator
           {
             public:
-              RPCServerProxy (casock::sigio::base::Dispatcher& rDispatcher, const unsigned int& port, google::protobuf::Service* pService);
-              virtual ~RPCServerProxy ();
-
-            public:
-              void start ();
-              void stop ();
+              RPCCommunicator (SocketChannel* const pChannel);
 
             private:
-              casock::sigio::base::Dispatcher&      mrDispatcher;
-              casock::sigio::server::SocketServer*  mpSocketServer;
-              RPCAcceptorHandler*                   mpAcceptorHandler;
+              virtual ::google::protobuf::Message* createRequest () = 0;
+
+            public:
+              ::google::protobuf::Message* read ();
+              void write (const ::google::protobuf::Message* const message);
+
+            private:
+              size_t size;
+              stringstream buffer;
           };
         }
       }
@@ -73,4 +81,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
+#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_BASE__RPC_COMMUNICATOR_H_

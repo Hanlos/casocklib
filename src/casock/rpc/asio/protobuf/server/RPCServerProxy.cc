@@ -40,42 +40,42 @@
 #include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
 
 namespace casock {
-  namespace prorpc {
-    namespace server {
-      RPCServerProxy::RPCServerProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const uint32& port, google::protobuf::Service* pService) : mpService (pService)
-      {
-        LOGMSG (HIGH_LEVEL, "RPCServerProxy::RPCServerProxy (const uint32&) - port [%u]\n", port);
+  namespace rpc {
+    namespace asio {
+      namespace protobuf {
+        namespace server {
+          RPCServerProxy::RPCServerProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const uint32& port, google::protobuf::Service* pService)
+            : casock::rpc::protobuf::server::RPCServerProxy (pService)
+          {
+            LOGMSG (HIGH_LEVEL, "RPCServerProxy::RPCServerProxy (const uint32&) - port [%u]\n", port);
 
-        mpSocketServer = new casock::prorpc::server::RPCSocketServer (rAsyncProcessor, port);
-        mpCallQueue = new RPCCallQueue<RPCCallResponseHandler> ();
-        mpCallHandler = new RPCCallHandler<RPCCallResponseHandler> (*mpCallQueue, mpService);
+            mpSocketServer = new casock::rpc::asio::protobuf::server::RPCSocketServer (rAsyncProcessor, port);
+          }
 
-        m_running = false;
-      }
+          RPCServerProxy::~RPCServerProxy ()
+          {
+            if (m_running)
+              stop ();
 
-      RPCServerProxy::~RPCServerProxy ()
-      {
-        if (m_running)
-          stop ();
+            delete mpSocketServer;
+          }
 
-        delete mpCallHandler;
-        delete mpSocketServer;
-      }
+          void RPCServerProxy::start ()
+          {
+            mpSocketServer->start ();
+            mpCallHandler->start ();
 
-      void RPCServerProxy::start ()
-      {
-        mpSocketServer->start ();
-        mpCallHandler->start ();
+            m_running = true;
+          }
 
-        m_running = true;
-      }
+          void RPCServerProxy::stop ()
+          {
+            mpSocketServer->close ();
+            mpCallHandler->cancel ();
 
-      void RPCServerProxy::stop ()
-      {
-        mpSocketServer->close ();
-        mpCallHandler->cancel ();
-
-        m_running = false;
+            m_running = false;
+          }
+        }
       }
     }
   }

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/asio/protobuf/server/RPCServerProxy.h
+ * \file casock/rpc/protobuf/server/RPCServerProxy.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,43 +30,33 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
-#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
-
 #include "casock/rpc/protobuf/server/RPCServerProxy.h"
 
+#include "casock/rpc/protobuf/server/RPCCallQueue.h"
+#include "casock/rpc/protobuf/server/RPCCallHandler.h"
+#include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
+
 namespace casock {
-  namespace proactor {
-    namespace asio {
-      namespace base {
-        class AsyncProcessor;
-      }
-    }
-  }
-
   namespace rpc {
-    namespace asio {
-      namespace protobuf {
-        namespace server {
-          class RPCSocketServer;
+    namespace protobuf {
+      namespace server {
+        RPCServerProxy::RPCServerProxy (google::protobuf::Service* pService) : mpService (pService)
+        {
+          mpCallQueue = new RPCCallQueue<RPCCallResponseHandler> ();
+          mpCallHandler = new RPCCallHandler<RPCCallResponseHandler> (*mpCallQueue, mpService);
 
-          class RPCServerProxy : public casock::rpc::protobuf::server::RPCServerProxy
-          {
-            public:
-              RPCServerProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned int& port, google::protobuf::Service* pService);
-              virtual ~RPCServerProxy ();
+          m_running = false;
+        }
 
-            public:
-              void start ();
-              void stop ();
+        RPCServerProxy::~RPCServerProxy ()
+        {
+ //         if (m_running)
+ //           stop ();
 
-            private:
-              RPCSocketServer*  mpSocketServer;
-          };
+          delete mpCallHandler;
+          delete mpCallQueue;
         }
       }
     }
   }
 }
-
-#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
