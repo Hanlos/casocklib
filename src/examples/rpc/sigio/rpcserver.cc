@@ -3,7 +3,7 @@
 #include "casock/server/CASServerException.h"
 #include "casock/rpc/sigio/protobuf/server/RPCServerProxy.h"
 
-#include "api/rpc_hello.pb.h"
+#include "examples/rpc/protobuf/api/rpc_hello.pb.h"
 
 using casock::sigio::base::Dispatcher;
 

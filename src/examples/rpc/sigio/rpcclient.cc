@@ -6,7 +6,7 @@
 #include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "casock/rpc/sigio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
-#include "api/rpc_hello.pb.h"
+#include "examples/rpc/protobuf/api/rpc_hello.pb.h"
 
 using casock::sigio::base::Dispatcher;
 
