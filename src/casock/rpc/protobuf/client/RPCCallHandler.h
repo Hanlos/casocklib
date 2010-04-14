@@ -72,6 +72,7 @@ namespace casock {
                 google::protobuf::RpcController* controller = pCall->controller ();
                 google::protobuf::Closure* closure = pCall->closure ();
 
+                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p]\n", __FUNCTION__, controller);
                 LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - id [%u]\n", __FUNCTION__, pRpcResponse->id ());
                 LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - type [%u]\n", __FUNCTION__, pRpcResponse->type ());
 

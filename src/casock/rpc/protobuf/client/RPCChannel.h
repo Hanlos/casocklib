@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCResponseHandler.h
+ * \file casock/rpc/protobuf/client/RPCChannel.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,51 +30,23 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_RESPONSE_HANDLER_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_RESPONSE_HANDLER_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CHANNEL_H_
+#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CHANNEL_H_
 
-#include <google/protobuf/descriptor.h>
-
-/*
-namespace google {
-  namespace protobuf {
-    class Closure;
-  }
-}
-*/
+#include <google/protobuf/service.h>
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        class RPCCallController;
-      }
-    }
-
-    namespace protobuf {
-      namespace client {
-        using casock::rpc::protobuf::client::RPCCallController;
-
-        class RPCResponseHandler
+        class RPCChannel : public google::protobuf::RpcChannel
         {
           public:
-            RPCResponseHandler (RPCCallController* pController) : mpController (pController) { }
-
-          private:
-            static void callback (RPCResponseHandler* pHandler) { pHandler->callback (); }
-
-          private:
-            virtual void callback () = 0;
-
-          public:
-            google::protobuf::Closure* closure () { return google::protobuf::NewCallback (RPCResponseHandler::callback, this); }
-
-          protected:
-            RPCCallController* mpController;
+            virtual void CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_RESPONSE_HANDLER_H_
+#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CHANNEL_H_

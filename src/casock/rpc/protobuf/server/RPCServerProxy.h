@@ -61,11 +61,11 @@ namespace casock {
 
         class RPCServerProxy
         {
-          public:
+          protected:
             RPCServerProxy (google::protobuf::Service* pService);
             virtual ~RPCServerProxy ();
 
-          public:
+          protected:
             virtual void start () = 0;
             virtual void stop () = 0;
 

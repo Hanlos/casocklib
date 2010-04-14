@@ -37,16 +37,33 @@
 
 namespace casock {
   namespace rpc {
+    namespace protobuf {
+      namespace server {
+        class RPCCallResponseHandler;
+
+        template<typename _TpResponseHandler>
+          class RPCCallQueue;
+      }
+    }
+
     namespace asio {
       namespace protobuf {
         namespace server {
+          class RPCSocketSession;
+
+          using casock::rpc::protobuf::server::RPCCallResponseHandler;
+          using casock::rpc::protobuf::server::RPCCallQueue;
+
           class RPCSocketServer : public casock::proactor::asio::server::SocketServer
           {
             public:
-              RPCSocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port);
+              RPCSocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port, RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
 
             private:
               casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor);
+
+            private:
+              RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
           };
         }
       }

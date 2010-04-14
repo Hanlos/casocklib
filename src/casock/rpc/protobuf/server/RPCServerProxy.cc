@@ -50,9 +50,6 @@ namespace casock {
 
         RPCServerProxy::~RPCServerProxy ()
         {
- //         if (m_running)
- //           stop ();
-
           delete mpCallHandler;
           delete mpCallQueue;
         }

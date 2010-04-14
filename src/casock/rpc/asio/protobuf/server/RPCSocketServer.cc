@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/sigio/protobuf/client/RPCClientCommunicator.cc
+ * \file casock/rpc/asio/protobuf/server/RPCSocketServer.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,21 +30,22 @@
  * $Revision$
  */
 
-#include "casock/rpc/sigio/protobuf/client/RPCClientCommunicator.h"
-#include "casock/rpc/protobuf/api/rpc.pb.h"
+#include "casock/rpc/asio/protobuf/server/RPCSocketServer.h"
+#include "casock/rpc/asio/protobuf/server/RPCSocketSession.h"
 
 namespace casock {
   namespace rpc {
-    namespace sigio {
+    namespace asio {
       namespace protobuf {
-        namespace client {
-          RPCClientCommunicator::RPCClientCommunicator (const casock::sigio::base::FileDescriptor* const pFD) : casock::rpc::sigio::protobuf::base::RPCCommunicator (pFD)
+        namespace server {
+          RPCSocketServer::RPCSocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port, RPCCallQueue<RPCCallResponseHandler>& rCallQueue)
+            : casock::proactor::asio::server::SocketServer (rAsyncProcessor, port), mrCallQueue (rCallQueue)
           {
           }
 
-          google::protobuf::Message* RPCClientCommunicator::createRequest ()
+          casock::proactor::asio::server::SocketSession* RPCSocketServer::buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
           {
-            return new casock::rpc::protobuf::api::RpcResponse ();
+            return new RPCSocketSession (rAsyncProcessor, mrCallQueue);
           }
         }
       }

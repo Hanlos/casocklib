@@ -30,10 +30,11 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_CHANNEL_H_
-#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_CHANNEL_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_
+#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_
 
-#include <google/protobuf/service.h>
+//#include <google/protobuf/service.h>
+#include "casock/rpc/protobuf/client/RPCChannel.h"
 
 namespace casock {
   namespace rpc {
@@ -46,7 +47,7 @@ namespace casock {
         namespace client {
           using casock::rpc::sigio::protobuf::base::RPCCommunicator;
 
-          class RPCChannel : public google::protobuf::RpcChannel
+          class RPCChannel : public casock::rpc::protobuf::client::RPCChannel
           {
             public:
               RPCChannel (casock::rpc::sigio::protobuf::base::RPCCommunicator* pCommunicator);
@@ -63,4 +64,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_CHANNEL_H_
+#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_

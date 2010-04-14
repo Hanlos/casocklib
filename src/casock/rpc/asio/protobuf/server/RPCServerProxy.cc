@@ -49,7 +49,7 @@ namespace casock {
           {
             LOGMSG (HIGH_LEVEL, "RPCServerProxy::RPCServerProxy (const uint32&) - port [%u]\n", port);
 
-            mpSocketServer = new casock::rpc::asio::protobuf::server::RPCSocketServer (rAsyncProcessor, port);
+            mpSocketServer = new casock::rpc::asio::protobuf::server::RPCSocketServer (rAsyncProcessor, port, *mpCallQueue);
           }
 
           RPCServerProxy::~RPCServerProxy ()

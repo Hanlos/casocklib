@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/sigio/protobuf/client/RPCClientCommunicator.cc
+ * \file casock/rpc/asio/protobuf/client/RPCCommunicator.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,19 +30,19 @@
  * $Revision$
  */
 
-#include "casock/rpc/sigio/protobuf/client/RPCClientCommunicator.h"
+#include "casock/rpc/asio/protobuf/client/RPCCommunicator.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
   namespace rpc {
-    namespace sigio {
+    namespace asio {
       namespace protobuf {
-        namespace client {
-          RPCClientCommunicator::RPCClientCommunicator (const casock::sigio::base::FileDescriptor* const pFD) : casock::rpc::sigio::protobuf::base::RPCCommunicator (pFD)
-          {
-          }
+        namespace base {
+          RPCClientCommunicator::RPCClientCommunicator (SocketChannel* const pChannel)
+            : RPCCommunicator (pChannel)
+          { }
 
-          google::protobuf::Message* RPCClientCommunicator::createRequest ()
+          ::google::protobuf::Message* RPCClientCommunicator::createRequest ()
           {
             return new casock::rpc::protobuf::api::RpcResponse ();
           }
@@ -51,3 +51,5 @@ namespace casock {
     }
   }
 }
+
+

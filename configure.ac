@@ -91,9 +91,11 @@ AC_CONFIG_FILES([Makefile
                  src/casock/rpc/asio/Makefile
                  src/casock/rpc/asio/protobuf/Makefile
                  src/casock/rpc/asio/protobuf/base/Makefile
+                 src/casock/rpc/asio/protobuf/client/Makefile
                  src/casock/rpc/asio/protobuf/server/Makefile
                  src/casock/rpc/protobuf/Makefile
                  src/casock/rpc/protobuf/api/Makefile
+                 src/casock/rpc/protobuf/client/Makefile
                  src/casock/rpc/protobuf/server/Makefile
                  src/casock/rpc/sigio/Makefile
                  src/casock/rpc/sigio/protobuf/Makefile
@@ -111,6 +113,7 @@ AC_CONFIG_FILES([Makefile
                  src/examples/proactor/asio/Makefile
                  src/examples/proactor/asio/ftp/Makefile
                  src/examples/rpc/Makefile
+                 src/examples/rpc/asio/Makefile
                  src/examples/rpc/protobuf/Makefile
                  src/examples/rpc/protobuf/api/Makefile
                  src/examples/rpc/sigio/Makefile])

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/sigio/protobuf/client/RPCClientCommunicator.cc
+ * \file casock/rpc/asio/protobuf/client/RPCChannel.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,21 +30,26 @@
  * $Revision$
  */
 
-#include "casock/rpc/sigio/protobuf/client/RPCClientCommunicator.h"
-#include "casock/rpc/protobuf/api/rpc.pb.h"
+#include "casock/rpc/asio/protobuf/client/RPCChannel.h"
+
+#include <google/protobuf/message.h>
+
+#include "casock/util/Logger.h"
 
 namespace casock {
   namespace rpc {
-    namespace sigio {
+    namespace asio {
       namespace protobuf {
         namespace client {
-          RPCClientCommunicator::RPCClientCommunicator (const casock::sigio::base::FileDescriptor* const pFD) : casock::rpc::sigio::protobuf::base::RPCCommunicator (pFD)
-          {
-          }
+          RPCChannel::RPCChannel (RPCClientCommunicator& rCommunicator)
+            : mrCommunicator (rCommunicator)
+          { }
 
-          google::protobuf::Message* RPCClientCommunicator::createRequest ()
+          void RPCChannel::CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message* request, google::protobuf::Message*, google::protobuf::Closure*)
           {
-            return new casock::rpc::protobuf::api::RpcResponse ();
+            LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
+
+            //mpCommunicator->write (request);
           }
         }
       }
