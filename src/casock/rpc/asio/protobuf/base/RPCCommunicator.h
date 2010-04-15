@@ -54,6 +54,12 @@ namespace casock {
   }
 
   namespace rpc {
+    namespace protobuf {
+      namespace api {
+        class RpcResponse;
+      }
+    }
+
     namespace asio {
       namespace protobuf {
         namespace base {
@@ -67,13 +73,23 @@ namespace casock {
             private:
               virtual ::google::protobuf::Message* createRequest () = 0;
 
+            protected:
+              void onSentSize (const ::asio::error_code& error, const google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler);
+              void onSentBuffer (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&)> handler);
+
+              //void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, casock::rpc::protobuf::api::RpcResponse*)> handler);
+              void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
+              //void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, casock::rpc::protobuf::api::RpcResponse*)> handler);
+              void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
+
             public:
-              ::google::protobuf::Message* read ();
-              void write (const ::google::protobuf::Message* const message);
+//              ::google::protobuf::Message* read ();
+//              void write (const ::google::protobuf::Message* const message);
 
             private:
-              size_t size;
-              stringstream buffer;
+              //size_t size;
+              //stringstream buffer;
+              size_t mSize;
           };
         }
       }

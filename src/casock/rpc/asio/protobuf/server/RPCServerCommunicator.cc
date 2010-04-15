@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/sigio/protobuf/client/RPCClientCommunicator.cc
+ * \file casock/rpc/asio/protobuf/server/RPCServerCommunicator.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,29 +30,39 @@
  * $Revision$
  */
 
-#include "casock/rpc/sigio/protobuf/client/RPCClientCommunicator.h"
+#include "casock/rpc/asio/protobuf/server/RPCServerCommunicator.h"
+
+#include <boost/bind.hpp>
+
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
   namespace rpc {
-    namespace sigio {
+    namespace asio {
       namespace protobuf {
-        namespace client {
-          RPCClientCommunicator::RPCClientCommunicator (const casock::sigio::base::FileDescriptor* const pFD) : casock::rpc::sigio::protobuf::base::RPCCommunicator (pFD)
+        namespace server {
+          RPCServerCommunicator::RPCServerCommunicator (SocketChannel* const pChannel)
+            : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel)
+          { }
+
+          ::google::protobuf::Message* RPCServerCommunicator::createRequest ()
           {
+            return new casock::rpc::protobuf::api::RpcRequest ();
           }
 
-          google::protobuf::Message* RPCClientCommunicator::createRequest ()
+          void RPCServerCommunicator::recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
-            return new casock::rpc::protobuf::api::RpcResponse ();
+            read (mSize, ::boost::bind (&RPCServerCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
           }
 
-          casock::rpc::protobuf::api::RpcResponse* RPCClientCommunicator::read ()
+          void RPCServerCommunicator::sendResponse (const ::google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            return static_cast<casock::rpc::protobuf::api::RpcResponse *>(casock::rpc::sigio::protobuf::base::RPCCommunicator::read ());
+            write (message->ByteSize (), ::boost::bind (&RPCServerCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
           }
         }
       }
     }
   }
 }
+
+

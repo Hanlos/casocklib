@@ -80,7 +80,7 @@ namespace examples {
               handler (error);
             }
  
-            void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, FTPFile* pFile)> handler)
+            void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, FTPFile*)> handler)
             {
               if (! error)
               {
@@ -93,7 +93,7 @@ namespace examples {
               }
             }
 
-            void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, FTPFile* pFile)> handler)
+            void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, FTPFile*)> handler)
             {
               FTPFile* pFile = NULL;
 
@@ -124,7 +124,7 @@ namespace examples {
               write (rFile.getSize (), ::boost::bind (&FTPCommunicator::onSentSize, this, ::asio::placeholders::error, rFile, handler));
             }
 
-            void getFile (::boost::function<void(const ::asio::error_code&, FTPFile* pFile)> handler)
+            void getFile (::boost::function<void(const ::asio::error_code&, FTPFile*)> handler)
             {
               read (mSize, ::boost::bind (&FTPCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
             }

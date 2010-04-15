@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/sigio/protobuf/client/RPCClientCommunicator.h
+ * \file casock/rpc/asio/protobuf/server/RPCCommunicator.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,36 +30,38 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_CLIENT_COMMUNICATOR_H_
-#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_CLIENT_COMMUNICATOR_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SERVER_COMMUNICATOR_H_
+#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SERVER_COMMUNICATOR_H_
 
-#include "casock/rpc/sigio/protobuf/base/RPCCommunicator.h"
+#include "casock/rpc/asio/protobuf/base/RPCCommunicator.h"
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace api {
-        class RpcResponse;
+        class RpcRequest;
       }
     }
-  }
-}
 
-namespace casock {
-  namespace rpc {
-    namespace sigio {
+    namespace asio {
       namespace protobuf {
-        namespace client {
-          class RPCClientCommunicator : public casock::rpc::sigio::protobuf::base::RPCCommunicator
+        namespace server {
+          using casock::proactor::asio::base::SocketChannel;
+
+          class RPCServerCommunicator : public casock::rpc::asio::protobuf::base::RPCCommunicator
           {
             public:
-              RPCClientCommunicator (const casock::sigio::base::FileDescriptor* const pFD);
+              RPCServerCommunicator (SocketChannel* const pChannel);
 
             private:
-              google::protobuf::Message* createRequest ();
+              ::google::protobuf::Message* createRequest ();
 
             public:
-              casock::rpc::protobuf::api::RpcResponse* read ();
+              void recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
+              void sendResponse (const ::google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler);
+
+            private:
+              size_t mSize;
           };
         }
       }
@@ -67,4 +69,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_CLIENT_COMMUNICATOR_H_
+#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SERVER_COMMUNICATOR_H_

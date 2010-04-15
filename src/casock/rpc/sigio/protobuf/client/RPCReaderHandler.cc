@@ -56,7 +56,8 @@ namespace casock {
 
             try
             {
-              casock::rpc::protobuf::api::RpcResponse* response = static_cast<casock::rpc::protobuf::api::RpcResponse *>(mCommunicator.read ());
+              //casock::rpc::protobuf::api::RpcResponse* response = static_cast<casock::rpc::protobuf::api::RpcResponse *>(mCommunicator.read ());
+              casock::rpc::protobuf::api::RpcResponse* response = mCommunicator.read ();
               LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - response received: %d bytes - id [%u]\n", __FUNCTION__, response->ByteSize (), response->id ());
 
               mrCallHash.lock ();
@@ -69,8 +70,8 @@ namespace casock {
               {
                 pRPCCall->setRpcResponse (response);
                 mrCallQueue.push (pRPCCall);
-                //              pRPCCall->response ()->ParseFromString (response->response ());
-                //              pRPCCall->closure ()->Run ();
+                //pRPCCall->response ()->ParseFromString (response->response ());
+                //pRPCCall->closure ()->Run ();
               }
             }
             catch (casock::base::CASClosedConnectionException& e)

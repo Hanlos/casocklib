@@ -31,6 +31,9 @@
  */
 
 #include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
+
+#include <boost/bind.hpp>
+
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
@@ -51,25 +54,33 @@ namespace casock {
           {
             LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s ()\n", __FUNCTION__);
 
-            // TODO: call mCommunicator.read () asynchronously
+            mCommunicator.recvResponse (::boost::bind (&RPCSocketClient::onRecvResponse, this, ::asio::placeholders::error, _2));
+          }
 
-            /*
+          void RPCSocketClient::onConnectionFailure ()
+          {
+            LOGMSG (LOW_LEVEL, "RPCSocketClient::%s ()\n", __FUNCTION__);
+          }
+
+          void RPCSocketClient::onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
+          {
             try
             {
-              casock::rpc::protobuf::api::RpcResponse* response = static_cast<casock::rpc::protobuf::api::RpcResponse *>(mCommunicator.read ());
-              LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - response received: %d bytes - id [%u]\n", __FUNCTION__, response->ByteSize (), response->id ());
+              casock::rpc::protobuf::api::RpcResponse* pResponse = static_cast<casock::rpc::protobuf::api::RpcResponse *>(pMessage);
+
+              LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - response received: %d bytes - id [%u]\n", __FUNCTION__, pResponse->ByteSize (), pResponse->id ());
 
               mrCallHash.lock ();
-              RPCCall* pRPCCall = mrCallHash [response->id ()];
+              RPCCall* pRPCCall = mrCallHash [pResponse->id ()];
               if (pRPCCall)
-                mrCallHash.erase (response->id ());
+                mrCallHash.erase (pResponse->id ());
               mrCallHash.unlock ();
 
               if (pRPCCall)
               {
-                pRPCCall->setRpcResponse (response);
+                pRPCCall->setRpcResponse (pResponse);
                 mrCallQueue.push (pRPCCall);
-                //pRPCCall->response ()->ParseFromString (response->response ());
+                //pRPCCall->pResponse ()->ParseFromString (pResponse->response ());
                 //pRPCCall->closure ()->Run ();
               }
             }
@@ -77,12 +88,8 @@ namespace casock {
             {
               LOGMSG (HIGH_LEVEL, "RPCReaderHandler::%s () - catch (...)\n", __FUNCTION__);
             }
-            */
-          }
 
-          void RPCSocketClient::onConnectionFailure ()
-          {
-            LOGMSG (LOW_LEVEL, "RPCSocketClient::%s ()\n", __FUNCTION__);
+            mCommunicator.recvResponse (::boost::bind (&RPCSocketClient::onRecvResponse, this, ::asio::placeholders::error, _2));
           }
         }
       }

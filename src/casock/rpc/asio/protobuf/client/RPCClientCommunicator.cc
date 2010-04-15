@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/asio/protobuf/client/RPCCommunicator.cc
+ * \file casock/rpc/asio/protobuf/client/RPCClientCommunicator.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,21 +30,34 @@
  * $Revision$
  */
 
-#include "casock/rpc/asio/protobuf/client/RPCCommunicator.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
+
+#include <boost/bind.hpp>
+
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
   namespace rpc {
     namespace asio {
       namespace protobuf {
-        namespace base {
+        namespace client {
           RPCClientCommunicator::RPCClientCommunicator (SocketChannel* const pChannel)
-            : RPCCommunicator (pChannel)
+            : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel)
           { }
 
           ::google::protobuf::Message* RPCClientCommunicator::createRequest ()
           {
             return new casock::rpc::protobuf::api::RpcResponse ();
+          }
+
+          void RPCClientCommunicator::sendRequest (const ::google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler)
+          {
+            write (message->ByteSize (), ::boost::bind (&RPCClientCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
+          }
+
+          void RPCClientCommunicator::recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
+          {
+            read (mSize, ::boost::bind (&RPCClientCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
           }
         }
       }

@@ -41,10 +41,11 @@ using std::stringstream;
 #include "casock/util/Logger.h"
 #include "casock/sigio/client/ClientSocket.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
-#include "casock/rpc/protobuf/client/RPCCall.h"
-#include "casock/rpc/protobuf/client/RPCCallQueue.h"
-#include "casock/rpc/protobuf/client/RPCCallHandler.h"
+//#include "casock/rpc/protobuf/client/RPCCall.h"
+//#include "casock/rpc/protobuf/client/RPCCallQueue.h"
+//#include "casock/rpc/protobuf/client/RPCCallHandler.h"
 //#include "casock/rpc/sigio/protobuf/client/RPCCallController.h"
+#include "casock/rpc/sigio/protobuf/client/RPCChannel.h"
 #include "casock/rpc/sigio/protobuf/client/RPCReaderHandler.h"
 
 namespace casock {
@@ -56,10 +57,6 @@ namespace casock {
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
-            mpCallQueue = new RPCCallQueue ();
-            mpCallHandler = new RPCCallHandler (*mpCallQueue);
-            mpCallHandler->start ();
-
             mpClientSocket = new ClientSocket (rDispatcher, host, port);
             mpClientSocket->connect ();
             mpReaderHandler = new RPCReaderHandler (rDispatcher, mpClientSocket, this, mCallHash, *mpCallQueue);
@@ -67,13 +64,12 @@ namespace casock {
             mpService = new casock::rpc::protobuf::api::RpcService::Stub (mpChannel);
           }
 
-          /*
-             void RPCClientProxy::callback ()
-             {
-             LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
-             }
-           */
+          void RPCClientProxy::sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest)
+          {
+            mpService->RpcCall (NULL, pRequest, NULL, NULL);
+          }
 
+          /*
           void RPCClientProxy::CallMethod(const google::protobuf::MethodDescriptor* method, google::protobuf::RpcController* controller, const google::protobuf::Message* request, google::protobuf::Message* response, google::protobuf::Closure* done)
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
@@ -95,6 +91,7 @@ namespace casock {
             else
               LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s () - socket disconnected!\n", __FUNCTION__);
           }
+          */
         }
       }
     }

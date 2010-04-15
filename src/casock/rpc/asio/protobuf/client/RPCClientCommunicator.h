@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/asio/protobuf/client/RPCCommunicator.h
+ * \file casock/rpc/asio/protobuf/client/RPCClientCommunicator.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -33,28 +33,30 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_
 
-#include <sstream>
-using std::stringstream;
-
 #include "casock/rpc/asio/protobuf/base/RPCCommunicator.h"
 
 namespace casock {
   namespace rpc {
+
     namespace asio {
       namespace protobuf {
         namespace client {
-          using casock::rpc::asio::protobuf::base::RPCCommunicator;
           using casock::proactor::asio::base::SocketChannel;
 
-          class RPCClientCommunicator : public RPCCommunicator
+          class RPCClientCommunicator : public casock::rpc::asio::protobuf::base::RPCCommunicator
           {
             public:
-              RPCClientCommunicator (SocketChannel* const pChannel)
-                : RPCCommunicator (pChannel)
-              { }
+              RPCClientCommunicator (SocketChannel* const pChannel);
 
             private:
               ::google::protobuf::Message* createRequest ();
+
+            public:
+              void sendRequest (const ::google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler);
+              void recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
+
+            private:
+              size_t mSize;
           };
         }
       }

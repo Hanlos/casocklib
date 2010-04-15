@@ -35,11 +35,7 @@
 
 #include <string>
 #include "casock/rpc/protobuf/client/RPCClientProxy.h"
-
-//#include <google/protobuf/service.h>
-
 #include "casock/rpc/asio/protobuf/client/RPCChannel.h"
-//#include "casock/util/LockableHash.h"
 
 namespace casock {
   namespace proactor {
@@ -56,12 +52,6 @@ namespace casock {
         class RpcService;
         class RpcRequest;
       }
-
-      namespace client {
-//        class RPCCall;
-//        class RPCCallQueue;
-//        class RPCCallHandler;
-      }
     }
 
     namespace asio {
@@ -70,13 +60,9 @@ namespace casock {
           class RPCChannel;
           class RPCSocketClient;
 
-//          using casock::util::LockableHash;
           using casock::rpc::protobuf::api::RpcService;
-//          using casock::rpc::protobuf::client::RPCCall;
-//          using casock::rpc::protobuf::client::RPCCallQueue;
-//          using casock::rpc::protobuf::client::RPCCallHandler;
 
-          class RPCClientProxy : public casock::rpc::protobuf::client::RPCClientProxy//public google::protobuf::RpcChannel
+          class RPCClientProxy : public casock::rpc::protobuf::client::RPCClientProxy
           {
             public:
               RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port);
@@ -84,18 +70,10 @@ namespace casock {
             private:
               void sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest);
 
-//            public:
-//              void CallMethod (const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);
-
             private:
               RPCSocketClient*  mpRPCSocketClient;
               RPCChannel*       mpChannel;
               RpcService*       mpService;
-
-//              LockableHash<uint32, RPCCall*>  mCallHash;
-
-//              RPCCallQueue*     mpCallQueue;
-//              RPCCallHandler*   mpCallHandler;
           };
         }
       }

@@ -33,6 +33,7 @@
 #include "casock/rpc/asio/protobuf/base/RPCCommunicator.h"
 
 #include <arpa/inet.h>
+#include <boost/bind.hpp>
 
 #include <google/protobuf/message.h>
 
@@ -49,16 +50,67 @@ namespace casock {
         namespace base {
           RPCCommunicator::RPCCommunicator (SocketChannel* const pChannel) : casock::proactor::asio::base::Communicator (pChannel)
           {
-            size = 0;
+            //size = 0;
           }
 
+          void RPCCommunicator::onSentSize (const ::asio::error_code& error, const google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler)
+          {
+            if (! error)
+            {
+
+              stringstream buffer;
+              message->SerializeToOstream (&buffer);
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - sending message with %d bytes\n", __FUNCTION__, message->ByteSize ());
+              write (buffer.str ().c_str (), buffer.str ().length (), ::boost::bind (&RPCCommunicator::onSentBuffer, this, ::asio::placeholders::error, handler));
+            }
+          }
+
+          void RPCCommunicator::onSentBuffer (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&)> handler)
+          {
+            handler (error);
+          }
+
+          //void RPCCommunicator::onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, casock::rpc::protobuf::api::RpcResponse*)> handler)
+          void RPCCommunicator::onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
+          {
+            if (! error)
+            {
+              char* buffer = new char [mSize];
+              read (buffer, mSize, ::boost::bind (&RPCCommunicator::onReadBuffer, this, ::asio::placeholders::error, buffer, handler));
+            }
+            else
+            {
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+            }
+          }
+
+          //void RPCCommunicator::onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, casock::rpc::protobuf::api::RpcResponse*)> handler)
+          void RPCCommunicator::onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
+          {
+            google::protobuf::Message* pResponse = NULL;
+
+            if (! error)
+            {
+              pResponse = createRequest ();
+              std::stringstream ss (string (buffer, mSize));
+              pResponse->ParseFromIstream (&ss);
+              delete[] buffer;
+            }
+            else
+            {
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+            }
+
+            handler (error, pResponse);
+          }
+
+            /*
           ::google::protobuf::Message* RPCCommunicator::read ()
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
 
             ::google::protobuf::Message* message = NULL;
 
-            /*
             ssize_t s = 0;
 
             if (! size)
@@ -92,25 +144,25 @@ namespace casock {
             message->ParseFromIstream (&buffer);
             buffer.clear ();
             size = 0;
-            */
 
             return message;
           }
+            */
 
+            /*
           void RPCCommunicator::write (const ::google::protobuf::Message* const message)
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - begin\n", __FUNCTION__);
 
-            /*
             Communicator::write (message->ByteSize ());
             stringstream buffer;
             message->SerializeToOstream (&buffer);
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - sending message with %d bytes\n", __FUNCTION__, message->ByteSize ());
             Communicator::write (buffer);
-            */
 
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - end\n", __FUNCTION__);
           }
+            */
         }
       }
     }

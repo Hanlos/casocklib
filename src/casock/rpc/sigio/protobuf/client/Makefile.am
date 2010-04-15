@@ -3,7 +3,7 @@ SRCS = RPCClientProxy.cc RPCChannel.cc \
 
 LIBS = $(top_srcdir)/src/casock/sigio/client/libcassioclient.la \
 			 $(top_srcdir)/src/casock/rpc/sigio/protobuf/base/libcasrpcsiopbbase.la \
-       $(top_srcdir)/src/casock/rpc/protobuf/api/libcasrpcpbapi.la
+			 $(top_srcdir)/src/casock/rpc/protobuf/client/libcasrpcpbclient.la
 
 noinst_LTLIBRARIES = libcasrpcsiopbclient.la
 

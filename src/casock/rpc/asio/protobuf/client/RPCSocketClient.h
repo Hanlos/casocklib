@@ -43,6 +43,10 @@
 namespace casock {
   namespace rpc {
     namespace protobuf {
+      namespace api {
+        class RpcResponse;
+      }
+
       namespace client {
         class RPCCall;
         class RPCCallQueue;
@@ -69,6 +73,8 @@ namespace casock {
 
             public:
               RPCClientCommunicator& communicator () { return mCommunicator; }
+
+              void onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
 
               /*
 

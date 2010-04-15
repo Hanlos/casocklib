@@ -33,7 +33,9 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_
 
+#include <asio.hpp>
 #include "casock/rpc/protobuf/client/RPCChannel.h"
+#include "casock/util/Lockable.h"
 
 namespace casock {
   namespace rpc {
@@ -42,10 +44,13 @@ namespace casock {
         namespace client {
           class RPCClientCommunicator;
 
-          class RPCChannel : public casock::rpc::protobuf::client::RPCChannel
+          class RPCChannel : public casock::rpc::protobuf::client::RPCChannel, private casock::util::Lockable
           {
             public:
               RPCChannel (RPCClientCommunicator& rCommunicator);
+
+            private:
+              void onSentRequest (const ::asio::error_code& error);
 
             public:
               void CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);

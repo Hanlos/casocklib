@@ -74,7 +74,7 @@ namespace casock {
               RPCClientCommunicator& communicator () { return mCommunicator; }
 
             private:
-              RPCClientCommunicator mCommunicator;
+              RPCClientCommunicator mCommunicator; /*!< used to read from socket, returns an object of type casock::rpc::protobuf::api::RpcResponse */
               RPCClientProxy*       mpClientProxy;
 
               LockableHash<uint32, RPCCall*>& mrCallHash;
@@ -85,4 +85,5 @@ namespace casock {
     }
   }
 }
+
 #endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_READER_HANDLER_H_
