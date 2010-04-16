@@ -34,8 +34,7 @@
 #define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_SOCKET_CHANNEL_H_
 
 #include <asio.hpp>
-
-#include "casock/proactor/asio/base/AsyncProcessor.h"
+#include "casock/base/CASClosedConnectionException.h"
 #include "casock/util/Logger.h"
 
 namespace casock {
@@ -59,16 +58,7 @@ namespace casock {
              */
 
             template<typename ReadHandler>
-              void asyncRead (char* buffer, const size_t& size, ReadHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
-
-                ::asio::async_read (
-                    m_socket, ::asio::buffer (buffer, size),
-                    ::asio::transfer_at_least (size),
-                    handler
-                    );
-              }
+              void asyncRead (char* buffer, const size_t& size, ReadHandler handler);
 
             /*!
              * asynchronous read some:
@@ -79,15 +69,7 @@ namespace casock {
              */
 
             template<typename ReadHandler>
-              void asyncReadSome (char* buffer, const size_t& size, ReadHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
-
-                m_socket.async_read_some (
-                    ::asio::buffer (buffer, size),
-                    handler
-                    );
-              }
+              void asyncReadSome (char* buffer, const size_t& size, ReadHandler handler);
 
             /*!
              * asynchronous write:
@@ -98,16 +80,7 @@ namespace casock {
              */
 
             template<typename WriteHandler>
-              void asyncWrite (const char* buffer, const size_t& size, WriteHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
-
-                ::asio::async_write (
-                    m_socket,
-                    ::asio::buffer (buffer, size),
-                    handler
-                    );
-              }
+              void asyncWrite (const char* buffer, const size_t& size, WriteHandler handler);
 
           public:
             /*!
@@ -115,55 +88,35 @@ namespace casock {
              */
 
             template<typename _Type, typename ReadHandler>
-              void read (_Type& buffer, ReadHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - sizeof (_Type) [%zu]\n", __FUNCTION__, sizeof (_Type));
-                asyncRead (reinterpret_cast<char*> (&buffer), sizeof (_Type), handler);
-              }
+              void read (_Type& buffer, ReadHandler handler);
 
             /*!
              * read raw data of specific size
              */
 
             template<typename ReadHandler>
-              void read (char* buffer, const size_t& size, ReadHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
-                asyncRead (buffer, size, handler);
-              }
+              void read (char* buffer, const size_t& size, ReadHandler handler);
 
             /*!
              * read some raw data into a maximum size buffer
              */
 
             template<typename ReadHandler>
-              void readsome (char* buffer, const size_t& size, ReadHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
-                asyncReadSome (buffer, size, handler);
-              }
+              void readsome (char* buffer, const size_t& size, ReadHandler handler);
 
             /*!
              * write data of specific type
              */
 
             template<typename _Type, typename WriteHandler>
-              void write (const _Type& buffer, WriteHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, sizeof (_Type));
-                asyncWrite (reinterpret_cast<const char*> (&buffer), sizeof (_Type), handler);
-              }
+              void write (const _Type& buffer, WriteHandler handler);
 
-            /*
+            /*!
              * write raw data of specific size
              */
 
             template<typename WriteHandler>
-              void write (const char* buffer, const size_t& size, WriteHandler handler)
-              {
-                LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
-                asyncWrite (buffer, size, handler);
-              }
+              void write (const char* buffer, const size_t& size, WriteHandler handler);
 
           protected:
             void close () { m_socket.close (); }
@@ -171,9 +124,107 @@ namespace casock {
           protected:
             ::asio::ip::tcp::socket& socket () { return m_socket; }
 
-          private:
+          public:
+            const bool isConnected () const { return m_socket.is_open (); }
+
+          protected:
             ::asio::ip::tcp::socket m_socket;
         };
+
+        /*
+         * template definitions
+         */
+
+        template<typename ReadHandler>
+          void SocketChannel::asyncRead (char* buffer, const size_t& size, ReadHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s (char*) - size [%zu]\n", __FUNCTION__, size);
+
+            if (m_socket.is_open ())
+            {
+              ::asio::async_read (
+                  m_socket, ::asio::buffer (buffer, size),
+                  ::asio::transfer_at_least (size),
+                  handler
+                  );
+            }
+            else
+            {
+              throw (casock::base::CASClosedConnectionException ("socket is not open"));
+            }
+          }
+
+        template<typename ReadHandler>
+          void SocketChannel::asyncReadSome (char* buffer, const size_t& size, ReadHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s (char*) - size [%zu]\n", __FUNCTION__, size);
+
+            if (m_socket.is_open ())
+            {
+              m_socket.async_read_some (
+                  ::asio::buffer (buffer, size),
+                  handler
+                  );
+            }
+            else
+            {
+              throw (casock::base::CASClosedConnectionException ("socket is not open"));
+            }
+          }
+
+        template<typename WriteHandler>
+          void SocketChannel::asyncWrite (const char* buffer, const size_t& size, WriteHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s (const char*) - size [%zu]\n", __FUNCTION__, size);
+
+            if (m_socket.is_open ())
+            {
+              ::asio::async_write (
+                  m_socket,
+                  ::asio::buffer (buffer, size),
+                  handler
+                  );
+            }
+            else
+            {
+              throw (casock::base::CASClosedConnectionException ("socket is not open"));
+            }
+          }
+
+        template<typename _Type, typename ReadHandler>
+          void SocketChannel::read (_Type& buffer, ReadHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s () - sizeof (_Type) [%zu]\n", __FUNCTION__, sizeof (_Type));
+            asyncRead (reinterpret_cast<char*> (&buffer), sizeof (_Type), handler);
+          }
+
+        template<typename ReadHandler>
+          void SocketChannel::read (char* buffer, const size_t& size, ReadHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
+            asyncRead (buffer, size, handler);
+          }
+
+        template<typename ReadHandler>
+          void SocketChannel::readsome (char* buffer, const size_t& size, ReadHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
+            asyncReadSome (buffer, size, handler);
+          }
+
+        template<typename _Type, typename WriteHandler>
+          void SocketChannel::write (const _Type& buffer, WriteHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s () - sizeof (_Type) [%zu]\n", __FUNCTION__, sizeof (_Type));
+            asyncWrite (reinterpret_cast<const char*> (&buffer), sizeof (_Type), handler);
+          }
+
+        template<typename WriteHandler>
+          void SocketChannel::write (const char* buffer, const size_t& size, WriteHandler handler)
+          {
+            LOGMSG (LOW_LEVEL, "SocketChannel::%s () - size [%zu]\n", __FUNCTION__, size);
+            asyncWrite (buffer, size, handler);
+          }
       }
     }
   }

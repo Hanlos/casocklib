@@ -59,7 +59,7 @@ namespace casock {
               casock::rpc::protobuf::api::RpcRequest* request = static_cast<casock::rpc::protobuf::api::RpcRequest *>(mCommunicator.read ());
               LOGMSG (HIGH_LEVEL, "RPCReaderHandler::%s () - request received: %d bytes - id [%u], operation [%s]\n", __FUNCTION__, request->ByteSize (), request->id (), request->operation ().c_str ());
 
-              mrCallQueue.push (new RPCCall<RPCCallResponseHandler> (this, request));
+              mrCallQueue.push (new casock::rpc::protobuf::server::RPCCall<RPCCallResponseHandler> (this, request));
             }
             catch (casock::base::CASClosedConnectionException& e)
             {

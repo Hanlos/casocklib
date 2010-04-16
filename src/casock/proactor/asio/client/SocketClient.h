@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_CLIENT_SOCKET_CLIENT_H_
-#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_CLIENT_SOCKET_CLIENT_H_
+#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_CLIENT__SOCKET_CLIENT_H_
+#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_CLIENT__SOCKET_CLIENT_H_
 
 #include <string>
 
@@ -54,12 +54,17 @@ namespace casock {
             virtual void onConnect () = 0;
             virtual void onConnectionFailure () = 0;
 
+          public:
+            void syncConnect ();
+            void asyncConnect ();
+
           private:
-            ::asio::ip::tcp::resolver m_resolver;
+            ::asio::ip::tcp::resolver         m_resolver;
+            ::asio::ip::tcp::resolver::query  m_query;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_CLIENT_SOCKET_CLIENT_H_
+#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_CLIENT__SOCKET_CLIENT_H_

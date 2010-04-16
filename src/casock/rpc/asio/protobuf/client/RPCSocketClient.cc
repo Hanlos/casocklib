@@ -48,6 +48,9 @@ namespace casock {
             : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mCommunicator (this), mrClientProxy (rClientProxy), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketClient::RPCSocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
+
+            syncConnect ();
+            onConnect ();
           }
 
           void RPCSocketClient::onConnect ()

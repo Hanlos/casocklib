@@ -36,8 +36,13 @@
 #include "casock/proactor/asio/base/Buffer.h"
 #include "casock/proactor/asio/server/SocketSession.h"
 #include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
+#include "casock/rpc/asio/protobuf/server/RPCServerCommunicator.h"
 
 namespace casock {
+  namespace util {
+    class Lock;
+  }
+
   namespace rpc {
     namespace protobuf {
       namespace api {
@@ -67,12 +72,14 @@ namespace casock {
 
             private:
               void onConnect ();
-              void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred);
+              void onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
+              void onSentResponse (const ::asio::error_code& error, casock::util::Lock* pLock);
 
             public:
               void callback (const RpcResponse* const pResponse);
 
             private:
+              RPCServerCommunicator                 mCommunicator;
               casock::proactor::asio::base::Buffer  buffer;
               RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
           };

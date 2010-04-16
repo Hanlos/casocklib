@@ -30,9 +30,14 @@
  * $Revision$
  */
 
+#include "casock/rpc/asio/protobuf/server/RPCSocketSession.h"
+
 #include <boost/bind.hpp>
 
-#include "casock/rpc/asio/protobuf/server/RPCSocketSession.h"
+#include "casock/rpc/protobuf/server/RPCCall.h"
+#include "casock/rpc/protobuf/server/RPCCallQueue.h"
+#include "casock/rpc/protobuf/api/rpc.pb.h"
+#include "casock/util/Lock.h"
 
 namespace casock {
   namespace rpc {
@@ -40,25 +45,46 @@ namespace casock {
       namespace protobuf {
         namespace server {
           RPCSocketSession::RPCSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue)
-            : casock::proactor::asio::server::SocketSession (rAsyncProcessor), mrCallQueue (rCallQueue)
+            : casock::proactor::asio::server::SocketSession (rAsyncProcessor), mCommunicator (this), mrCallQueue (rCallQueue)
           { }
 
           void RPCSocketSession::onConnect ()
           {
             LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
-            readsome (buffer.buff, buffer.size, ::boost::bind (&RPCSocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+            mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
           }
 
-          void RPCSocketSession::onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
+          void RPCSocketSession::onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
           {
-            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, bytes_transferred, buffer.buff);
+            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - pMessage [%p]\n", __FUNCTION__, pMessage);
+
             // TODO: create a RpcRequest with the buffer and put it in the queue
-            readsome (buffer.buff, buffer.size, ::boost::bind (&RPCSocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+
+            casock::rpc::protobuf::api::RpcRequest* request = static_cast<casock::rpc::protobuf::api::RpcRequest *> (pMessage);
+
+            LOGMSG (HIGH_LEVEL, "RPCSocketSession::%s () - request received: %d bytes - id [%u], operation [%s]\n", __FUNCTION__, request->ByteSize (), request->id (), request->operation ().c_str ());
+
+            mrCallQueue.push (new casock::rpc::protobuf::server::RPCCall<RPCCallResponseHandler> (this, request));
+
+            mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
+          }
+
+          void RPCSocketSession::onSentResponse (const ::asio::error_code& error, casock::util::Lock* pLock)
+          {
+            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - error [%d]\n", __FUNCTION__, error.value ());
+            pLock->get ();
+            pLock->signal ();
+            pLock->release ();
           }
 
           void RPCSocketSession::callback (const RpcResponse* const pResponse)
           {
-            // TODO: asynchronously write response
+            casock::util::Lock* pLock = new casock::util::Lock ();
+            pLock->get ();
+            mCommunicator.sendResponse (pResponse, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error, pLock));
+            pLock->wait ();
+            pLock->release ();
+            delete pLock;
           }
         }
       }

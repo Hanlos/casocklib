@@ -56,7 +56,8 @@ typedef enum e_debug_level
   LOW_LEVEL     = 1,
   MEDIUM_LEVEL  = 2,
   HIGH_LEVEL    = 3,
-  MAX_LEVEL     = 4
+  MAX_LEVEL     = 4,
+  DISABLE       = 5
 } e_debug;
 
 #define  LOGGER  Logger::getInstance ()

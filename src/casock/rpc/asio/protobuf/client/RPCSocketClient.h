@@ -67,37 +67,13 @@ namespace casock {
             public:
               RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, LockableHash<uint32, RPCCall*>& rCallHash, RPCCallQueue& rCallQueue);
 
-            protected:
+            private:
               void onConnect ();
               void onConnectionFailure ();
+              void onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
 
             public:
               RPCClientCommunicator& communicator () { return mCommunicator; }
-
-              void onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
-
-              /*
-
-                 void onSentBuffer (const ::asio::error_code& error)
-                 {
-                 if (! error)
-                 {
-                 LOGMSG (LOW_LEVEL, "RPCSocketClient::%s () - NO ERROR!\n", __FUNCTION__);
-                 mCommunicator.readsome (mBuffer.buff, mBuffer.size, ::boost::bind (&RPCSocketClient::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
-                 }
-                 else
-                 {
-                 LOGMSG (LOW_LEVEL, "RPCSocketClient::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
-                 close ();
-                 }
-                 }
-
-                 void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
-                 {
-                 LOGMSG (LOW_LEVEL, "RPCSocketClient::%s () - bytes_transferred [%zu], mBuffer [%s]\n", __FUNCTION__, bytes_transferred, mBuffer.buff);
-                 close ();
-                 }
-               */
 
             private:
               RPCClientCommunicator           mCommunicator;

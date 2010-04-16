@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_EXCEPTION_H_
-#define __CASOCKLIB__CASOCK_UTIL_EXCEPTION_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__EXCEPTION_H_
+#define __CASOCKLIB__CASOCK_UTIL__EXCEPTION_H_
 
 #include <exception>
 #include <string>
@@ -57,4 +57,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_UTIL_EXCEPTION_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__EXCEPTION_H_

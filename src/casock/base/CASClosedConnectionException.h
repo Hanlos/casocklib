@@ -39,6 +39,10 @@ namespace casock {
   namespace base {
     class CASClosedConnectionException : public casock::base::CASException
     {
+      public:
+        CASClosedConnectionException () throw () : casock::base::CASException () { }
+        CASClosedConnectionException (const std::string& m) throw () : casock::base::CASException (m) { }
+        virtual ~CASClosedConnectionException () throw () { }
     };
   }
 }

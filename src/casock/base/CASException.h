@@ -40,8 +40,8 @@ namespace casock {
     class CASException : public casock::util::Exception
     {
       public:
-        CASException () throw () : Exception () { }
-        CASException (const std::string& m) throw () : Exception (m) { }
+        CASException () throw () : casock::util::Exception () { }
+        CASException (const std::string& m) throw () : casock::util::Exception (m) { }
         virtual ~CASException () throw () { }
     };
   }

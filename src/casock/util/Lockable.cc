@@ -60,13 +60,13 @@ namespace casock {
 
     void Lockable::lock () const
     {
-      LOGMSG (MEDIUM_LEVEL, "Lockable::%s () - p [%p]\n", __FUNCTION__, this);
+      LOGMSG (DISABLE, "Lockable::%s () - p [%p]\n", __FUNCTION__, this);
       pthread_mutex_lock (&m_mutex);
     }
 
     void Lockable::unlock () const
     {
-      LOGMSG (MEDIUM_LEVEL, "Lockable::%s () - p [%p]\n", __FUNCTION__, this);
+      LOGMSG (DISABLE, "Lockable::%s () - p [%p]\n", __FUNCTION__, this);
       pthread_mutex_unlock (&m_mutex);
     }
 
@@ -110,7 +110,7 @@ namespace casock {
 #ifdef USE_MEM_SIZE
     const uint64 Lockable::getMemSize () const
     {
-      LOGMSG (MEDIUM_LEVEL, "Lockable::%s () - [%p]\n", __FUNCTION__, this);
+      LOGMSG (DISABLE, "Lockable::%s () - [%p]\n", __FUNCTION__, this);
 
       uint64 size = 0;
 
@@ -118,7 +118,7 @@ namespace casock {
       size += sizeof (pthread_mutex_t);
       size += sizeof (pthread_cond_t);
 
-      LOGMSG (MEDIUM_LEVEL, "Lockable::%s () - [%u]\n", __FUNCTION__, size);
+      LOGMSG (DISABLE, "Lockable::%s () - [%u]\n", __FUNCTION__, size);
 
       return size;
     }

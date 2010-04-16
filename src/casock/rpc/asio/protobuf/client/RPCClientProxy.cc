@@ -35,9 +35,10 @@
 #include <google/protobuf/descriptor.h>
 
 #include "casock/util/Logger.h"
-#include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
+#include "casock/rpc/asio/protobuf/client/RPCChannel.h"
 
 namespace casock {
   namespace rpc {
@@ -55,6 +56,7 @@ namespace casock {
 
           void RPCClientProxy::sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest)
           {
+            LOGMSG (NO_DEBUG, "RPCClientProxy::%s ()\n", __FUNCTION__);
             mpService->RpcCall (NULL, pRequest, NULL, NULL);
           }
         }

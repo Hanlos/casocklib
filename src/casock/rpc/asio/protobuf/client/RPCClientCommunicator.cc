@@ -34,6 +34,7 @@
 
 #include <boost/bind.hpp>
 
+#include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
@@ -52,12 +53,15 @@ namespace casock {
 
           void RPCClientCommunicator::sendRequest (const ::google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            write (message->ByteSize (), ::boost::bind (&RPCClientCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
+            LOGMSG (NO_DEBUG, "RPCClientCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message->ByteSize ());
+            //write (message->ByteSize (), ::boost::bind (&RPCClientCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
+            sendMessage (message, handler);
           }
 
           void RPCClientCommunicator::recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
-            read (mSize, ::boost::bind (&RPCClientCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
+            //read (mSize, ::boost::bind (&RPCClientCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
+            recvMessage (handler);
           }
         }
       }

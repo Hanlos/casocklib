@@ -47,17 +47,22 @@ namespace casock {
 
           ::google::protobuf::Message* RPCServerCommunicator::createRequest ()
           {
+            LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
             return new casock::rpc::protobuf::api::RpcRequest ();
           }
 
           void RPCServerCommunicator::recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
-            read (mSize, ::boost::bind (&RPCServerCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
+            LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
+            //read (mSize, ::boost::bind (&RPCServerCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
+            recvMessage (handler);
           }
 
-          void RPCServerCommunicator::sendResponse (const ::google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler)
+          void RPCServerCommunicator::sendResponse (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            write (message->ByteSize (), ::boost::bind (&RPCServerCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
+            LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
+            //write (message->ByteSize (), ::boost::bind (&RPCServerCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
+            sendMessage (message, handler);
           }
         }
       }

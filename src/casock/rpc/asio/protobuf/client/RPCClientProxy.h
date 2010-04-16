@@ -35,7 +35,6 @@
 
 #include <string>
 #include "casock/rpc/protobuf/client/RPCClientProxy.h"
-#include "casock/rpc/asio/protobuf/client/RPCChannel.h"
 
 namespace casock {
   namespace proactor {
@@ -68,6 +67,12 @@ namespace casock {
               RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port);
 
             private:
+              /*!
+               * overridden from casock::rpc::protobuf::client::RPCClientProxy::sendRpcRequest (...)
+               *
+               * used by casock::rpc::protobuf::client::RPCClientProxy::CallMethod (...)
+               * to send an RPC request to the RPC server.
+               */
               void sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest);
 
             private:

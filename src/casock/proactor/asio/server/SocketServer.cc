@@ -63,6 +63,7 @@ namespace casock {
           {
             LOGMSG (LOW_LEVEL, "SocketServer::%s () - NO ERROR!\n", __FUNCTION__);
             pSession->onConnect ();
+            asyncAccept ();
           }
           else
           {
@@ -70,7 +71,8 @@ namespace casock {
             pSession->onConnectionFailure ();
           }
 
-          asyncAccept ();
+          LOGMSG (LOW_LEVEL, "SocketServer::%s () - end!\n", __FUNCTION__);
+          //asyncAccept ();
         }
 
         void SocketServer::start ()

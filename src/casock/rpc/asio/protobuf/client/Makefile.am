@@ -1,8 +1,8 @@
-SRCS = RPCClientProxy.cc RPCSocketClient.cc RPCClientCommunicator.cc # RPCChannel.cc RPCReaderHandler.cc RPCClientCommunicator.cc
+SRCS = RPCClientProxy.cc RPCSocketClient.cc RPCClientCommunicator.cc RPCChannel.cc
 
 LIBS = $(top_srcdir)/src/casock/proactor/asio/client/libcasproasioclient.la \
 			 $(top_srcdir)/src/casock/rpc/asio/protobuf/base/libcasrpcaiopbbase.la \
-       $(top_srcdir)/src/casock/rpc/protobuf/api/libcasrpcpbapi.la
+       $(top_srcdir)/src/casock/rpc/protobuf/client/libcasrpcpbclient.la
 
 noinst_LTLIBRARIES = libcasrpcaiopbclient.la
 

@@ -40,8 +40,11 @@ namespace casock {
     class Lock : private Lockable
     {
       public:
-        void get () { lock (); }
-        void release () { unlock (); }
+        void get () const { lock (); }
+        void release () const { unlock (); }
+        int wait (const uint32& timeout = 0) const { return cond_wait (timeout); }
+        void broadcast () const { cond_broadcast (); }
+        void signal () const { cond_signal (); }
     };
   }
 }

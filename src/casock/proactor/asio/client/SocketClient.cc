@@ -36,21 +36,24 @@
 
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
+#include "casock/base/CASClosedConnectionException.h"
 
 namespace casock {
   namespace proactor {
     namespace asio {
       namespace client {
         SocketClient::SocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const string& port)
-          : casock::proactor::asio::base::SocketChannel (rAsyncProcessor), m_resolver (rAsyncProcessor.service ())
+          : casock::proactor::asio::base::SocketChannel (rAsyncProcessor), m_resolver (rAsyncProcessor.service ()), m_query (host, port)
         {
           LOGMSG (LOW_LEVEL, "SocketClient::SocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
 
-          ::asio::ip::tcp::resolver resolver (rAsyncProcessor.service ());
+          /*
+          //::asio::ip::tcp::resolver resolver (rAsyncProcessor.service ());
           ::asio::ip::tcp::resolver::query query (host, port);
 
           m_resolver.async_resolve (query,
               ::boost::bind (&SocketClient::handle_resolve, this, ::asio::placeholders::error, ::asio::placeholders::iterator));
+              */
         }
 
         void SocketClient::handle_resolve (const ::asio::error_code& error, ::asio::ip::tcp::resolver::iterator it_endpoint)
@@ -60,7 +63,7 @@ namespace casock {
           if (! error)
           {
             ::asio::ip::tcp::endpoint endpoint = *it_endpoint;
-            socket ().async_connect (endpoint,
+            m_socket.async_connect (endpoint,
                 ::boost::bind (&SocketClient::handle_connect, this, ::asio::placeholders::error, ++it_endpoint));
           }
           else
@@ -84,11 +87,45 @@ namespace casock {
 
             close ();
             ::asio::ip::tcp::endpoint endpoint = *it_endpoint;
-            socket ().async_connect (endpoint,
+            m_socket.async_connect (endpoint,
                 ::boost::bind (&SocketClient::handle_connect, this, ::asio::placeholders::error, ++it_endpoint));
           }
           else
             LOGMSG (LOW_LEVEL, "SocketClient::%s () - NO CONNECTED!\n", __FUNCTION__);
+        }
+
+        void SocketClient::syncConnect ()
+        {
+          LOGMSG (LOW_LEVEL, "SocketClient::%s ()\n", __FUNCTION__);
+
+          ::asio::ip::tcp::resolver::iterator it = m_resolver.resolve (m_query);
+          ::asio::ip::tcp::resolver::iterator itEnd;
+
+          //::boost::system::error_code error = ::boost::asio::error::host_not_found;
+
+          //while (error && it != itEnd)
+          while (! m_socket.is_open () && it != itEnd)
+          {
+            m_socket.close ();
+            //m_socket.connect (*it, error);
+            m_socket.connect (*it);
+          }
+
+          if (! m_socket.is_open ())
+          {
+            throw (casock::base::CASClosedConnectionException ("impossible to connect"));
+          }
+          else
+            LOGMSG (LOW_LEVEL, "SocketClient::%s () - socket connected!\n");
+
+          //if (error)
+          //  throw (::boost::system::system_error (error));
+        }
+
+        void SocketClient::asyncConnect ()
+        {
+          m_resolver.async_resolve (m_query,
+              ::boost::bind (&SocketClient::handle_resolve, this, ::asio::placeholders::error, ::asio::placeholders::iterator));
         }
       }
     }

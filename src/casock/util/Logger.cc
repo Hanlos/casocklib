@@ -90,7 +90,7 @@ Logger::~Logger ()
 
 void Logger::setDebugLevel (e_debug debug)
 {
-	m_debug_level = debug;
+	m_debug_level = (debug <= MAX_LEVEL ? debug:MAX_LEVEL);
 }
 
 void Logger::setLogFile (const string &file)

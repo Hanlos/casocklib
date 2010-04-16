@@ -1,14 +1,18 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
-//#include "casock/rpc/protobuf/client/RPCCallController.h"
+#include "casock/rpc/protobuf/client/RPCCallController.h"
 //#include "casock/rpc/sigio/protobuf/client/RPCClientProxy.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
+#include "casock/base/CASClosedConnectionException.h"
 #include "examples/rpc/protobuf/api/rpc_hello.pb.h"
-
-using casock::proactor::asio::base::AsyncProcessor;
 
 void Done ();
 void Done (HelloResponse* pResponse);
+
+casock::rpc::asio::protobuf::client::RPCClientProxy* proxy;
+HelloService* service;
+HelloRequest request;
 
 class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 {
@@ -19,6 +23,13 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
     void callback ()
     {
       LOGMSG (NO_DEBUG, "HelloHandler::%s () - message [%s]\n", __FUNCTION__, mpResponse->message ().c_str ());
+
+      request.set_id (2);
+      request.set_message ("shutdown");
+      HelloResponse* response = new HelloResponse ();
+      casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+
+      service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, response));
     }
 
   private:
@@ -27,42 +38,47 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 
 int main ()
 {
-  LOGGER->setDebugLevel (LOW_LEVEL);
+  LOGGER->setDebugLevel (MAX_LEVEL);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
-  AsyncProcessor::initialize ();
-  AsyncProcessor* pAsyncProcessor = AsyncProcessor::getInstance ();
+  casock::proactor::asio::base::AsyncProcessor::initialize ();
 
   try
   {
-    /*
-    casock::rpc::sigio::protobuf::client::RPCClientProxy proxy (*pDispatcher, "localhost", 2000);
-    casock::rpc::protobuf::client::RPCCallController controller;
+    casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
+    proxy = new casock::rpc::asio::protobuf::client::RPCClientProxy (*pAsyncProcessor, "localhost", "2000");
 
-    HelloService* service = new HelloService::Stub (&proxy);
+    service = new HelloService::Stub (proxy);
 
-    HelloRequest request;
-    HelloResponse response;
+    HelloResponse* response = new HelloResponse ();
+    casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
 
     request.set_id (1);
     request.set_message ("Hello!");
 
-    HelloHandler handler (&controller, &response);
-    //service->HelloCall (&controller, &request, &response, google::protobuf::NewCallback (&Done, &response));
-    service->HelloCall (&controller, &request, &response, handler.closure ());
+    HelloHandler handler (controller, response);
+    //service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, response));
+    LOGMSG (NO_DEBUG, "%s () - service->HelloCall (...)\n", __FUNCTION__);
 
-    //Dispatcher::getInstance ()->wait (1);
-    pDispatcher->waitForever ();
+    try
+    {
+      service->HelloCall (controller, &request, response, handler.closure ());
+    }
+    catch (casock::base::CASClosedConnectionException& e)
+    {
+      LOGMSG (NO_DEBUG, "%s () - casock::base::CASClosedConnectionException [%s]\n", __FUNCTION__, e.what ());
+    }
+
+    pAsyncProcessor->run ();
 
     delete service;
-    */
   }
   catch (...)
   {
     LOGMSG (NO_DEBUG, "%s () - catch (...)\n", __FUNCTION__);
   }
 
-  AsyncProcessor::destroy ();
+  casock::proactor::asio::base::AsyncProcessor::destroy ();
 }
 
 void Done ()

@@ -50,31 +50,40 @@ namespace casock {
         namespace base {
           RPCCommunicator::RPCCommunicator (SocketChannel* const pChannel) : casock::proactor::asio::base::Communicator (pChannel)
           {
-            //size = 0;
+
           }
 
           void RPCCommunicator::onSentSize (const ::asio::error_code& error, const google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%d]\n", __FUNCTION__, error.value ());
+
             if (! error)
             {
-
               stringstream buffer;
               message->SerializeToOstream (&buffer);
               LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - sending message with %d bytes\n", __FUNCTION__, message->ByteSize ());
               write (buffer.str ().c_str (), buffer.str ().length (), ::boost::bind (&RPCCommunicator::onSentBuffer, this, ::asio::placeholders::error, handler));
             }
+            else
+            {
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+            }
           }
 
           void RPCCommunicator::onSentBuffer (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&)> handler)
           {
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
+
             handler (error);
           }
 
-          //void RPCCommunicator::onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, casock::rpc::protobuf::api::RpcResponse*)> handler)
           void RPCCommunicator::onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
           {
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
+
             if (! error)
             {
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - mSize [%zd]\n", __FUNCTION__, mSize);
               char* buffer = new char [mSize];
               read (buffer, mSize, ::boost::bind (&RPCCommunicator::onReadBuffer, this, ::asio::placeholders::error, buffer, handler));
             }
@@ -84,9 +93,10 @@ namespace casock {
             }
           }
 
-          //void RPCCommunicator::onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, casock::rpc::protobuf::api::RpcResponse*)> handler)
           void RPCCommunicator::onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
           {
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
+
             google::protobuf::Message* pResponse = NULL;
 
             if (! error)
@@ -104,65 +114,17 @@ namespace casock {
             handler (error, pResponse);
           }
 
-            /*
-          ::google::protobuf::Message* RPCCommunicator::read ()
+          void RPCCommunicator::sendMessage (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
-
-            ::google::protobuf::Message* message = NULL;
-
-            ssize_t s = 0;
-
-            if (! size)
-            {
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - ! size\n", __FUNCTION__);
-              s = Communicator::read (reinterpret_cast<char *>(&size), sizeof (int));
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - s [%zd]\n", __FUNCTION__, s);
-
-              if (! s)
-                throw (casock::base::CASClosedConnectionException ());
-              else if (s < 0)
-                throw (casock::rpc::base::CASRPCUnfinishedMessageException ());
-
-              size = ntohl (size);
-
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - receiving message with %Zu bytes\n", __FUNCTION__, size);
-            }
-
-            do
-            {
-              s = Communicator::read (buffer, size - buffer.str ().length ());
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - s [%d]\n", __FUNCTION__, s);
-            } while (s > 0 && buffer.str ().length () < size);
-
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - received %Zu/%Zu bytes\n", __FUNCTION__, buffer.str ().length (), size);
-
-            if (buffer.str ().length () < (size_t) size)
-              throw (casock::rpc::base::CASRPCUnfinishedMessageException ());
-
-            message = createRequest ();
-            message->ParseFromIstream (&buffer);
-            buffer.clear ();
-            size = 0;
-
-            return message;
+            LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message->ByteSize ());
+            write (message->ByteSize (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
           }
-            */
 
-            /*
-          void RPCCommunicator::write (const ::google::protobuf::Message* const message)
+          void RPCCommunicator::recvMessage (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - begin\n", __FUNCTION__);
-
-            Communicator::write (message->ByteSize ());
-            stringstream buffer;
-            message->SerializeToOstream (&buffer);
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - sending message with %d bytes\n", __FUNCTION__, message->ByteSize ());
-            Communicator::write (buffer);
-
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - end\n", __FUNCTION__);
+            LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - receiving size...\n", __FUNCTION__);
+            read (mSize, ::boost::bind (&RPCCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
           }
-            */
         }
       }
     }

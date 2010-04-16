@@ -4,7 +4,7 @@
 
 #include "examples/rpc/protobuf/api/rpc_hello.pb.h"
 
-using casock::proactor::asio::base::AsyncProcessor;
+casock::rpc::asio::protobuf::server::RPCServerProxy* proxy;
 
 class HelloServiceImpl : public  HelloService
 {
@@ -15,24 +15,31 @@ class HelloServiceImpl : public  HelloService
         ::google::protobuf::Closure* done)
     {
       LOGMSG (LOW_LEVEL, "HelloServiceImpl::%s () - request->message () [%s]\n", __FUNCTION__, request->message ().c_str ());
+
       response->set_id (request->id ());
       response->set_message ("I'm the server. You sent me: " + request->message ());
       done->Run ();
+
+      if (request->message () == "shutdown")
+      {
+        sleep (1);
+        proxy->stop ();
+      }
     }
 };
 
 int main ()
 {
-  LOGGER->setDebugLevel (LOW_LEVEL);
+  LOGGER->setDebugLevel (MAX_LEVEL);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
-  AsyncProcessor::initialize ();
-  AsyncProcessor* pAsyncProcessor = AsyncProcessor::getInstance ();
+  casock::proactor::asio::base::AsyncProcessor::initialize ();
 
   try
   {
-    casock::rpc::asio::protobuf::server::RPCServerProxy proxy (*pAsyncProcessor, 2000, new HelloServiceImpl ());
-    proxy.start ();
+    casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
+    proxy = new casock::rpc::asio::protobuf::server::RPCServerProxy (*pAsyncProcessor, 2000, new HelloServiceImpl ());
+    proxy->start ();
 
     pAsyncProcessor->run ();
   }
@@ -41,5 +48,5 @@ int main ()
     LOGMSG (NO_DEBUG, "%s () - catch (...)\n", __FUNCTION__);
   }
 
-  AsyncProcessor::destroy ();
+  casock::proactor::asio::base::AsyncProcessor::destroy ();
 }

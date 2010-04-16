@@ -58,7 +58,7 @@ namespace casock {
 
             public:
               void recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
-              void sendResponse (const ::google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler);
+              void sendResponse (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler);
 
             private:
               size_t mSize;

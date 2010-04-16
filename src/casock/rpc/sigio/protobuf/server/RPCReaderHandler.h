@@ -64,7 +64,6 @@ namespace casock {
           using casock::rpc::protobuf::api::RpcResponse;
           using casock::rpc::protobuf::server::RPCCallResponseHandler;
           using casock::rpc::protobuf::server::RPCCallQueue;
-          using casock::rpc::protobuf::server::RPCCall;
 
           class RPCReaderHandler : public casock::sigio::base::Handler, public RPCCallResponseHandler
           {
