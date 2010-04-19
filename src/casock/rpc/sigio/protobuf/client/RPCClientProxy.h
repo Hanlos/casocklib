@@ -68,7 +68,7 @@ namespace casock {
               RPCClientProxy (casock::sigio::base::Dispatcher& rDispatcher, const std::string& host, const unsigned int& port);
 
             private:
-              void sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest);
+              void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request);
 
             private:
               ClientSocket*     mpClientSocket; /*!< the client socket used to connect into RPC server socket */

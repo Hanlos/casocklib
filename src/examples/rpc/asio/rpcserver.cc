@@ -35,10 +35,12 @@ int main ()
 
   casock::proactor::asio::base::AsyncProcessor::initialize ();
 
+  HelloServiceImpl service;
+
   try
   {
     casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
-    proxy = new casock::rpc::asio::protobuf::server::RPCServerProxy (*pAsyncProcessor, 2000, new HelloServiceImpl ());
+    proxy = new casock::rpc::asio::protobuf::server::RPCServerProxy (*pAsyncProcessor, 2000, &service);
     proxy->start ();
 
     pAsyncProcessor->run ();
@@ -48,5 +50,7 @@ int main ()
     LOGMSG (NO_DEBUG, "%s () - catch (...)\n", __FUNCTION__);
   }
 
+  delete proxy;
   casock::proactor::asio::base::AsyncProcessor::destroy ();
+  LOGGER->finalize ();
 }

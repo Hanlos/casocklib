@@ -54,19 +54,19 @@ namespace casock {
           class RPCCall : public casock::util::Lockable
         {
           public:
-            RPCCall (_TpResponseHandler* const pResponseHandler, const RpcRequest* const pRequest)
-              : mpResponseHandler (pResponseHandler), mpRequest (pRequest)
+            RPCCall (_TpResponseHandler* const pResponseHandler, const RpcRequest* const pRequest);
+/*              : mpResponseHandler (pResponseHandler), mpRequest (pRequest)
             {
               if (mpResponseHandler)
                 mpResponseHandler->registerCall (mpRequest->id (), this);
-            }
+            }*/
 
-            virtual ~RPCCall ()
-            {
-              /*
+            virtual ~RPCCall ();
+            /*{
+               *
                * We need unregister the call.
                * We need a way to avoid deadlock when a disconnect happens:
-               */
+               *
 
               bool unregistered = false;
 
@@ -82,27 +82,67 @@ namespace casock {
               } while (! unregistered && ! sleep (1));
 
               delete mpRequest;
-            }
+            }*/
 
           public:
-            void invalidateHandler ()
-            {
-              casock::util::SafeLock lock (*this);
-              mpResponseHandler = NULL;
-            }
-
+            void invalidateHandler ();
+            void callback (const RpcResponse& response);
             const RpcRequest* const request () { return mpRequest; }
-
-            void callback (const RpcResponse* const pResponse)
-            {
-              if (mpResponseHandler)
-                mpResponseHandler->callback (pResponse);
-            }
 
           private:
             _TpResponseHandler*     mpResponseHandler;
             const RpcRequest* const mpRequest;
         };
+
+        /*
+         * template definitions
+         */
+
+        template<typename _TpResponseHandler>
+          RPCCall<_TpResponseHandler>::RPCCall (_TpResponseHandler* const pResponseHandler, const RpcRequest* const pRequest)
+          : mpResponseHandler (pResponseHandler), mpRequest (pRequest)
+          {
+            if (mpResponseHandler)
+              mpResponseHandler->registerCall (mpRequest->id (), this);
+          }
+
+        template<typename _TpResponseHandler>
+          RPCCall<_TpResponseHandler>::~RPCCall ()
+          {
+            /*
+             * We need unregister the call.
+             * We need a way to avoid deadlock when a disconnect happens:
+             */
+
+            bool unregistered = false;
+
+            do
+            {
+              lock ();
+              if (mpResponseHandler)
+              {
+                LOGMSG (LOW_LEVEL, "RPCCall::~RPCCall () - trying to unregister from response handler [%p]...\n", __FUNCTION__, mpResponseHandler);
+                unregistered = mpResponseHandler->tryUnregisterCall (mpRequest->id ());
+              }
+              unlock ();
+            } while (! unregistered && ! sleep (1));
+
+            delete mpRequest;
+          }
+
+        template<typename _TpResponseHandler>
+          void RPCCall<_TpResponseHandler>::invalidateHandler ()
+          {
+            casock::util::SafeLock lock (*this);
+            mpResponseHandler = NULL;
+          }
+
+        template<typename _TpResponseHandler>
+          void RPCCall<_TpResponseHandler>::callback (const RpcResponse& response)
+          {
+            if (mpResponseHandler)
+              mpResponseHandler->callback (response);
+          }
       }
     }
   }

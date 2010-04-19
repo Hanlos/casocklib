@@ -30,9 +30,10 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER_SOCKET_SERVER_H_
-#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER_SOCKET_SERVER_H_
+#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER__SOCKET_SERVER_H_
+#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER__SOCKET_SERVER_H_
 
+#include <set>
 #include <asio.hpp>
 
 namespace casock {
@@ -49,6 +50,7 @@ namespace casock {
         {
           public:
             SocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port);
+            virtual ~SocketServer ();
 
           private:
             void asyncAccept ();
@@ -60,14 +62,17 @@ namespace casock {
           public:
             void start ();
             void close ();
+            void removeSession (SocketSession* pSocketSession);
 
           private:
             casock::proactor::asio::base::AsyncProcessor& mrAsyncProcessor;
             ::asio::ip::tcp::acceptor m_acceptor;
+
+            std::set<SocketSession*> mSessionSet;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER_SOCKET_SERVER_H_
+#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER__SOCKET_SERVER_H_

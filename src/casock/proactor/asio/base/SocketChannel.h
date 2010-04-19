@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_SOCKET_CHANNEL_H_
-#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_SOCKET_CHANNEL_H_
+#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__SOCKET_CHANNEL_H_
+#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__SOCKET_CHANNEL_H_
 
 #include <asio.hpp>
 #include "casock/base/CASClosedConnectionException.h"
@@ -47,6 +47,10 @@ namespace casock {
         {
           protected:
             SocketChannel (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor);
+            virtual ~SocketChannel ()
+            {
+              close ();
+            }
 
           private:
             /*!
@@ -119,7 +123,7 @@ namespace casock {
               void write (const char* buffer, const size_t& size, WriteHandler handler);
 
           protected:
-            void close () { m_socket.close (); }
+            virtual void close () { m_socket.close (); }
 
           protected:
             ::asio::ip::tcp::socket& socket () { return m_socket; }
@@ -230,4 +234,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_SOCKET_CHANNEL_H_
+#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__SOCKET_CHANNEL_H_

@@ -49,7 +49,6 @@ namespace casock {
 
     namespace protobuf {
       namespace client {
-        using casock::rpc::protobuf::api::RpcRequest;
         using casock::rpc::protobuf::api::RpcResponse;
         using casock::rpc::protobuf::client::RPCCall;
         using casock::rpc::protobuf::client::RPCCallQueue;
@@ -72,21 +71,11 @@ namespace casock {
                 google::protobuf::RpcController* controller = pCall->controller ();
                 google::protobuf::Closure* closure = pCall->closure ();
 
-                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p]\n", __FUNCTION__, controller);
-                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - id [%u]\n", __FUNCTION__, pRpcResponse->id ());
-                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - type [%u]\n", __FUNCTION__, pRpcResponse->type ());
+                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], id [%u], type [%u]\n", __FUNCTION__, controller, pRpcResponse->id (), pRpcResponse->type ());
 
                 pCall->response ()->ParseFromString (pRpcResponse->response ());
 
                 closure->Run ();
-
-                //pCall->lock ();
-                //if (pCall->handler ())
-                //  pCall->handler ()->communicator ().write (response);
-                //pCall->unlock ();
-
-                //delete response;
-                //delete pCall;
               }
             }
 

@@ -46,8 +46,10 @@ namespace examples {
       class MySocketSession : public casock::proactor::asio::server::SocketSession
       {
         public:
-          MySocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
-            : casock::proactor::asio::server::SocketSession (rAsyncProcessor)
+          MySocketSession (
+              casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
+              casock::proactor::asio::server::SocketServer& rSocketServer)
+            : casock::proactor::asio::server::SocketSession (rAsyncProcessor, rSocketServer)
           {
             LOGMSG (LOW_LEVEL, "MySocketSession::MySocketSession ()\n");
           }

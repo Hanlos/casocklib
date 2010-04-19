@@ -75,9 +75,9 @@ namespace casock {
             }
           }
 
-          void RPCReaderHandler::callback (const RpcResponse* const pResponse)
+          void RPCReaderHandler::callback (const RpcResponse& response)
           {
-            mCommunicator.write (pResponse);
+            mCommunicator.write (&response);
           }
         }
       }

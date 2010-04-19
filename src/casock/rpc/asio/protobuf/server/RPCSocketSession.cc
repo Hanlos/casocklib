@@ -44,8 +44,11 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace server {
-          RPCSocketSession::RPCSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue)
-            : casock::proactor::asio::server::SocketSession (rAsyncProcessor), mCommunicator (this), mrCallQueue (rCallQueue)
+          RPCSocketSession::RPCSocketSession (
+              casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
+              casock::proactor::asio::server::SocketServer& rSocketServer,
+              RPCCallQueue<RPCCallResponseHandler>& rCallQueue)
+            : casock::proactor::asio::server::SocketSession (rAsyncProcessor, rSocketServer), mCommunicator (this), mrCallQueue (rCallQueue)
           { }
 
           void RPCSocketSession::onConnect ()
@@ -57,8 +60,6 @@ namespace casock {
           void RPCSocketSession::onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - pMessage [%p]\n", __FUNCTION__, pMessage);
-
-            // TODO: create a RpcRequest with the buffer and put it in the queue
 
             casock::rpc::protobuf::api::RpcRequest* request = static_cast<casock::rpc::protobuf::api::RpcRequest *> (pMessage);
 
@@ -77,11 +78,11 @@ namespace casock {
             pLock->release ();
           }
 
-          void RPCSocketSession::callback (const RpcResponse* const pResponse)
+          void RPCSocketSession::callback (const RpcResponse& response)
           {
             casock::util::Lock* pLock = new casock::util::Lock ();
             pLock->get ();
-            mCommunicator.sendResponse (pResponse, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error, pLock));
+            mCommunicator.sendResponse (&response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error, pLock));
             pLock->wait ();
             pLock->release ();
             delete pLock;

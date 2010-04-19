@@ -54,10 +54,10 @@ namespace casock {
             mpService = new casock::rpc::protobuf::api::RpcService::Stub (mpChannel);
           }
 
-          void RPCClientProxy::sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest)
+          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request)
           {
             LOGMSG (NO_DEBUG, "RPCClientProxy::%s ()\n", __FUNCTION__);
-            mpService->RpcCall (NULL, pRequest, NULL, NULL);
+            mpService->RpcCall (NULL, &request, NULL, NULL);
           }
         }
       }

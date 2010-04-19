@@ -57,21 +57,43 @@ namespace casock {
         using casock::rpc::protobuf::client::RPCCallQueue;
         using casock::rpc::protobuf::client::RPCCallHandler;
 
-        class RPCClientProxy : public google::protobuf::RpcChannel
+        class RPCClientProxy : public ::google::protobuf::RpcChannel
         {
           protected:
             RPCClientProxy ();
 
           private:
-            virtual void sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest) = 0;
+            /*!
+             * Used to send the an RPC request to the RPC server.
+             *
+             * The Template Method Pattern is used because the mechanisms
+             * to send messages will be defined by sub-classes.
+             */
+            virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request) = 0;
 
           public:
-            void CallMethod (const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);
+            /*!
+             * Overridden from ::google::protobuf::RpcChannel
+             *
+             * Called by google protobuf framework when some user defined
+             * RPC service method is called.
+             */
+            void CallMethod (const ::google::protobuf::MethodDescriptor*, ::google::protobuf::RpcController*, const ::google::protobuf::Message*, ::google::protobuf::Message*, ::google::protobuf::Closure*);
 
           protected:
-            RPCCallQueue*                   mpCallQueue;
-            RPCCallHandler*                 mpCallHandler;
+            RPCCallQueue*   mpCallQueue;
+            RPCCallHandler* mpCallHandler;
+
+            /*!
+             * Used to register the RPC requests, indexed by the RpcRequest ID.
+             * Each RPC request should have a single ID (RPCClientProxy::mID).
+             * The response is created by RPC server with the same ID of the request.
+             * When it is received, the RPCCall is removed from here.
+             */
             LockableHash<uint32, RPCCall*>  mCallHash;
+
+          private:
+            static uint32 mID;
         };
       }
     }

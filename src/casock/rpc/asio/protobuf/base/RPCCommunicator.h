@@ -34,7 +34,6 @@
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_BASE__RPC_COMMUNICATOR_H_
 
 #include <sstream>
-using std::stringstream;
 
 #include "casock/proactor/asio/base/Communicator.h"
 
@@ -74,8 +73,8 @@ namespace casock {
               virtual ::google::protobuf::Message* createRequest () = 0;
 
             protected:
-              void onSentSize (const ::asio::error_code& error, const google::protobuf::Message* message, ::boost::function<void(const ::asio::error_code&)> handler);
-              void onSentBuffer (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&)> handler);
+              void onSentSize (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler);
+              void onSentBuffer (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler);
 
               void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
               void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);

@@ -54,7 +54,7 @@ namespace examples {
           {
             LOGMSG (LOW_LEVEL, "MySocketServer::%s ()\n", __FUNCTION__);
 
-            return new MySocketSession (rAsyncProcessor);
+            return new MySocketSession (rAsyncProcessor, *this);
           }
       };
     }

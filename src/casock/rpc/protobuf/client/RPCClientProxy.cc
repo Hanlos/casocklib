@@ -50,6 +50,8 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
+        uint32 RPCClientProxy::mID = 1;
+
         RPCClientProxy::RPCClientProxy ()
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
@@ -63,18 +65,17 @@ namespace casock {
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
 
-          casock::rpc::protobuf::api::RpcRequest* pRpcRequest = new casock::rpc::protobuf::api::RpcRequest ();
+          casock::rpc::protobuf::api::RpcRequest rpcRequest;
 
-          pRpcRequest->set_id (1);
-          pRpcRequest->set_operation (method->name ());
-          pRpcRequest->set_request (request->SerializeAsString ());
+          rpcRequest.set_id (RPCClientProxy::mID++);
+          rpcRequest.set_operation (method->name ());
+          rpcRequest.set_request (request->SerializeAsString ());
 
           mCallHash.lock ();
-          mCallHash [pRpcRequest->id ()] = new RPCCall (response, controller, done);
+          mCallHash [rpcRequest.id ()] = new RPCCall (response, controller, done);
           mCallHash.unlock ();
 
-          //mpService->RpcCall (NULL, pRpcRequest, NULL, NULL);
-          sendRpcRequest (pRpcRequest);
+          sendRpcRequest (rpcRequest);
         }
       }
     }

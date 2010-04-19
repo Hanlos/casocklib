@@ -62,7 +62,7 @@ namespace casock {
         class RPCServerProxy
         {
           protected:
-            RPCServerProxy (google::protobuf::Service* pService);
+            RPCServerProxy (::google::protobuf::Service* pService);
             virtual ~RPCServerProxy ();
 
           protected:
@@ -72,7 +72,7 @@ namespace casock {
           protected:
             RPCCallQueue<RPCCallResponseHandler>*   mpCallQueue;
             RPCCallHandler<RPCCallResponseHandler>* mpCallHandler;
-            google::protobuf::Service*              mpService;
+            ::google::protobuf::Service*            mpService;
 
             bool m_running;
         };

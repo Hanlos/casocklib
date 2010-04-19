@@ -33,7 +33,6 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SESSION_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SESSION_H_
 
-#include "casock/proactor/asio/base/Buffer.h"
 #include "casock/proactor/asio/server/SocketSession.h"
 #include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
 #include "casock/rpc/asio/protobuf/server/RPCServerCommunicator.h"
@@ -48,16 +47,13 @@ namespace casock {
       namespace api {
         class RpcResponse;
       }
-      namespace server {
-        class RPCCallResponseHandler;
 
+      namespace server {
         template<typename _TpResponseHandler>
           class RPCCallQueue;
       }
     }
-  }
 
-  namespace rpc {
     namespace asio {
       namespace protobuf {
         namespace server {
@@ -68,7 +64,10 @@ namespace casock {
           class RPCSocketSession : public casock::proactor::asio::server::SocketSession, public RPCCallResponseHandler
           {
             public:
-              RPCSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
+              RPCSocketSession (
+                  casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
+                  casock::proactor::asio::server::SocketServer& rSocketServer,
+                  RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
 
             private:
               void onConnect ();
@@ -76,11 +75,10 @@ namespace casock {
               void onSentResponse (const ::asio::error_code& error, casock::util::Lock* pLock);
 
             public:
-              void callback (const RpcResponse* const pResponse);
+              void callback (const RpcResponse& response);
 
             private:
               RPCServerCommunicator                 mCommunicator;
-              casock::proactor::asio::base::Buffer  buffer;
               RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
           };
         }

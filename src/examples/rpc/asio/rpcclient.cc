@@ -8,7 +8,7 @@
 #include "examples/rpc/protobuf/api/rpc_hello.pb.h"
 
 void Done ();
-void Done (HelloResponse* pResponse);
+void Done (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse);
 
 casock::rpc::asio::protobuf::client::RPCClientProxy* proxy;
 HelloService* service;
@@ -17,7 +17,9 @@ HelloRequest request;
 class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 {
   public:
-    HelloHandler (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse) : casock::rpc::protobuf::client::RPCResponseHandler (pController), mpResponse (pResponse) { }
+    HelloHandler (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse)
+      : casock::rpc::protobuf::client::RPCResponseHandler (pController), mpResponse (pResponse)
+    { }
 
   public:
     void callback ()
@@ -29,7 +31,7 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
       HelloResponse* response = new HelloResponse ();
       casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
 
-      service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, response));
+      service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, controller, response));
     }
 
   private:
@@ -57,7 +59,6 @@ int main ()
     request.set_message ("Hello!");
 
     HelloHandler handler (controller, response);
-    //service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, response));
     LOGMSG (NO_DEBUG, "%s () - service->HelloCall (...)\n", __FUNCTION__);
 
     try
@@ -86,7 +87,9 @@ void Done ()
   LOGMSG (NO_DEBUG, "Done ()\n");
 }
 
-void Done (HelloResponse* pResponse)
+void Done (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse)
 {
   LOGMSG (NO_DEBUG, "Done () - message [%s]\n", pResponse->message ().c_str ());
+  delete pController;
+  delete pResponse;
 }

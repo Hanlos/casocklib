@@ -68,12 +68,12 @@ namespace casock {
 
             private:
               /*!
-               * overridden from casock::rpc::protobuf::client::RPCClientProxy::sendRpcRequest (...)
+               * Overridden from casock::rpc::protobuf::client::RPCClientProxy
                *
-               * used by casock::rpc::protobuf::client::RPCClientProxy::CallMethod (...)
+               * Used by casock::rpc::protobuf::client::RPCClientProxy::CallMethod (...)
                * to send an RPC request to the RPC server.
                */
-              void sendRpcRequest (casock::rpc::protobuf::api::RpcRequest* pRequest);
+              void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request);
 
             private:
               RPCSocketClient*  mpRPCSocketClient;

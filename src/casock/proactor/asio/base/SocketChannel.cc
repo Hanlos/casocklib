@@ -32,7 +32,6 @@
 
 #include "casock/proactor/asio/base/SocketChannel.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
-#include "casock/util/Logger.h"
 
 namespace casock {
   namespace proactor {

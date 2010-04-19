@@ -54,7 +54,7 @@ namespace examples {
             casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
             {
               LOGMSG (LOW_LEVEL, "FTPSocketServer::%s ()\n", __FUNCTION__);
-              return new FTPSocketSession (rAsyncProcessor);
+              return new FTPSocketSession (rAsyncProcessor, *this);
             }
         };
       }

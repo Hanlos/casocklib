@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER_SOCKET_SESSION_H_
-#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER_SOCKET_SESSION_H_
+#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER__SOCKET_SESSION_H_
+#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER__SOCKET_SESSION_H_
 
 #include "casock/proactor/asio/base/SocketChannel.h"
 
@@ -39,21 +39,29 @@ namespace casock {
   namespace proactor {
     namespace asio {
       namespace server {
+        class SocketServer;
+
         class SocketSession : protected casock::proactor::asio::base::SocketChannel
         {
           private:
             friend class SocketServer;
 
           public:
-            SocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor);
+            SocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, SocketServer& rSocketServer);
 
           private:
             virtual void onConnect () = 0;
             virtual void onConnectionFailure ();
+
+          protected:
+            virtual void close ();
+
+          private:
+            SocketServer& mrSocketServer;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER_SOCKET_SESSION_H_
+#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_SERVER__SOCKET_SESSION_H_

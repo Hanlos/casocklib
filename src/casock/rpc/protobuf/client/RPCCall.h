@@ -58,24 +58,22 @@ namespace casock {
         class RPCCall : public casock::util::Lockable
         {
           public:
-            RPCCall (google::protobuf::Message* pResponse, google::protobuf::RpcController* pController, google::protobuf::Closure* pClosure)
-              : mpResponse (pResponse), mpController (pController), mpClosure (pClosure)
-            {
-              mpRpcResponse = NULL;
-            }
+            RPCCall (::google::protobuf::Message* pResponse, ::google::protobuf::RpcController* pController, ::google::protobuf::Closure* pClosure)
+              : mpResponse (pResponse), mpController (pController), mpClosure (pClosure), mpRpcResponse (NULL)
+            { }
 
           public:
-            google::protobuf::Message* response () { return mpResponse; }
-            google::protobuf::RpcController* controller () { return mpController; }
-            google::protobuf::Closure* closure () { return mpClosure; }
+            ::google::protobuf::Message* response () { return mpResponse; }
+            ::google::protobuf::RpcController* controller () { return mpController; }
+            ::google::protobuf::Closure* closure () { return mpClosure; }
 
             void setRpcResponse (RpcResponse* pRpcResponse) { mpRpcResponse = pRpcResponse; }
             RpcResponse* rpcResponse () { return mpRpcResponse; }
 
           private:
-            google::protobuf::Message* mpResponse;
-            google::protobuf::RpcController* mpController;
-            google::protobuf::Closure* mpClosure;
+            ::google::protobuf::Message* mpResponse;
+            ::google::protobuf::RpcController* mpController;
+            ::google::protobuf::Closure* mpClosure;
 
             RpcResponse* mpRpcResponse;
         };

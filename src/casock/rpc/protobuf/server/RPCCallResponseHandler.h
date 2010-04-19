@@ -95,7 +95,7 @@ namespace casock {
               return ret;
             }
 
-            virtual void callback (const RpcResponse* const pResponse) = 0;
+            virtual void callback (const RpcResponse& response) = 0;
 
           private:
             LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>  mCallHash;

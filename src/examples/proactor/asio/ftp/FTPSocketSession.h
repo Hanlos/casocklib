@@ -49,8 +49,10 @@ namespace examples {
         class FTPSocketSession : public casock::proactor::asio::server::SocketSession
         {
           public:
-            FTPSocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
-              : casock::proactor::asio::server::SocketSession (rAsyncProcessor), mCommunicator (this)
+            FTPSocketSession (
+                casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
+                casock::proactor::asio::server::SocketServer& rSocketServer)
+              : casock::proactor::asio::server::SocketSession (rAsyncProcessor, rSocketServer), mCommunicator (this)
             {
               LOGMSG (LOW_LEVEL, "FTPSocketSession::FTPSocketSession ()\n");
             }

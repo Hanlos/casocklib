@@ -53,7 +53,10 @@ namespace casock {
           class RPCServerProxy : public casock::rpc::protobuf::server::RPCServerProxy
           {
             public:
-              RPCServerProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned int& port, google::protobuf::Service* pService);
+              RPCServerProxy (
+                  casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
+                  const unsigned int& port,
+                  ::google::protobuf::Service* pService);
               virtual ~RPCServerProxy ();
 
             public:

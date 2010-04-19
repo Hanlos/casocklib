@@ -68,7 +68,7 @@ namespace casock {
             class RPCCallEntry
             {
               public:
-                RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, google::protobuf::Message* pResponse, google::protobuf::RpcController* pController)
+                RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse, ::google::protobuf::RpcController* pController)
                   : mpCall (pCall), mpResponse (pResponse), mpController (pController)
                 { }
 
@@ -81,71 +81,90 @@ namespace casock {
 
               public:
                 RPCCall<_TpResponseHandler>* call () { return mpCall; }
-                google::protobuf::Message* response () { return mpResponse; }
-                google::protobuf::RpcController* controller () { return mpController; }
+                ::google::protobuf::Message* response () { return mpResponse; }
+                ::google::protobuf::RpcController* controller () { return mpController; }
 
               private:
-                RPCCall<_TpResponseHandler>*      mpCall;
-                google::protobuf::Message*        mpResponse;
-                google::protobuf::RpcController*  mpController;
+                RPCCall<_TpResponseHandler>*        mpCall;
+                ::google::protobuf::Message*        mpResponse;
+                ::google::protobuf::RpcController*  mpController;
             };
 
           public:
-            RPCCallHandler (RPCCallQueue<_TpResponseHandler>& rCallQueue, google::protobuf::Service* pService)
+            RPCCallHandler (RPCCallQueue<_TpResponseHandler>& rCallQueue, ::google::protobuf::Service* pService)
               : mrCallQueue (rCallQueue), mpService (pService)
             { }
 
           public:
-            static void callback (RPCCallEntry* pCallEntry)
-            {
-              RPCCall<_TpResponseHandler>* pCall = pCallEntry->call ();
-
-              RpcResponse* pRpcResponse = new RpcResponse ();
-              pRpcResponse->set_id (pCall->request ()->id ());
-              pRpcResponse->set_type (casock::rpc::protobuf::api::RESPONSE_TYPE_OK);
-              pRpcResponse->set_response (pCallEntry->response ()->SerializeAsString ());
-
-              pCall->lock ();
-              pCall->callback (pRpcResponse);
-              pCall->unlock ();
-
-              delete pCallEntry;
-            }
+            static void callback (RPCCallEntry* pCallEntry);
 
           public:
-            void run ()
-            {
-              while (true)
-              {
-                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - calling mrCallQueue.get ()...\n", __FUNCTION__);
-                RPCCall<_TpResponseHandler>* pCall = mrCallQueue.get ();
-                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - got pCall [%p]!\n", __FUNCTION__, pCall);
-
-                const RpcRequest* const pRpcRequest = pCall->request ();
-
-                const google::protobuf::MethodDescriptor* method = mpService->GetDescriptor ()->FindMethodByName (pRpcRequest->operation ());
-
-                if (method != NULL)
-                {
-                  LOGMSG (NO_DEBUG, "RPCCallHandler::%s () - OK\n", __FUNCTION__);
-
-                  google::protobuf::Message* request = mpService->GetRequestPrototype (method).New ();
-                  request->ParseFromString (pRpcRequest->request ());
-                  google::protobuf::RpcController* controller = NULL; // TODO: create a controller
-                  google::protobuf::Message* response = mpService->GetResponsePrototype (method).New ();
-                  google::protobuf::Closure* closure = google::protobuf::NewCallback (RPCCallHandler<_TpResponseHandler>::callback, new RPCCallEntry (pCall, response, controller));
-
-                  mpService->CallMethod (method, controller, request, response, closure);
-                }
-                else
-                  LOGMSG (NO_DEBUG, "RPCCallHandler::%s () - no method called [%s]\n", __FUNCTION__, pRpcRequest->operation ().c_str ());
-              }
-            }
+            void run ();
 
           private:
             RPCCallQueue<_TpResponseHandler>& mrCallQueue;
-            google::protobuf::Service*        mpService;
+            ::google::protobuf::Service*      mpService;
         };
+
+        /*
+         * template definitions
+         */
+
+        template<typename _TpResponseHandler>
+          void RPCCallHandler<_TpResponseHandler>::callback (RPCCallEntry* pCallEntry)
+          {
+            RPCCall<_TpResponseHandler>* pCall = pCallEntry->call ();
+
+            RpcResponse rpcResponse;
+            rpcResponse.set_id (pCall->request ()->id ());
+            rpcResponse.set_type (casock::rpc::protobuf::api::RESPONSE_TYPE_OK);
+            rpcResponse.set_response (pCallEntry->response ()->SerializeAsString ());
+
+            pCall->lock ();
+            pCall->callback (rpcResponse);
+            pCall->unlock ();
+
+            delete pCallEntry;
+          }
+
+        template<typename _TpResponseHandler>
+          void RPCCallHandler<_TpResponseHandler>::run ()
+          {
+            while (true)
+            {
+              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - calling mrCallQueue.get ()...\n", __FUNCTION__);
+              RPCCall<_TpResponseHandler>* pCall = mrCallQueue.get ();
+              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - got pCall [%p]!\n", __FUNCTION__, pCall);
+
+              const RpcRequest* const pRpcRequest = pCall->request ();
+
+              const ::google::protobuf::MethodDescriptor* method = mpService->GetDescriptor ()->FindMethodByName (pRpcRequest->operation ());
+
+              if (method != NULL)
+              {
+                LOGMSG (NO_DEBUG, "RPCCallHandler::%s () - OK\n", __FUNCTION__);
+
+                ::google::protobuf::Message* request = mpService->GetRequestPrototype (method).New ();
+                request->ParseFromString (pRpcRequest->request ());
+
+                /*!
+                 * I didn't see anybody using a controller in the server side yet.
+                 * So, just for now, let's set it as NULL.
+                 */
+                ::google::protobuf::RpcController* controller = NULL;
+                ::google::protobuf::Message* response = mpService->GetResponsePrototype (method).New ();
+
+                /*!
+                 * The RPCCallEntry will be deleted on callback.
+                 */
+                ::google::protobuf::Closure* closure = ::google::protobuf::NewCallback (RPCCallHandler<_TpResponseHandler>::callback, new RPCCallEntry (pCall, response, controller));
+
+                mpService->CallMethod (method, controller, request, response, closure);
+              }
+              else
+                LOGMSG (NO_DEBUG, "RPCCallHandler::%s () - no method called [%s]\n", __FUNCTION__, pRpcRequest->operation ().c_str ());
+            }
+          }
       }
     }
   }

@@ -45,7 +45,7 @@ namespace casock {
 
           casock::proactor::asio::server::SocketSession* RPCSocketServer::buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
           {
-            return new RPCSocketSession (rAsyncProcessor, mrCallQueue);
+            return new RPCSocketSession (rAsyncProcessor, *this, mrCallQueue);
           }
         }
       }

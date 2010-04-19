@@ -33,6 +33,7 @@
 #include "casock/proactor/asio/server/SocketServer.h"
 
 #include <boost/bind.hpp>
+#include <boost/checked_delete.hpp>
 
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
@@ -46,6 +47,11 @@ namespace casock {
           : mrAsyncProcessor (rAsyncProcessor), m_acceptor (mrAsyncProcessor.service (), ::asio::ip::tcp::endpoint (::asio::ip::tcp::v4 (), port))
         {
           LOGMSG (LOW_LEVEL, "SocketServer::SocketServer () - port [%hu]\n", port);
+        }
+
+        SocketServer::~SocketServer ()
+        {
+          close ();
         }
 
         void SocketServer::asyncAccept ()
@@ -62,6 +68,7 @@ namespace casock {
           if (! error)
           {
             LOGMSG (LOW_LEVEL, "SocketServer::%s () - NO ERROR!\n", __FUNCTION__);
+            mSessionSet.insert (pSession);
             pSession->onConnect ();
             asyncAccept ();
           }
@@ -69,10 +76,10 @@ namespace casock {
           {
             LOGMSG (LOW_LEVEL, "SocketServer::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
             pSession->onConnectionFailure ();
+            delete pSession;
           }
 
           LOGMSG (LOW_LEVEL, "SocketServer::%s () - end!\n", __FUNCTION__);
-          //asyncAccept ();
         }
 
         void SocketServer::start ()
@@ -85,6 +92,14 @@ namespace casock {
         {
           LOGMSG (LOW_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
           m_acceptor.close ();
+          for_each (mSessionSet.begin (), mSessionSet.end (), ::boost::checked_delete<SocketSession>);
+          mSessionSet.clear ();
+        }
+
+        void SocketServer::removeSession (SocketSession* pSocketSession)
+        {
+          mSessionSet.erase (pSocketSession);
+          delete pSocketSession;
         }
       }
     }

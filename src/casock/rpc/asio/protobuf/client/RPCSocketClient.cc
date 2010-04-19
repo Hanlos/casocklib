@@ -83,8 +83,6 @@ namespace casock {
               {
                 pRPCCall->setRpcResponse (pResponse);
                 mrCallQueue.push (pRPCCall);
-                //pRPCCall->pResponse ()->ParseFromString (pResponse->response ());
-                //pRPCCall->closure ()->Run ();
               }
             }
             catch (...)

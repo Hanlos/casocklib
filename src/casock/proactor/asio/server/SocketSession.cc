@@ -31,26 +31,25 @@
  */
 
 #include "casock/proactor/asio/server/SocketSession.h"
-
-//#include <asio.hpp>
-//#include <boost/bind.hpp>
-//
-//#include "casock/util/Logger.h"
-//#include "casock/proactor/asio/base/AsyncProcessor.h"
+#include "casock/proactor/asio/server/SocketServer.h"
 
 namespace casock {
   namespace proactor {
     namespace asio {
       namespace server {
-        SocketSession::SocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
-          //: m_socket (rAsyncProcessor.service ())
-          : casock::proactor::asio::base::SocketChannel (rAsyncProcessor)
+        SocketSession::SocketSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, SocketServer& rSocketServer)
+          : casock::proactor::asio::base::SocketChannel (rAsyncProcessor), mrSocketServer (rSocketServer)
         { }
 
         void SocketSession::onConnectionFailure ()
         {
           LOGMSG (LOW_LEVEL, "SocketSession::%s ()\n", __FUNCTION__);
-          delete this;
+        }
+
+        void SocketSession::close ()
+        {
+          casock::proactor::asio::base::SocketChannel::close ();
+          mrSocketServer.removeSession (this);
         }
       }
     }

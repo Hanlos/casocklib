@@ -75,7 +75,7 @@ namespace casock {
 
             public:
               void handle ();
-              void callback (const RpcResponse* const pResponse);
+              void callback (const RpcResponse& response);
 
             private:
               RPCServerCommunicator                 mCommunicator;
