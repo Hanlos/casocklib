@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_SIGIO_CLIENT___CLIENT_SOCKET_H_
-#define __CASOCKLIB__CASOCK_SIGIO_CLIENT___CLIENT_SOCKET_H_
+#ifndef __CASOCKLIB__CASOCK_SIGIO_CLIENT__CLIENT_SOCKET_H_
+#define __CASOCKLIB__CASOCK_SIGIO_CLIENT__CLIENT_SOCKET_H_
 
 #include <string>
 using std::string;
@@ -61,4 +61,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_SIGIO_CLIENT___CLIENT_SOCKET_H_
+#endif // __CASOCKLIB__CASOCK_SIGIO_CLIENT__CLIENT_SOCKET_H_

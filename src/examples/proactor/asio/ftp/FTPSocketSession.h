@@ -40,7 +40,7 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/server/SocketSession.h"
 #include "examples/proactor/asio/ftp/FTPCommunicator.h"
-#include "examples/proactor/asio/ftp/FTPFile.h"
+#include "examples/ftp/FTPFile.h"
 
 namespace examples {
   namespace proactor {
@@ -58,7 +58,7 @@ namespace examples {
             }
 
           public:
-            void onGetFile (const ::asio::error_code& error, FTPFile* pFile)
+            void onGetFile (const ::asio::error_code& error, examples::ftp::FTPFile* pFile)
             {
               if (! error)
               {
@@ -69,7 +69,6 @@ namespace examples {
               else
               {
                 close ();
-                delete this;
               }
             }
 

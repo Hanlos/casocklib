@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_SAFE_R_LOCK_H_
-#define __CASOCKLIB__CASOCK_UTIL_SAFE_R_LOCK_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__SAFE_R_LOCK_H_
+#define __CASOCKLIB__CASOCK_UTIL__SAFE_R_LOCK_H_
 
 namespace casock {
   namespace util {
@@ -49,4 +49,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_UTIL_SAFE_R_LOCK_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__SAFE_R_LOCK_H_

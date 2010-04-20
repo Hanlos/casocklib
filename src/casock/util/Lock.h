@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_LOCK_H_
-#define __CASOCKLIB__CASOCK_UTIL_LOCK_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__LOCK_H_
+#define __CASOCKLIB__CASOCK_UTIL__LOCK_H_
 
 #include "casock/util/Lockable.h"
 
@@ -50,4 +50,4 @@ namespace casock {
 }
 
 
-#endif // __CASOCKLIB__CASOCK_UTIL_LOCK_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__LOCK_H_

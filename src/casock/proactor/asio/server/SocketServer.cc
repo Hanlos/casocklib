@@ -46,7 +46,7 @@ namespace casock {
         SocketServer::SocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port)
           : mrAsyncProcessor (rAsyncProcessor), m_acceptor (mrAsyncProcessor.service (), ::asio::ip::tcp::endpoint (::asio::ip::tcp::v4 (), port))
         {
-          LOGMSG (LOW_LEVEL, "SocketServer::SocketServer () - port [%hu]\n", port);
+          LOGMSG (MAX_LEVEL, "SocketServer::SocketServer () - port [%hu]\n", port);
         }
 
         SocketServer::~SocketServer ()
@@ -56,10 +56,10 @@ namespace casock {
 
         void SocketServer::asyncAccept ()
         {
-          LOGMSG (LOW_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
           SocketSession* pSession = buildSession (mrAsyncProcessor);
 
-          LOGMSG (LOW_LEVEL, "SocketServer::%s () - calling async acceptor...\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketServer::%s () - calling async acceptor...\n", __FUNCTION__);
           m_acceptor.async_accept (pSession->socket (), ::boost::bind (&SocketServer::handle_accept, this, pSession, ::asio::placeholders::error));
         }
 
@@ -67,7 +67,7 @@ namespace casock {
         {
           if (! error)
           {
-            LOGMSG (LOW_LEVEL, "SocketServer::%s () - NO ERROR!\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "SocketServer::%s () - NO ERROR!\n", __FUNCTION__);
             mSessionSet.insert (pSession);
             pSession->onConnect ();
             asyncAccept ();
@@ -79,18 +79,18 @@ namespace casock {
             delete pSession;
           }
 
-          LOGMSG (LOW_LEVEL, "SocketServer::%s () - end!\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketServer::%s () - end!\n", __FUNCTION__);
         }
 
         void SocketServer::start ()
         {
-          LOGMSG (LOW_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
           asyncAccept ();
         }
 
         void SocketServer::close ()
         {
-          LOGMSG (LOW_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
           m_acceptor.close ();
           for_each (mSessionSet.begin (), mSessionSet.end (), ::boost::checked_delete<SocketSession>);
           mSessionSet.clear ();

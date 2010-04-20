@@ -45,20 +45,12 @@ namespace casock {
         SocketClient::SocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const string& port)
           : casock::proactor::asio::base::SocketChannel (rAsyncProcessor), m_resolver (rAsyncProcessor.service ()), m_query (host, port)
         {
-          LOGMSG (LOW_LEVEL, "SocketClient::SocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
-
-          /*
-          //::asio::ip::tcp::resolver resolver (rAsyncProcessor.service ());
-          ::asio::ip::tcp::resolver::query query (host, port);
-
-          m_resolver.async_resolve (query,
-              ::boost::bind (&SocketClient::handle_resolve, this, ::asio::placeholders::error, ::asio::placeholders::iterator));
-              */
+          LOGMSG (MAX_LEVEL, "SocketClient::SocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
         }
 
         void SocketClient::handle_resolve (const ::asio::error_code& error, ::asio::ip::tcp::resolver::iterator it_endpoint)
         {
-          LOGMSG (LOW_LEVEL, "SocketClient::%s ()\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketClient::%s ()\n", __FUNCTION__);
 
           if (! error)
           {
@@ -69,21 +61,22 @@ namespace casock {
           else
           {
             LOGMSG (LOW_LEVEL, "SocketClient::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+            onConnectionFailure ();
           }
         }
 
         void SocketClient::handle_connect (const ::asio::error_code& error, ::asio::ip::tcp::resolver::iterator it_endpoint)
         {
-          LOGMSG (LOW_LEVEL, "SocketClient::%s ()\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketClient::%s ()\n", __FUNCTION__);
 
           if (! error)
           {
-            LOGMSG (LOW_LEVEL, "SocketClient::%s () - CONNECTED!\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "SocketClient::%s () - CONNECTED!\n", __FUNCTION__);
             onConnect ();
           }
           else if (it_endpoint != ::asio::ip::tcp::resolver::iterator ())
           {
-            LOGMSG (LOW_LEVEL, "SocketClient::%s () - no connected, trying again...\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "SocketClient::%s () - no connected, trying again...\n", __FUNCTION__);
 
             close ();
             ::asio::ip::tcp::endpoint endpoint = *it_endpoint;
@@ -91,12 +84,15 @@ namespace casock {
                 ::boost::bind (&SocketClient::handle_connect, this, ::asio::placeholders::error, ++it_endpoint));
           }
           else
-            LOGMSG (LOW_LEVEL, "SocketClient::%s () - NO CONNECTED!\n", __FUNCTION__);
+          {
+            LOGMSG (LOW_LEVEL, "SocketClient::%s () - NOT CONNECTED!\n", __FUNCTION__);
+            onConnectionFailure ();
+          }
         }
 
         void SocketClient::syncConnect ()
         {
-          LOGMSG (LOW_LEVEL, "SocketClient::%s ()\n", __FUNCTION__);
+          LOGMSG (MEDIUM_LEVEL, "SocketClient::%s ()\n", __FUNCTION__);
 
           ::asio::ip::tcp::resolver::iterator it = m_resolver.resolve (m_query);
           ::asio::ip::tcp::resolver::iterator itEnd;

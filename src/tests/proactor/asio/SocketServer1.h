@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file examples/proactor/asio/MySocketServer.h
+ * \file tests/proactor/asio/SocketServer1.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,35 +30,35 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__EXAMPLES_PROACTOR_ASIO__MY_SOCKET_SERVER_H_
-#define __CASOCKLIB__EXAMPLES_PROACTOR_ASIO__MY_SOCKET_SERVER_H_
+#ifndef __CASOCKLIB__TESTS_PROACTOR_ASIO__SOCKET_SERVER1_H_
+#define __CASOCKLIB__TESTS_PROACTOR_ASIO__SOCKET_SERVER1_H_
 
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/server/SocketServer.h"
-#include "examples/proactor/asio/MySocketSession.h"
+#include "tests/proactor/asio/SocketSession1.h"
 
-namespace examples {
+namespace tests {
   namespace proactor {
     namespace asio {
-      class MySocketServer : public casock::proactor::asio::server::SocketServer
+      class SocketServer1 : public casock::proactor::asio::server::SocketServer
       {
         public:
-          MySocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port)
+          SocketServer1 (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port)
             : casock::proactor::asio::server::SocketServer (rAsyncProcessor, port)
           {
-            LOGMSG (LOW_LEVEL, "MySocketServer::MySocketServer () - port [%hu]\n", port);
+            LOGMSG (MAX_LEVEL, "SocketServer1::SocketServer1 () - port [%hu]\n", port);
           }
 
         private:
           casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
           {
-            LOGMSG (LOW_LEVEL, "MySocketServer::%s ()\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "SocketServer1::%s ()\n", __FUNCTION__);
 
-            return new MySocketSession (rAsyncProcessor, *this);
+            return new SocketSession1 (rAsyncProcessor, *this);
           }
       };
     }
   }
 }
 
-#endif // __CASOCKLIB__EXAMPLES_PROACTOR_ASIO__MY_SOCKET_SERVER_H_
+#endif // __CASOCKLIB__TESTS_PROACTOR_ASIO__SOCKET_SERVER1_H_

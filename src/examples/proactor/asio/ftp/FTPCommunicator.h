@@ -34,7 +34,7 @@
 #define __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP__FTP_COMMUNICATOR_H_
 
 #include "casock/proactor/asio/base/Communicator.h"
-#include "examples/proactor/asio/ftp/FTPFile.h"
+#include "examples/ftp/FTPFile.h"
 
 namespace casock {
   namespace proactor {
@@ -58,7 +58,7 @@ namespace examples {
             { }
 
           private:
-            void onSentSize (const ::asio::error_code& error, const FTPFile& rFile, ::boost::function<void(const ::asio::error_code&)> handler)
+            void onSentSize (const ::asio::error_code& error, const examples::ftp::FTPFile& rFile, ::boost::function<void(const ::asio::error_code&)> handler)
             {
               if (! error)
               {
@@ -80,7 +80,7 @@ namespace examples {
               handler (error);
             }
  
-            void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, FTPFile*)> handler)
+            void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, examples::ftp::FTPFile*)> handler)
             {
               if (! error)
               {
@@ -93,9 +93,9 @@ namespace examples {
               }
             }
 
-            void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, FTPFile*)> handler)
+            void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, examples::ftp::FTPFile*)> handler)
             {
-              FTPFile* pFile = NULL;
+              examples::ftp::FTPFile* pFile = NULL;
 
               if (! error)
               {
@@ -106,7 +106,7 @@ namespace examples {
 
                 string filename = ss.str ();
 
-                pFile = new FTPFile (filename);
+                pFile = new examples::ftp::FTPFile (filename);
                 pFile->setSize (mSize);
                 pFile->setBuffer (buffer);
               }
@@ -119,12 +119,12 @@ namespace examples {
             }
 
           public:
-            void sendFile (const FTPFile& rFile, ::boost::function<void(const ::asio::error_code&)> handler)
+            void sendFile (const examples::ftp::FTPFile& rFile, ::boost::function<void(const ::asio::error_code&)> handler)
             {
               write (rFile.getSize (), ::boost::bind (&FTPCommunicator::onSentSize, this, ::asio::placeholders::error, rFile, handler));
             }
 
-            void getFile (::boost::function<void(const ::asio::error_code&, FTPFile*)> handler)
+            void getFile (::boost::function<void(const ::asio::error_code&, examples::ftp::FTPFile*)> handler)
             {
               read (mSize, ::boost::bind (&FTPCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
             }

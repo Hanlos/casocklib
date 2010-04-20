@@ -22,7 +22,7 @@ namespace casock {
 
         Buffer::~Buffer ()
         {
-          delete buff;
+          delete[] buff;
         }
 
         void Buffer::clear ()

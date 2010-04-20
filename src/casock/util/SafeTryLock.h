@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_SAFE_TRY_LOCK_H_
-#define __CASOCKLIB__CASOCK_UTIL_SAFE_TRY_LOCK_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__SAFE_TRY_LOCK_H_
+#define __CASOCKLIB__CASOCK_UTIL__SAFE_TRY_LOCK_H_
 
 #include "casock/util/Lockable.h"
 
@@ -49,4 +49,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_UTIL_SAFE_TRY_LOCK_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__SAFE_TRY_LOCK_H_

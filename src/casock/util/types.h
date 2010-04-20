@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_TYPES_H_
-#define __CASOCKLIB__CASOCK_UTIL_TYPES_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__TYPES_H_
+#define __CASOCKLIB__CASOCK_UTIL__TYPES_H_
 
 
 typedef char                int8;
@@ -46,4 +46,4 @@ typedef float               float32;
 typedef double              float64;
 
 
-#endif // __CASOCKLIB__CASOCK_UTIL_TYPES_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__TYPES_H_

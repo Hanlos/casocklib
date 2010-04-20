@@ -1,19 +1,21 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
-#include "examples/proactor/asio/MySocketClient.h"
+#include "tests/proactor/asio/SocketClient1.h"
+
+using casock::proactor::asio::base::AsyncProcessor;
 
 int main ()
 {
-  LOGGER->setDebugLevel (MAX_LEVEL);
+  LOGGER->setDebugLevel (LOW_LEVEL);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
-  casock::proactor::asio::base::AsyncProcessor::initialize ();
-  casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
+  AsyncProcessor::initialize ();
+  AsyncProcessor* pAsyncProcessor = AsyncProcessor::getInstance ();
 
   try
   {
     LOGMSG (LOW_LEVEL, "%s () - creating client...\n", __FUNCTION__);
-    examples::proactor::asio::MySocketClient client (*pAsyncProcessor, "localhost", "2000");
+    tests::proactor::asio::SocketClient1 client (pAsyncProcessor, "localhost", "2000");
 
     LOGMSG (LOW_LEVEL, "%s () - asynchronously connecting...\n", __FUNCTION__);
     client.asyncConnect ();
@@ -30,6 +32,5 @@ int main ()
     LOGMSG (NO_DEBUG, "%s () - catch (...)\n", __FUNCTION__);
   }
 
-  casock::proactor::asio::base::AsyncProcessor::destroy ();
-  LOGGER->finalize ();
+  AsyncProcessor::destroy ();
 }

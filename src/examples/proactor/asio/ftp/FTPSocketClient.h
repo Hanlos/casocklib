@@ -38,7 +38,7 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/client/SocketClient.h"
 #include "examples/proactor/asio/ftp/FTPCommunicator.h"
-#include "examples/proactor/asio/ftp/FTPFile.h"
+#include "examples/ftp/FTPFile.h"
 
 namespace examples {
   namespace proactor {
@@ -47,7 +47,7 @@ namespace examples {
         class FTPSocketClient : public casock::proactor::asio::client::SocketClient
         {
           public:
-            FTPSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, const FTPFile& rFile)
+            FTPSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, const examples::ftp::FTPFile& rFile)
               : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mrFile (rFile), mCommunicator (this)
             {
               LOGMSG (LOW_LEVEL, "FTPSocketClient::FTPSocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
@@ -81,7 +81,7 @@ namespace examples {
             }
 
           private:
-            const FTPFile& mrFile;
+            const examples::ftp::FTPFile& mrFile;
             examples::proactor::asio::ftp::FTPCommunicator mCommunicator;
         };
       }

@@ -1,1 +1,1 @@
-SUBDIRS = casock examples
+SUBDIRS = casock tests examples

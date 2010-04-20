@@ -3,14 +3,13 @@
 
 #include "casock/proactor/asio/base/AsyncProcessor.h"
 #include "examples/proactor/asio/ftp/FTPSocketClient.h"
-#include "examples/proactor/asio/ftp/FTPFile.h"
+#include "examples/ftp/FTPFile.h"
 
 using casock::proactor::asio::base::AsyncProcessor;
 using examples::proactor::asio::ftp::FTPSocketClient;
-using examples::proactor::asio::ftp::FTPFile;
 
-FTPFile* readfile (std::string& filename);
-void sendfile (const std::string& server, const std::string& port, const FTPFile& rFile);
+examples::ftp::FTPFile* readfile (std::string& filename);
+void sendfile (const std::string& server, const std::string& port, const examples::ftp::FTPFile& rFile);
 
 int main (int argc, char* argv[])
 {
@@ -24,7 +23,7 @@ int main (int argc, char* argv[])
     std::string filename  = argv[3];
 
     LOGMSG (LOW_LEVEL, "%s () - server [%s], port [%s], filename [%s]\n", __FUNCTION__, server.c_str (), port.c_str (), filename.c_str ());
-    FTPFile* pFile = readfile (filename);
+    examples::ftp::FTPFile* pFile = readfile (filename);
     LOGMSG (LOW_LEVEL, "%s () - file size [%u]\n", __FUNCTION__, pFile->getSize ());
     sendfile (server, port, *pFile);
   }
@@ -34,9 +33,9 @@ int main (int argc, char* argv[])
   }
 }
 
-FTPFile* readfile (std::string& filename)
+examples::ftp::FTPFile* readfile (std::string& filename)
 {
-  FTPFile* pFile = new FTPFile (filename);
+  examples::ftp::FTPFile* pFile = new examples::ftp::FTPFile (filename);
 
   std::ifstream is;
   is.open (filename.c_str (), std::ios::binary);
@@ -60,7 +59,7 @@ FTPFile* readfile (std::string& filename)
   return pFile;
 }
 
-void sendfile (const std::string& server, const std::string& port, const FTPFile& rFile)
+void sendfile (const std::string& server, const std::string& port, const examples::ftp::FTPFile& rFile)
 {
   AsyncProcessor::initialize ();
   AsyncProcessor* pAsyncProcessor = AsyncProcessor::getInstance ();
@@ -68,6 +67,7 @@ void sendfile (const std::string& server, const std::string& port, const FTPFile
   try
   {
     FTPSocketClient client (*pAsyncProcessor, server, port, rFile);
+    client.asyncConnect ();
     //client.sendFile (rFile);
 
     pAsyncProcessor->run ();

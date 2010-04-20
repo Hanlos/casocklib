@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_LOGGER_H_
-#define __CASOCKLIB__CASOCK_UTIL_LOGGER_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__LOGGER_H_
+#define __CASOCKLIB__CASOCK_UTIL__LOGGER_H_
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -121,4 +121,4 @@ class Logger
 };
 
 
-#endif // __CASOCKLIB__CASOCK_UTIL_LOGGER_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__LOGGER_H_

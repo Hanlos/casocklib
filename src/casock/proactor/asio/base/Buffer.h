@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_BUFFER_H_
-#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_BUFFER_H_
+#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__BUFFER_H_
+#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__BUFFER_H_
 
 #include <cstring>
 
@@ -45,6 +45,9 @@ namespace casock {
             Buffer (const unsigned int& s = DEFAULT_SIZE);
             Buffer (const char* buffer, const unsigned int& s);
             virtual ~Buffer ();
+
+          public:
+            const bool operator==(const char* str) { return ! strcmp (buff, str); };
 
           public:
             void clear ();
@@ -61,4 +64,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE_BUFFER_H_
+#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__BUFFER_H_

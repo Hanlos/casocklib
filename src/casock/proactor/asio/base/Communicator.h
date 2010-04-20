@@ -59,7 +59,7 @@ namespace casock {
             template<typename ReadHandler>
               void readsome (char* buffer, const size_t& size, ReadHandler handler)
               {
-                mpChannel->read (buffer, size, handler);
+                mpChannel->readsome (buffer, size, handler);
               }
 
             template<typename _Type, typename ReadHandler>

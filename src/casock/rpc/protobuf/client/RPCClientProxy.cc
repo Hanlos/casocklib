@@ -50,7 +50,7 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        uint32 RPCClientProxy::mID = 1;
+        uint32 RPCClientProxy::mID = 0;
 
         RPCClientProxy::RPCClientProxy ()
         {
@@ -67,7 +67,7 @@ namespace casock {
 
           casock::rpc::protobuf::api::RpcRequest rpcRequest;
 
-          rpcRequest.set_id (RPCClientProxy::mID++);
+          rpcRequest.set_id (++RPCClientProxy::mID);
           rpcRequest.set_operation (method->name ());
           rpcRequest.set_request (request->SerializeAsString ());
 

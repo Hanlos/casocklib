@@ -1,5 +1,5 @@
-#ifndef __CASOCKLIB__EXAMPLES_FTP_FTP_CLIENT_SOCK_READER_HANDLER_H_
-#define __CASOCKLIB__EXAMPLES_FTP_FTP_CLIENT_SOCK_READER_HANDLER_H_
+#ifndef __CASOCKLIB__EXAMPLES_FTP__FTP_CLIENT_SOCK_READER_HANDLER_H_
+#define __CASOCKLIB__EXAMPLES_FTP__FTP_CLIENT_SOCK_READER_HANDLER_H_
 
 #include "casock/sigio/base/Handler.h"
 #include "FTPCommunicator.h"
@@ -18,9 +18,6 @@ namespace examples {
       public:
         FTPClientSockReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor) : Handler (rDispatcher, pFileDescriptor), mCommunicator (mpFileDescriptor) { }
 
-        //  private:
-        //    void destroy () { delete this; }
-
       public:
         void handle ();
         FTPCommunicator& communicator () { return mCommunicator; }
@@ -32,4 +29,4 @@ namespace examples {
 }
 
 
-#endif // __CASOCKLIB__EXAMPLES_FTP_FTP_CLIENT_SOCK_READER_HANDLER_H_
+#endif // __CASOCKLIB__EXAMPLES_FTP__FTP_CLIENT_SOCK_READER_HANDLER_H_

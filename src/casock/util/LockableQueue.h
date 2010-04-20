@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_LOCKABLE_QUEUE_H_
-#define __CASOCKLIB__CASOCK_UTIL_LOCKABLE_QUEUE_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__LOCKABLE_QUEUE_H_
+#define __CASOCKLIB__CASOCK_UTIL__LOCKABLE_QUEUE_H_
 
 #include <queue>
 
@@ -99,4 +99,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_UTIL_LOCKABLE_QUEUE_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__LOCKABLE_QUEUE_H_

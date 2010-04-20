@@ -36,6 +36,10 @@ void waitforfiles (const unsigned short& port)
     server.start ();
     pAsyncProcessor->run ();
   }
+  catch (std::exception& e)
+  {
+    LOGMSG (NO_DEBUG, "%s () - catch (std::exception&) [%s]\n", __FUNCTION__, e.what ());
+  }
   catch (...)
   {
     LOGMSG (NO_DEBUG, "%s () - catch (...)\n", __FUNCTION__);

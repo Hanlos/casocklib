@@ -56,7 +56,6 @@ namespace examples {
           void onConnect ()
           {
             LOGMSG (LOW_LEVEL, "MySocketClient::%s ()\n", __FUNCTION__);
-            //write ("HELLO", 6, ::boost::bind (&MySocketClient::onSentBuffer, this, ::asio::placeholders::error));
             mCommunicator.write ("HELLO", 6, ::boost::bind (&MySocketClient::onSentBuffer, this, ::asio::placeholders::error));
           }
 
@@ -70,7 +69,6 @@ namespace examples {
             if (! error)
             {
               LOGMSG (LOW_LEVEL, "MySocketClient::%s () - NO ERROR!\n", __FUNCTION__);
-              //readsome (mBuffer.buff, mBuffer.size, ::boost::bind (&MySocketClient::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
               mCommunicator.readsome (mBuffer.buff, mBuffer.size, ::boost::bind (&MySocketClient::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
             }
             else
@@ -81,6 +79,26 @@ namespace examples {
           }
 
           void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
+          {
+            LOGMSG (LOW_LEVEL, "MySocketClient::%s () - bytes_transferred [%zu], mBuffer [%s]\n", __FUNCTION__, bytes_transferred, mBuffer.buff);
+            mCommunicator.write ("shutdown", 8, ::boost::bind(&MySocketClient::onSentShutdown, this, ::asio::placeholders::error));
+          }
+
+          void onSentShutdown (const ::asio::error_code& error)
+          {
+            if (! error)
+            {
+              LOGMSG (LOW_LEVEL, "MySocketClient::%s () - NO ERROR!\n", __FUNCTION__);
+              mCommunicator.readsome (mBuffer.buff, mBuffer.size, ::boost::bind (&MySocketClient::onReadShutdownResponse, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+            }
+            else
+            {
+              LOGMSG (LOW_LEVEL, "MySocketClient::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+              close ();
+            }
+          }
+
+          void onReadShutdownResponse (const ::asio::error_code& error, const size_t& bytes_transferred)
           {
             LOGMSG (LOW_LEVEL, "MySocketClient::%s () - bytes_transferred [%zu], mBuffer [%s]\n", __FUNCTION__, bytes_transferred, mBuffer.buff);
             close ();

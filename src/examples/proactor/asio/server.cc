@@ -2,15 +2,13 @@
 #include "casock/proactor/asio/base/AsyncProcessor.h"
 #include "examples/proactor/asio/MySocketServer.h"
 
-using casock::proactor::asio::base::AsyncProcessor;
-
 int main ()
 {
   LOGGER->setDebugLevel (MAX_LEVEL);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
-  AsyncProcessor::initialize ();
-  AsyncProcessor* pAsyncProcessor = AsyncProcessor::getInstance ();
+  casock::proactor::asio::base::AsyncProcessor::initialize ();
+  casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
 
   try
   {
@@ -28,5 +26,6 @@ int main ()
     LOGMSG (NO_DEBUG, "%s () - catch (...)\n", __FUNCTION__);
   }
 
-  AsyncProcessor::destroy ();
+  casock::proactor::asio::base::AsyncProcessor::destroy ();
+  LOGGER->finalize ();
 }
