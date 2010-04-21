@@ -33,8 +33,12 @@ AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
+AC_HEADER_TIME
+AC_STRUCT_TM
 
 # Checks for library functions.
+AC_TYPE_SIGNAL
+AC_FUNC_STRFTIME
 AC_CHECK_FUNCS([alarm bzero gethostbyname gettimeofday localtime_r memset select socket strerror])
 
 
