@@ -50,6 +50,30 @@ namespace casock {
         namespace server {
           class RPCSocketServer;
 
+          /*!
+           * This is the workflow of an RPC request:
+           *
+           * 1) The RPCSocketServer asynchronously receives a client connection and
+           *  creates an RPCSocketSession to treat it, i.e., to receive the requests.
+           *
+           * 2) The RPCSocketSession uses an RPCServerCommunicator to asynchronously
+           *  read the raw data sent by the client and creates a ::google::protobuf::Message
+           *  defined by the RPC API (casock::rpc::protobuf::api::RpcRequest).
+           *
+           * 3) The RPCSocketSession creates an RPCCall for each request received,
+           *  set itself as the response handler and put them into the RPCCallQueue.
+           *
+           * 4) The RPCCallHandler is a thread that gets the RPCCalls from the queue,
+           * calls the operations, creates the ::google::protobuf::Message response
+           * and calls RPCCall::callback ().
+           *
+           * 5) The RPCCall::callback () calls the callback of its RPCResponseHandler
+           *  (that is the same RPCSocketSession that received the request).
+           *
+           * 6) The RPCSocketSession::callback () sends the response to the client
+           *  using the RPCServerCommunicator.
+           */
+
           class RPCServerProxy : public casock::rpc::protobuf::server::RPCServerProxy
           {
             public:

@@ -35,7 +35,6 @@
 
 #include <asio.hpp>
 #include "casock/rpc/protobuf/client/RPCChannel.h"
-#include "casock/util/Lockable.h"
 
 namespace casock {
   namespace rpc {
@@ -44,7 +43,7 @@ namespace casock {
         namespace client {
           class RPCClientCommunicator;
 
-          class RPCChannel : public casock::rpc::protobuf::client::RPCChannel, private casock::util::Lockable
+          class RPCChannel : public casock::rpc::protobuf::client::RPCChannel
           {
             public:
               RPCChannel (RPCClientCommunicator& rCommunicator);

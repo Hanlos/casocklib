@@ -68,21 +68,13 @@ namespace casock {
             class RPCCallEntry
             {
               public:
-                RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse, ::google::protobuf::RpcController* pController)
-                  : mpCall (pCall), mpResponse (pResponse), mpController (pController)
-                { }
-
-                virtual ~RPCCallEntry ()
-                {
-                  delete mpCall;
-                  delete mpResponse;
-                  delete mpController;
-                }
+                RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse, ::google::protobuf::RpcController* pController);
+                virtual ~RPCCallEntry ();
 
               public:
-                RPCCall<_TpResponseHandler>* call () { return mpCall; }
-                ::google::protobuf::Message* response () { return mpResponse; }
-                ::google::protobuf::RpcController* controller () { return mpController; }
+                inline RPCCall<_TpResponseHandler>* call () { return mpCall; }
+                inline ::google::protobuf::Message* response () { return mpResponse; }
+                inline ::google::protobuf::RpcController* controller () { return mpController; }
 
               private:
                 RPCCall<_TpResponseHandler>*        mpCall;
@@ -91,9 +83,7 @@ namespace casock {
             };
 
           public:
-            RPCCallHandler (RPCCallQueue<_TpResponseHandler>& rCallQueue, ::google::protobuf::Service* pService)
-              : mrCallQueue (rCallQueue), mpService (pService)
-            { }
+            RPCCallHandler (RPCCallQueue<_TpResponseHandler>& rCallQueue, ::google::protobuf::Service* pService);
 
           public:
             static void callback (RPCCallEntry* pCallEntry);
@@ -106,9 +96,28 @@ namespace casock {
             ::google::protobuf::Service*      mpService;
         };
 
+
         /*
          * template definitions
          */
+
+        template<typename _TpResponseHandler>
+          RPCCallHandler<_TpResponseHandler>::RPCCallEntry::RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse, ::google::protobuf::RpcController* pController)
+          : mpCall (pCall), mpResponse (pResponse), mpController (pController)
+          { }
+
+        template<typename _TpResponseHandler>
+          RPCCallHandler<_TpResponseHandler>::RPCCallEntry::~RPCCallEntry ()
+          {
+            delete mpCall;
+            delete mpResponse;
+            delete mpController;
+          }
+
+        template<typename _TpResponseHandler>
+          RPCCallHandler<_TpResponseHandler>::RPCCallHandler (RPCCallQueue<_TpResponseHandler>& rCallQueue, ::google::protobuf::Service* pService)
+          : mrCallQueue (rCallQueue), mpService (pService)
+          { }
 
         template<typename _TpResponseHandler>
           void RPCCallHandler<_TpResponseHandler>::callback (RPCCallEntry* pCallEntry)

@@ -59,6 +59,37 @@ namespace casock {
         using casock::rpc::protobuf::server::RPCCallQueue;
         using casock::rpc::protobuf::server::RPCCallHandler;
 
+        /*!
+         * This is the RPC server proxy interface for a protobuf based RPC service.
+         *
+         * To implement a RPC server it's necessary to extend this class defining
+         * a communication channel (a socket server, for example) and the methods
+         * start () and stop (). The attributre m_running should be used to indicate
+         * if the service is active or not. The proxy also receives a service
+         * as parameter. This service will be used by RPCCallHandler to execute
+         * the operation received in the request.
+         *
+         * When a request is received by the communication channel it is enqueued
+         * into mpCallQueue, that is a queue of RPCCalls. The RPCCall is an object
+         * with a pointer to the response handler (responsable for send the response
+         * to the client) and a pointer to the request.
+         *
+         * The RPCCallHandler is responsible for get the RPCCalls from the queue and
+         * execute the operation using the service. The class RPCCallHanlder defines
+         * a RPCCallEntry, that is an object that contains all the informations
+         * necessary to return a response to the client. This callback is invocated
+         * since the operation is fihisned. This callback is responsible to create
+         * a response object with the return of the operation and send it to the
+         * client using the callback that is registered in RPCCall.
+         *
+         * So we have two objects that control the status of an RPC call: the RPCCall,
+         * that represents a call received by the communication channel and the RPCCallEntry,
+         * that represents a call being treated by the RPC service. The RPCCall is created
+         * since a request is received by the RPC server, and is destroyed since a response
+         * is returned to the client, and the RPCCallEntry is created since a request start
+         * to be treated as an operation and is destroyed since the operation finishes.
+         */
+
         class RPCServerProxy
         {
           protected:
@@ -70,11 +101,11 @@ namespace casock {
             virtual void stop () = 0;
 
           protected:
-            RPCCallQueue<RPCCallResponseHandler>*   mpCallQueue;
-            RPCCallHandler<RPCCallResponseHandler>* mpCallHandler;
-            ::google::protobuf::Service*            mpService;
+            RPCCallQueue<RPCCallResponseHandler>*   mpCallQueue; /*!< Maintain a queue of requests received from all clients */
+            RPCCallHandler<RPCCallResponseHandler>* mpCallHandler; /*!< Acquire the requests from the queue, execute the operation and execute the callback */
+            ::google::protobuf::Service*            mpService; /*!< The RPC service defined by the user */
 
-            bool m_running;
+            bool m_running; /*!< Should be used to indicate if the service is active or not */
         };
       }
     }

@@ -49,23 +49,30 @@ namespace casock {
           void RPCChannel::onSentRequest (const ::asio::error_code& error)
           {
             LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
-//            lock ();
-//            cond_broadcast ();
-//            unlock ();
+
+            if (error)
+            {
+              /*!
+               * TODO:
+               *
+               * \todo If we got an error before send the request we need recover the
+               * RPCCall from the RPCCallHash, set the error and put it on the RPCCallQueue.
+               *
+               * Another solution is to create the RPCCall here. For do this we need to get
+               * access to the pointers to: response, controller and closure. This way, we'd
+               * have the following situations:
+               * If the request was successfully sent, we need to put RPCCall on RPCCallHash.
+               * If the request was not sent, we need to indicate the error in the controller
+               * and put RPCCall on the RPCCallQueue.
+               */
+            }
           }
 
           void RPCChannel::CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message* request, google::protobuf::Message*, google::protobuf::Closure*)
           {
             LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
 
-//            lock ();
-
             mrCommunicator.sendRequest (request, ::boost::bind (&RPCChannel::onSentRequest, this, ::asio::placeholders::error));
-
-//            while (! cond_wait ())
-//              lock ();
-//
-//            unlock ();
           }
         }
       }

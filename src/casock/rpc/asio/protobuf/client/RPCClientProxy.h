@@ -61,6 +61,33 @@ namespace casock {
 
           using casock::rpc::protobuf::api::RpcService;
 
+          /*!
+           * This is the workflow of an RPC request:
+           *
+           * 1) The user defines an RPC service and constructs it passing
+           *  a RPCClientProxy as parameter (::gogole::protobuf::RpcChannel).
+           *
+           * 2) The client executes an operation of the service passing a
+           *  controller and a closure for callback.
+           *
+           * 3) The google protobuf framework is responsible to call RPCClientProxy to
+           * send the request to the server. RPCClientProxy creates an RPCCall, put it
+           * on the call hash and executes the method RPCClientProxy::sendRpcRequest ().
+           *
+           * 4) The google protobuf framework is also used to send the request
+           *  to the server. The RPCChannel is used to it.
+           *
+           * 5) The RPCClientCommunicator is used by RPCChannel to send the
+           *  request to the server. The RPCSocketClient is used as the
+           *  communication channel.
+           *
+           * 6) The RPCSocketClient asynchronously receives the responses
+           * and put them into the RPCCallQueue.
+           *
+           * 7) The RPCCallHandler is a thread responsible to get the RPCCalls
+           * from RPCCallQueue and call the RPCCall's closure.
+           */
+
           class RPCClientProxy : public casock::rpc::protobuf::client::RPCClientProxy
           {
             public:

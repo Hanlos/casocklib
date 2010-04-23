@@ -56,7 +56,10 @@ namespace casock {
           protected:
             void invalidateCalls ()
             {
-              /*
+              /*!
+               * TODO:
+               * \todo We need to invalidate the calls
+               *
                  casock::util::SafeLock lock (mCallHash);
 
                  unordered_map<uint32, const RPCCall*>::const_iterator it;

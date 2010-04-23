@@ -59,15 +59,22 @@ namespace casock {
 
           void RPCSocketSession::onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
           {
-            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - pMessage [%p]\n", __FUNCTION__, pMessage);
+            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - error [%d], pMessage [%p]\n", __FUNCTION__, error.value (), pMessage);
 
-            casock::rpc::protobuf::api::RpcRequest* request = static_cast<casock::rpc::protobuf::api::RpcRequest *> (pMessage);
+            if (! error)
+            {
+              casock::rpc::protobuf::api::RpcRequest* request = static_cast<casock::rpc::protobuf::api::RpcRequest *> (pMessage);
 
-            LOGMSG (HIGH_LEVEL, "RPCSocketSession::%s () - request received: %d bytes - id [%u], operation [%s]\n", __FUNCTION__, request->ByteSize (), request->id (), request->operation ().c_str ());
+              LOGMSG (HIGH_LEVEL, "RPCSocketSession::%s () - request received: %d bytes - id [%u], operation [%s]\n", __FUNCTION__, request->ByteSize (), request->id (), request->operation ().c_str ());
 
-            mrCallQueue.push (new casock::rpc::protobuf::server::RPCCall<RPCCallResponseHandler> (this, request));
+              mrCallQueue.push (new casock::rpc::protobuf::server::RPCCall<RPCCallResponseHandler> (this, request));
 
-            mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
+              mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
+            }
+            else
+            {
+              invalidateCalls ();
+            }
           }
 
           void RPCSocketSession::onSentResponse (const ::asio::error_code& error, casock::util::Lock* pLock)
