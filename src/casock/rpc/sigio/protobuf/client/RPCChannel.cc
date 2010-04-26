@@ -36,6 +36,7 @@
 
 #include "casock/util/Logger.h"
 #include "casock/rpc/sigio/protobuf/base/RPCCommunicator.h"
+#include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
   namespace rpc {
@@ -52,6 +53,17 @@ namespace casock {
             LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
 
             mpCommunicator->write (request);
+          }
+
+          void RPCChannel::RpcCall (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+          {
+            mpCommunicator->write (&request);
+
+            /*!
+             * TODO
+             * \todo We need to put RPCCall in the hash if the message was sent
+             * or call pRPCCall->closure () if the message was not successfully sent.
+             */
           }
         }
       }

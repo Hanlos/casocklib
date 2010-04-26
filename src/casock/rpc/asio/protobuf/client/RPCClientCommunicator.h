@@ -49,7 +49,7 @@ namespace casock {
               RPCClientCommunicator (SocketChannel* const pChannel);
 
             private:
-              ::google::protobuf::Message* createRequest ();
+              ::google::protobuf::Message* createRecvMessage ();
 
             public:
               void sendRequest (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler);

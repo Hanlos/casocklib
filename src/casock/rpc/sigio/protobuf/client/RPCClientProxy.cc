@@ -92,6 +92,11 @@ namespace casock {
               LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s () - socket disconnected!\n", __FUNCTION__);
           }
           */
+
+          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+          {
+            mpChannel->RpcCall (request, pRPCCall);
+          }
         }
       }
     }

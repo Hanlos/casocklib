@@ -45,7 +45,7 @@ namespace casock {
             : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel)
           { }
 
-          ::google::protobuf::Message* RPCServerCommunicator::createRequest ()
+          ::google::protobuf::Message* RPCServerCommunicator::createRecvMessage ()
           {
             LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
             return new casock::rpc::protobuf::api::RpcRequest ();
@@ -54,14 +54,12 @@ namespace casock {
           void RPCServerCommunicator::recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
             LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
-            //read (mSize, ::boost::bind (&RPCServerCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
             recvMessage (handler);
           }
 
           void RPCServerCommunicator::sendResponse (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
             LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
-            //write (message->ByteSize (), ::boost::bind (&RPCServerCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
             sendMessage (message, handler);
           }
         }

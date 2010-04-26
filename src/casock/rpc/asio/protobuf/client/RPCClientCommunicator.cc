@@ -32,8 +32,6 @@
 
 #include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
 
-#include <boost/bind.hpp>
-
 #include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
@@ -46,7 +44,7 @@ namespace casock {
             : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel)
           { }
 
-          ::google::protobuf::Message* RPCClientCommunicator::createRequest ()
+          ::google::protobuf::Message* RPCClientCommunicator::createRecvMessage ()
           {
             return new casock::rpc::protobuf::api::RpcResponse ();
           }
@@ -54,13 +52,11 @@ namespace casock {
           void RPCClientCommunicator::sendRequest (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
             LOGMSG (NO_DEBUG, "RPCClientCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message->ByteSize ());
-            //write (message->ByteSize (), ::boost::bind (&RPCClientCommunicator::onSentSize, this, ::asio::placeholders::error, message, handler));
             sendMessage (message, handler);
           }
 
           void RPCClientCommunicator::recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
-            //read (mSize, ::boost::bind (&RPCClientCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
             recvMessage (handler);
           }
         }
@@ -68,5 +64,3 @@ namespace casock {
     }
   }
 }
-
-

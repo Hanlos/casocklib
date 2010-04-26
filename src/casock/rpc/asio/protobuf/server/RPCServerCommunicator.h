@@ -54,7 +54,7 @@ namespace casock {
               RPCServerCommunicator (SocketChannel* const pChannel);
 
             private:
-              ::google::protobuf::Message* createRequest ();
+              ::google::protobuf::Message* createRecvMessage ();
 
             public:
               void recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);

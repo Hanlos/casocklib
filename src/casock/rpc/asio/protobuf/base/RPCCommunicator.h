@@ -70,7 +70,7 @@ namespace casock {
               explicit RPCCommunicator (SocketChannel* const pChannel);
 
             private:
-              virtual ::google::protobuf::Message* createRequest () = 0;
+              virtual ::google::protobuf::Message* createRecvMessage () = 0;
 
             protected:
               void onSentSize (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler);

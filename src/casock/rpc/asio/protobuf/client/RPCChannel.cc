@@ -35,6 +35,7 @@
 #include <boost/bind.hpp>
 #include <google/protobuf/message.h>
 #include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
+#include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/util/Logger.h"
 
 namespace casock {
@@ -73,6 +74,22 @@ namespace casock {
             LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
 
             mrCommunicator.sendRequest (request, ::boost::bind (&RPCChannel::onSentRequest, this, ::asio::placeholders::error));
+          }
+
+          /*!
+           * TODO:
+           * \todo We need an onSentRequest method that receives a pRPCCall as parameter.
+           * If we got some error, pRPCCall->closure () is executed. If not, pRPCCall is
+           * put into mrCallHash.
+           */
+				  void RPCChannel::RpcCall (const casock::rpc::protobuf::api::RpcRequest& request, ::boost::function<void(const ::asio::error_code&)> handler) //, const uint32, casock::rpc::protobuf::client::RPCCall*)> handler)
+          {
+            //mrCommunicator.sendRequest (&request, handler);
+
+            /*!
+             * TODO
+             * \todo We need to use pRPCCall.
+             */
           }
         }
       }

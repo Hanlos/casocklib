@@ -59,7 +59,8 @@ AC_PATH_PROG([PROTOC], [protoc], [protoc], [$DIR_PROTOBUF/bin])
 # Includes and compiler directives
 
 INCLUDES='-I$(top_srcdir)/src'
-CPPFLAGS='-g -Wall -O -Wno-write-strings -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
+#CPPFLAGS='-g -Wall -O -Wno-write-strings -Weffc++ -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
+CPPFLAGS='-g -O -Wno-write-strings -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
 CFLAGS=
 CXXFLAGS=
 

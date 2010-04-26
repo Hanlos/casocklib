@@ -71,6 +71,17 @@ namespace casock {
              */
             virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request) = 0;
 
+            /*!
+             * This is an alternative way to send the message to RPC server.
+             * Because we implemented our own controllers, we don't need the
+             * RPC service provided by Google Protocol Buffers. We only need
+             * the messages and serializations.
+             */
+            virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall) = 0;
+
+					protected:
+						void registerRPCCall (const uint32& id, casock::rpc::protobuf::client::RPCCall* pRPCCall);
+
           public:
             /*!
              * Overridden from ::google::protobuf::RpcChannel

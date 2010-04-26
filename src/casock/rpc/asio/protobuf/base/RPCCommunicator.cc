@@ -99,7 +99,7 @@ namespace casock {
 
             if (! error)
             {
-              pResponse = createRequest ();
+              pResponse = createRecvMessage ();
               std::stringstream ss (string (buffer, mSize));
               pResponse->ParseFromIstream (&ss);
               delete[] buffer;

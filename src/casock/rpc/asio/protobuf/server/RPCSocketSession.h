@@ -72,7 +72,7 @@ namespace casock {
             private:
               void onConnect ();
               void onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
-              void onSentResponse (const ::asio::error_code& error, casock::util::Lock* pLock);
+              void onSentResponse (const ::asio::error_code& error); //, casock::util::Lock* pLock);
 
             public:
               void callback (const RpcResponse& response);

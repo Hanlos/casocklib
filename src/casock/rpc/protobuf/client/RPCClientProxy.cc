@@ -61,6 +61,13 @@ namespace casock {
           mpCallHandler->start ();
         }
 
+				void RPCClientProxy::registerRPCCall (const uint32& id, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+				{
+          mCallHash.lock ();
+          mCallHash [id] = pRPCCall;
+          mCallHash.unlock ();
+				}
+
         void RPCClientProxy::CallMethod(const google::protobuf::MethodDescriptor* method, google::protobuf::RpcController* controller, const google::protobuf::Message* request, google::protobuf::Message* response, google::protobuf::Closure* done)
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
@@ -71,9 +78,7 @@ namespace casock {
           rpcRequest.set_operation (method->name ());
           rpcRequest.set_request (request->SerializeAsString ());
 
-          mCallHash.lock ();
-          mCallHash [rpcRequest.id ()] = new RPCCall (response, controller, done);
-          mCallHash.unlock ();
+					registerRPCCall (rpcRequest.id (), new RPCCall (response, controller, done));
 
           sendRpcRequest (rpcRequest);
         }

@@ -38,6 +38,16 @@
 
 namespace casock {
   namespace rpc {
+    namespace protobuf {
+      namespace api {
+        class RpcRequest;
+      }
+
+      namespace client {
+        class RPCCall;
+      }
+    }
+
     namespace sigio {
       namespace protobuf {
         namespace base {
@@ -54,6 +64,8 @@ namespace casock {
 
             public:
               void CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);
+
+              void RpcCall (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall);
 
             private:
               RPCCommunicator* mpCommunicator;

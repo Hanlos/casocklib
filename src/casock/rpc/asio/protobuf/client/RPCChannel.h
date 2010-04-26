@@ -38,6 +38,16 @@
 
 namespace casock {
   namespace rpc {
+    namespace protobuf {
+      namespace api {
+        class RpcRequest;
+      }
+
+      namespace client {
+        class RPCCall;
+      }
+    }
+
     namespace asio {
       namespace protobuf {
         namespace client {
@@ -50,9 +60,21 @@ namespace casock {
 
             private:
               void onSentRequest (const ::asio::error_code& error);
+              void onSentRequest (const ::asio::error_code& error, casock::rpc::protobuf::client::RPCCall* pRPCCall);
 
             public:
               void CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);
+
+               /*!
+                * This is an alternative way to send the message to RPC server.
+                * Because we implemented our own controllers, we don't need the
+                * RPC service provided by Google Protocol Buffers. We only need
+                * the messages and serializations.
+                *
+                * If we choose this way to communicate with server, RPCChannel doesn't
+                * even need to inherit from casock::rpc::protobuf::client::RPCChannel.
+                */
+              void RpcCall (const casock::rpc::protobuf::api::RpcRequest& request, ::boost::function<void(const ::asio::error_code&)> handler);//, const uint32, casock::rpc::protobuf::client::RPCCall*)> handler);
 
             private:
               RPCClientCommunicator& mrCommunicator;

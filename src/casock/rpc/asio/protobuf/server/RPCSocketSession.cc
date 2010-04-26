@@ -77,22 +77,22 @@ namespace casock {
             }
           }
 
-          void RPCSocketSession::onSentResponse (const ::asio::error_code& error, casock::util::Lock* pLock)
+          void RPCSocketSession::onSentResponse (const ::asio::error_code& error) //, casock::util::Lock* pLock)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - error [%d]\n", __FUNCTION__, error.value ());
-            pLock->get ();
-            pLock->signal ();
-            pLock->release ();
+            //pLock->get ();
+            //pLock->signal ();
+            //pLock->release ();
           }
 
           void RPCSocketSession::callback (const RpcResponse& response)
           {
-            casock::util::Lock* pLock = new casock::util::Lock ();
-            pLock->get ();
-            mCommunicator.sendResponse (&response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error, pLock));
-            pLock->wait ();
-            pLock->release ();
-            delete pLock;
+            //casock::util::Lock* pLock = new casock::util::Lock ();
+            //pLock->get ();
+            mCommunicator.sendResponse (&response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error)); //, pLock));
+            //pLock->wait ();
+            //pLock->release ();
+            //delete pLock;
           }
         }
       }

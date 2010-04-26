@@ -57,8 +57,24 @@ namespace casock {
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request)
           {
             LOGMSG (NO_DEBUG, "RPCClientProxy::%s ()\n", __FUNCTION__);
-            mpService->RpcCall (NULL, &request, NULL, NULL);
+            mpService->RpcCall (NULL /* controller */, &request, NULL /* response */, NULL /* closure */);
           }
+
+          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+          {
+            //mpChannel->RpcCall (request, pRPCCall);
+          }
+
+					void RPCClientProxy::onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+					{
+						if (! error)
+						{
+							registerRPCCall (id, pRPCCall);
+						}
+						else
+						{
+						}
+					}
         }
       }
     }

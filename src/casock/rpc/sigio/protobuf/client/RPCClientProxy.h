@@ -51,6 +51,11 @@ namespace casock {
     namespace protobuf {
       namespace api {
         class RpcService;
+        class RpcRequest;
+      }
+
+      namespace client {
+        class RPCCall;
       }
     }
 
@@ -69,6 +74,7 @@ namespace casock {
 
             private:
               void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request);
+              void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall);
 
             private:
               ClientSocket*     mpClientSocket; /*!< the client socket used to connect into RPC server socket */
