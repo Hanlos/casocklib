@@ -43,7 +43,6 @@ using std::stringstream;
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
-//#include "casock/rpc/sigio/protobuf/client/RPCCallController.h"
 #include "casock/rpc/sigio/protobuf/client/RPCReaderHandler.h"
 
 namespace casock {
@@ -78,9 +77,7 @@ namespace casock {
           rpcRequest.set_operation (method->name ());
           rpcRequest.set_request (request->SerializeAsString ());
 
-					registerRPCCall (rpcRequest.id (), new RPCCall (response, controller, done));
-
-          sendRpcRequest (rpcRequest);
+          sendRpcRequest (rpcRequest, new RPCCall (response, controller, done));
         }
       }
     }

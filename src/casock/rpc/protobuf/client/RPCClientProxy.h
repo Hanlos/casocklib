@@ -69,7 +69,7 @@ namespace casock {
              * The Template Method Pattern is used because the mechanisms
              * to send messages will be defined by sub-classes.
              */
-            virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request) = 0;
+            //virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request) = 0;
 
             /*!
              * This is an alternative way to send the message to RPC server.

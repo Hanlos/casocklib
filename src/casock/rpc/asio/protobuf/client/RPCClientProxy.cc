@@ -35,6 +35,7 @@
 #include <google/protobuf/descriptor.h>
 
 #include "casock/util/Logger.h"
+#include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
 #include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
@@ -54,25 +55,21 @@ namespace casock {
             mpService = new casock::rpc::protobuf::api::RpcService::Stub (mpChannel);
           }
 
-          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request)
+          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)
           {
-            LOGMSG (NO_DEBUG, "RPCClientProxy::%s ()\n", __FUNCTION__);
-            mpService->RpcCall (NULL /* controller */, &request, NULL /* response */, NULL /* closure */);
+            mpChannel->RpcCall (request, ::boost::bind (&RPCClientProxy::onSentRequest, this, _1, request.id (), pCall));
           }
 
-          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
-          {
-            //mpChannel->RpcCall (request, pRPCCall);
-          }
-
-					void RPCClientProxy::onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+					void RPCClientProxy::onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pCall)
 					{
 						if (! error)
 						{
-							registerRPCCall (id, pRPCCall);
+							registerRPCCall (id, pCall);
 						}
 						else
 						{
+              pCall->controller ()->SetFailed ("Impossible to send request [" + error.message () + "]");
+              mpCallQueue->push (pCall);
 						}
 					}
         }

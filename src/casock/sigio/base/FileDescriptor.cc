@@ -45,8 +45,8 @@ namespace casock {
     namespace base {
       FileDescriptor::FileDescriptor (const int& fd) : m_fd (fd)
       {
-        //  if (m_fd == -1)
-        //    throw (casock::base::CASException (strerror (errno)));
+        if (m_fd == -1)
+          throw (casock::base::CASException (strerror (errno)));
       }
 
       void FileDescriptor::write (const char* buff, const size_t& len) const

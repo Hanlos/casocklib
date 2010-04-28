@@ -74,12 +74,15 @@ namespace casock {
 
             protected:
               void onSentSize (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler);
+              //void onSentSize (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void()> handler);
               void onSentBuffer (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler);
+              //void onSentBuffer (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void()> handler);
 
               void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
               void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
 
               void sendMessage (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler);
+              //void sendMessage (const ::google::protobuf::Message* const message, ::boost::function<void()> handler);
               void recvMessage (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
 
             private:

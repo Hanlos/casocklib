@@ -1,0 +1,9 @@
+* Tests!!!!
+  Unit, system and performance tests
+
+* Refactoring!!!
+  - We don't need casock::rpc::protobuf::api::RpcService anymore. This class was created to encapsulate RPCChannel in the client side of Google Protocols RPC, but now we are calling RPCChannel directly.
+
+* Documentation!!!
+	- We need Doxygen comments;
+	- We need update the UML diagrams in astah-community document (doc/casocklib.asta)

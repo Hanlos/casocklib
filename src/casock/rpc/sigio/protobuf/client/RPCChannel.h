@@ -65,7 +65,7 @@ namespace casock {
             public:
               void CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);
 
-              void RpcCall (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall);
+              void RpcCall (const casock::rpc::protobuf::api::RpcRequest& request);
 
             private:
               RPCCommunicator* mpCommunicator;

@@ -101,7 +101,7 @@ namespace casock {
                * Used by casock::rpc::protobuf::client::RPCClientProxy::CallMethod (...)
                * to send an RPC request to the RPC server.
                */
-              void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request);
+              //void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request);
 
               /*!
                * This is an alternative way to send the message to RPC server.
@@ -109,9 +109,9 @@ namespace casock {
                * RPC service provided by Google Protocol Buffers. We only need
                * the messages and serializations.
                */
-              void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall);
+              void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall);
 
-							void onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pRPCCall);
+							void onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pCall);
 
             private:
               RPCSocketClient*  mpRPCSocketClient;

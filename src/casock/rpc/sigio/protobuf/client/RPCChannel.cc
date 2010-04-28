@@ -55,15 +55,9 @@ namespace casock {
             mpCommunicator->write (request);
           }
 
-          void RPCChannel::RpcCall (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+          void RPCChannel::RpcCall (const casock::rpc::protobuf::api::RpcRequest& request)
           {
             mpCommunicator->write (&request);
-
-            /*!
-             * TODO
-             * \todo We need to put RPCCall in the hash if the message was sent
-             * or call pRPCCall->closure () if the message was not successfully sent.
-             */
           }
         }
       }

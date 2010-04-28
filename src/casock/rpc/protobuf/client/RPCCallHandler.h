@@ -34,10 +34,7 @@
 #define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_H_
 
 #include "casock/util/Thread.h"
-#include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
-#include "casock/rpc/protobuf/client/RPCCall.h"
-#include "casock/rpc/protobuf/client/RPCCallQueue.h"
 
 namespace casock {
   namespace rpc {
@@ -49,35 +46,15 @@ namespace casock {
 
     namespace protobuf {
       namespace client {
-        using casock::rpc::protobuf::api::RpcResponse;
-        using casock::rpc::protobuf::client::RPCCall;
         using casock::rpc::protobuf::client::RPCCallQueue;
 
         class RPCCallHandler : public casock::util::Thread
         {
           public:
-            RPCCallHandler (RPCCallQueue& rCallQueue)
-              : mrCallQueue (rCallQueue)
-            { }
+            RPCCallHandler (RPCCallQueue& rCallQueue);
 
           public:
-            void run ()
-            {
-              while (true)
-              {
-                RPCCall* pCall = mrCallQueue.get ();
-
-                RpcResponse* pRpcResponse = static_cast<RpcResponse*>(pCall->rpcResponse ());
-                google::protobuf::RpcController* controller = pCall->controller ();
-                google::protobuf::Closure* closure = pCall->closure ();
-
-                LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], id [%u], type [%u]\n", __FUNCTION__, controller, pRpcResponse->id (), pRpcResponse->type ());
-
-                pCall->response ()->ParseFromString (pRpcResponse->response ());
-
-                closure->Run ();
-              }
-            }
+            void run ();
 
           private:
             RPCCallQueue& mrCallQueue;

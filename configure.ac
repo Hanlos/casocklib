@@ -49,6 +49,10 @@ DIR_PROTOBUF=/usr/local/protobuf-2.3.0
 DIR_PROTOBUF_LIB_DEFAULT=$DIR_PROTOBUF/lib
 DIR_PROTOBUF_INC_DEFAULT=$DIR_PROTOBUF/include
 
+DIR_BOOST=/usr/local/boost_1_42_0
+DIR_BOOST_LIB_DEFAULT=$DIR_BOOST/lib
+DIR_BOOST_INC_DEFAULT=$DIR_BOOST/include
+
 
 # Tools
 
@@ -81,7 +85,25 @@ AC_ARG_WITH(protobuf-libs,
                            [LIB_PROTOBUF_PATH="$withval"],
                            [LIB_PROTOBUF_PATH="${DIR_PROTOBUF_LIB_DEFAULT}"])
 
+
+dnl **********************************************************************
+dnl Check for presence of Boost libraries and headers
+dnl **********************************************************************
+
+AC_ARG_WITH(boost-includes,
+            AC_HELP_STRING([--with-boost-includes=DIR],
+                           [Specify location of Boost headers]),
+                           [INCLUDES="$INCLUDES -I$withval"],
+                            [INCLUDES="$INCLUDES -I${DIR_BOOST_INC_DEFAULT}"])
+
+AC_ARG_WITH(boost-libs,
+            AC_HELP_STRING([--with-boost-libs=DIR],
+                           [Specify location of Boost libs]),
+                           [LIB_BOOST_PATH="$withval"],
+                           [LIB_BOOST_PATH="${DIR_BOOST_LIB_DEFAULT}"])
+
 AC_SUBST(LIB_PROTOBUF_PATH)
+AC_SUBST(LIB_BOOST_PATH)
 AC_SUBST(INCLUDES)
 
 AC_CONFIG_FILES([Makefile

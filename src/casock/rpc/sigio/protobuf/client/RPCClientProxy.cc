@@ -41,10 +41,9 @@ using std::stringstream;
 #include "casock/util/Logger.h"
 #include "casock/sigio/client/ClientSocket.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
-//#include "casock/rpc/protobuf/client/RPCCall.h"
-//#include "casock/rpc/protobuf/client/RPCCallQueue.h"
-//#include "casock/rpc/protobuf/client/RPCCallHandler.h"
-//#include "casock/rpc/sigio/protobuf/client/RPCCallController.h"
+#include "casock/rpc/protobuf/client/RPCCall.h"
+#include "casock/rpc/protobuf/client/RPCCallQueue.h"
+#include "casock/rpc/protobuf/client/RPCCallHandler.h"
 #include "casock/rpc/sigio/protobuf/client/RPCChannel.h"
 #include "casock/rpc/sigio/protobuf/client/RPCReaderHandler.h"
 
@@ -64,38 +63,28 @@ namespace casock {
             mpService = new casock::rpc::protobuf::api::RpcService::Stub (mpChannel);
           }
 
-          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request)
-          {
-            mpService->RpcCall (NULL, &request, NULL, NULL);
-          }
+          //void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request)
+          //{
+          //  mpService->RpcCall (NULL, &request, NULL, NULL);
+          //}
 
-          /*
-          void RPCClientProxy::CallMethod(const google::protobuf::MethodDescriptor* method, google::protobuf::RpcController* controller, const google::protobuf::Message* request, google::protobuf::Message* response, google::protobuf::Closure* done)
+          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)
           {
-            LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
-
-            if (mpClientSocket->connected ())
+            try
             {
-              casock::rpc::protobuf::api::RpcRequest* pRpcRequest = new casock::rpc::protobuf::api::RpcRequest ();
-
-              pRpcRequest->set_id (1);
-              pRpcRequest->set_operation (method->name ());
-              pRpcRequest->set_request (request->SerializeAsString ());
-
-              mCallHash.lock ();
-              mCallHash [pRpcRequest->id ()] = new RPCCall (response, controller, done);
-              mCallHash.unlock ();
-
-              mpService->RpcCall (NULL, pRpcRequest, NULL, NULL);
+              mpChannel->RpcCall (request);
+              registerRPCCall (request.id (), pCall);
             }
-            else
-              LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s () - socket disconnected!\n", __FUNCTION__);
-          }
-          */
-
-          void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
-          {
-            mpChannel->RpcCall (request, pRPCCall);
+            catch (std::exception& e)
+            {
+              pCall->controller ()->SetFailed (string ("Impossible to send request [") + e.what () + "]");
+              mpCallQueue->push (pCall);
+            }
+            catch (...)
+            {
+              pCall->controller ()->SetFailed ("Impossible to send request");
+              mpCallQueue->push (pCall);
+            }
           }
         }
       }
