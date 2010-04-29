@@ -62,9 +62,7 @@ namespace casock {
 
 				void RPCClientProxy::registerRPCCall (const uint32& id, casock::rpc::protobuf::client::RPCCall* pRPCCall)
 				{
-          mCallHash.lock ();
-          mCallHash [id] = pRPCCall;
-          mCallHash.unlock ();
+					mCallHash.push (id, pRPCCall);
 				}
 
         void RPCClientProxy::CallMethod(const google::protobuf::MethodDescriptor* method, google::protobuf::RpcController* controller, const google::protobuf::Message* request, google::protobuf::Message* response, google::protobuf::Closure* done)

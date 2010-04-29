@@ -35,31 +35,12 @@
 
 #include <google/protobuf/descriptor.h>
 
-/*
-namespace google {
-  namespace protobuf {
-    class Closure;
-  }
-}
-*/
-
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        class RPCCallController;
-      }
-    }
-
-    namespace protobuf {
-      namespace client {
-        using casock::rpc::protobuf::client::RPCCallController;
-
         class RPCResponseHandler
         {
-          public:
-            RPCResponseHandler (RPCCallController* pController) : mpController (pController) { }
-
           private:
             static void callback (RPCResponseHandler* pHandler) { pHandler->callback (); }
 
@@ -68,9 +49,6 @@ namespace casock {
 
           public:
             google::protobuf::Closure* closure () { return google::protobuf::NewCallback (RPCResponseHandler::callback, this); }
-
-          protected:
-            RPCCallController* mpController;
         };
       }
     }

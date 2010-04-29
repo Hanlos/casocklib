@@ -33,7 +33,6 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_READER_HANDLER_H_
 #define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT_RPC_READER_HANDLER_H_
 
-#include "casock/util/LockableHash.h"
 #include "casock/sigio/base/Handler.h"
 #include "casock/rpc/sigio/protobuf/client/RPCClientCommunicator.h"
 
@@ -49,6 +48,7 @@ namespace casock {
     namespace protobuf {
       namespace client {
         class RPCCall;
+				class RPCCallHash;
         class RPCCallQueue;
       }
     }
@@ -57,14 +57,15 @@ namespace casock {
       namespace protobuf {
         namespace client {
           class RPCClientProxy;
-          using casock::util::LockableHash;
+
           using casock::rpc::protobuf::client::RPCCall;
+          using casock::rpc::protobuf::client::RPCCallHash;
           using casock::rpc::protobuf::client::RPCCallQueue;
 
           class RPCReaderHandler : public casock::sigio::base::Handler
           {
             public:
-              RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCClientProxy* pClientProxy, LockableHash<uint32, RPCCall*>& rCallHash, RPCCallQueue& rCallQueue);
+              RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCClientProxy* pClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
 
             private:
               void destroy () { delete this; }
@@ -77,8 +78,8 @@ namespace casock {
               RPCClientCommunicator mCommunicator; /*!< used to read from socket, returns an object of type casock::rpc::protobuf::api::RpcResponse */
               RPCClientProxy*       mpClientProxy;
 
-              LockableHash<uint32, RPCCall*>& mrCallHash;
-              RPCCallQueue&                   mrCallQueue;
+              RPCCallHash&					mrCallHash;
+              RPCCallQueue&         mrCallQueue;
           };
         }
       }

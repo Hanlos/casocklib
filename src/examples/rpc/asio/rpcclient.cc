@@ -1,7 +1,6 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
 #include "casock/rpc/protobuf/client/RPCCallController.h"
-//#include "casock/rpc/sigio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
 #include "casock/base/CASClosedConnectionException.h"
@@ -18,7 +17,8 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 {
   public:
     HelloHandler (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse)
-      : casock::rpc::protobuf::client::RPCResponseHandler (pController), mpResponse (pResponse)
+      //: casock::rpc::protobuf::client::RPCResponseHandler (pController), mpResponse (pResponse)
+      : mpResponse (pResponse)
     { }
 
   public:

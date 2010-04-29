@@ -42,8 +42,10 @@ namespace casock {
         template<typename _TpResponseHandler>
           class RPCCall;
 
-        template<typename _TpResponseHandler>
-          class RPCCallQueue : public casock::util::LockableQueue<RPCCall<_TpResponseHandler>*> { };
+				template<typename _TpResponseHandler>
+					class RPCCallQueue
+					: public casock::util::LockableQueue<RPCCall<_TpResponseHandler>*>
+					{ };
       }
     }
   }

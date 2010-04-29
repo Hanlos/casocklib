@@ -37,6 +37,7 @@
 #include "casock/base/CASClosedConnectionException.h"
 #include "casock/rpc/base/CASRPCUnfinishedMessageException.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
+#include "casock/rpc/protobuf/client/RPCCallHash.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
@@ -45,7 +46,7 @@ namespace casock {
     namespace sigio {
       namespace protobuf {
         namespace client {
-          RPCReaderHandler::RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCClientProxy* pClientProxy, LockableHash<uint32, RPCCall*>& rCallHash, RPCCallQueue& rCallQueue)
+          RPCReaderHandler::RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCClientProxy* pClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
             : Handler (rDispatcher, pFileDescriptor), mCommunicator (pFileDescriptor), mpClientProxy (pClientProxy), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
           {
           }
@@ -56,22 +57,15 @@ namespace casock {
 
             try
             {
-              //casock::rpc::protobuf::api::RpcResponse* response = static_cast<casock::rpc::protobuf::api::RpcResponse *>(mCommunicator.read ());
               casock::rpc::protobuf::api::RpcResponse* response = mCommunicator.read ();
               LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - response received: %d bytes - id [%u]\n", __FUNCTION__, response->ByteSize (), response->id ());
 
-              mrCallHash.lock ();
-              RPCCall* pRPCCall = mrCallHash [response->id ()];
-              if (pRPCCall)
-                mrCallHash.erase (response->id ());
-              mrCallHash.unlock ();
+							RPCCall* pCall = mrCallHash.pop (response->id ());
 
-              if (pRPCCall)
+              if (pCall)
               {
-                pRPCCall->setRpcResponse (response);
-                mrCallQueue.push (pRPCCall);
-                //pRPCCall->response ()->ParseFromString (response->response ());
-                //pRPCCall->closure ()->Run ();
+                pCall->setRpcResponse (response);
+                mrCallQueue.push (pCall);
               }
             }
             catch (casock::base::CASClosedConnectionException& e)

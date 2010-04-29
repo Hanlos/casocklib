@@ -44,7 +44,7 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace client {
-          RPCSocketClient::RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, LockableHash<uint32, RPCCall*>& rCallHash, RPCCallQueue& rCallQueue)
+          RPCSocketClient::RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
             : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mCommunicator (this), mrClientProxy (rClientProxy), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketClient::RPCSocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
@@ -73,16 +73,12 @@ namespace casock {
 
               LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - response received: %d bytes - id [%u]\n", __FUNCTION__, pResponse->ByteSize (), pResponse->id ());
 
-              mrCallHash.lock ();
-              RPCCall* pRPCCall = mrCallHash [pResponse->id ()];
-              if (pRPCCall)
-                mrCallHash.erase (pResponse->id ());
-              mrCallHash.unlock ();
+							RPCCall* pCall = mrCallHash.pop (pResponse->id ());
 
-              if (pRPCCall)
+              if (pCall)
               {
-                pRPCCall->setRpcResponse (pResponse);
-                mrCallQueue.push (pRPCCall);
+                pCall->setRpcResponse (pResponse);
+                mrCallQueue.push (pCall);
               }
             }
             catch (...)

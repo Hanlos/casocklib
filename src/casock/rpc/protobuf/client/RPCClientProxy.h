@@ -34,7 +34,7 @@
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_H_
 
 #include <google/protobuf/service.h>
-#include "casock/util/LockableHash.h"
+#include "casock/rpc/protobuf/client/RPCCallHash.h"
 
 namespace casock {
   namespace rpc {
@@ -97,11 +97,12 @@ namespace casock {
 
             /*!
              * Used to register the RPC requests, indexed by the RpcRequest ID.
-             * Each RPC request should have a single ID (RPCClientProxy::mID).
+             * Each RPC request should have a single ID (given by PCClientProxy::mID,
+						 * that is incremented before each call).
              * The response is created by RPC server with the same ID of the request.
-             * When it is received, the RPCCall is removed from here.
+             * When it is received, the RPCCall is removed from the hash.
              */
-            LockableHash<uint32, RPCCall*>  mCallHash;
+            RPCCallHash	mCallHash;
 
           private:
             static uint32 mID;

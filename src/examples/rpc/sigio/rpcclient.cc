@@ -16,7 +16,10 @@ void Done (HelloResponse* pResponse);
 class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 {
   public:
-    HelloHandler (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse) : casock::rpc::protobuf::client::RPCResponseHandler (pController), mpResponse (pResponse) { }
+		HelloHandler (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse)
+			//: casock::rpc::protobuf::client::RPCResponseHandler (pController), mpResponse (pResponse)
+			: mpResponse (pResponse)
+		{ }
 
   public:
     void callback ()

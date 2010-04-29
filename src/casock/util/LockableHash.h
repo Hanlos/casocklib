@@ -30,13 +30,11 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL_LOCKABLE_HASH_H_
-#define __CASOCKLIB__CASOCK_UTIL_LOCKABLE_HASH_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__LOCKABLE_HASH_H_
+#define __CASOCKLIB__CASOCK_UTIL__LOCKABLE_HASH_H_
 
 #include <tr1/unordered_map>
-
 #include "casock/util/Lockable.h"
-#include "casock/util/SafeLock.h"
 
 namespace casock {
   namespace util {
@@ -45,4 +43,4 @@ namespace casock {
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_UTIL_LOCKABLE_HASH_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__LOCKABLE_HASH_H_

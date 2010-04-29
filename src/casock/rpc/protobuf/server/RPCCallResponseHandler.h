@@ -34,6 +34,7 @@
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_RESPONSE_HANDLER_H_
 
 #include "casock/util/LockableHash.h"
+#include "casock/util/SafeLock.h"
 
 namespace casock {
   namespace rpc {

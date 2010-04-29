@@ -36,7 +36,6 @@
 #include <boost/bind.hpp>
 
 #include "casock/util/Logger.h"
-#include "casock/util/LockableHash.h"
 #include "casock/proactor/asio/client/SocketClient.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
 
@@ -49,6 +48,7 @@ namespace casock {
 
       namespace client {
         class RPCCall;
+				class RPCCallHash;
         class RPCCallQueue;
       }
     }
@@ -58,14 +58,14 @@ namespace casock {
         namespace client {
           class RPCClientProxy;
 
-          using casock::util::LockableHash;
           using casock::rpc::protobuf::client::RPCCall;
+          using casock::rpc::protobuf::client::RPCCallHash;
           using casock::rpc::protobuf::client::RPCCallQueue;
 
           class RPCSocketClient : public casock::proactor::asio::client::SocketClient
           {
             public:
-              RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, LockableHash<uint32, RPCCall*>& rCallHash, RPCCallQueue& rCallQueue);
+              RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
 
             private:
               void onConnect ();
@@ -76,10 +76,10 @@ namespace casock {
               RPCClientCommunicator& communicator () { return mCommunicator; }
 
             private:
-              RPCClientCommunicator           mCommunicator;
-              RPCClientProxy&                 mrClientProxy;
-              LockableHash<uint32, RPCCall*>& mrCallHash;
-              RPCCallQueue&                   mrCallQueue;
+              RPCClientCommunicator	mCommunicator;
+              RPCClientProxy&       mrClientProxy;
+              RPCCallHash&					mrCallHash;
+              RPCCallQueue&         mrCallQueue;
 
           };
         }
