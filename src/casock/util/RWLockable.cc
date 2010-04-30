@@ -39,6 +39,7 @@
 namespace casock {
   namespace util {
     RWLockable::RWLockable ()
+      : m_rwlock ()
     {
       pthread_rwlock_init (&m_rwlock, NULL) ;
     }

@@ -47,21 +47,9 @@ namespace casock {
             : mrCommunicator (rCommunicator)
           { }
 
-          void RPCChannel::onSentRequest (const ::asio::error_code& error)
-          {
-            LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
-          }
-
-          void RPCChannel::CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message* request, google::protobuf::Message*, google::protobuf::Closure*)
-          {
-            LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
-
-            mrCommunicator.sendRequest (request, ::boost::bind (&RPCChannel::onSentRequest, this, ::asio::placeholders::error));
-          }
-
 				  void RPCChannel::RpcCall (const casock::rpc::protobuf::api::RpcRequest& request, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            mrCommunicator.sendRequest (&request, handler);
+            mrCommunicator.sendRequest (request, handler);
           }
         }
       }

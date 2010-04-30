@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCChannel.h
+ * \file casock/util/Buffer.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,26 +30,64 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CHANNEL_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CHANNEL_H_
-
-#include <google/protobuf/service.h>
+#include "casock/util/Buffer.h"
 
 namespace casock {
-  namespace rpc {
-    namespace protobuf {
-      namespace client {
-        class RPCChannel : public google::protobuf::RpcChannel
-        {
-          public:
-            virtual ~RPCChannel () { }
+	namespace util {
+		const size_t Buffer::DEFAULT_SIZE;
 
-          public:
-            virtual void CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*) = 0;
-        };
-      }
-    }
-  }
+		Buffer::Buffer (const size_t& s)
+			: m_size (s), m_buff (new char[m_size])
+		{
+			clear ();
+		}
+
+		Buffer::Buffer (const char* buff, const size_t& s)
+			: m_size (s), m_buff (new char[m_size])
+		{
+			strncpy (m_buff, buff, m_size);
+		}
+
+		Buffer::Buffer (const Buffer& rBuffer)
+			: m_size (rBuffer.size ()), m_buff (new char[m_size])
+		{
+			*this = rBuffer;
+		}
+
+		Buffer::~Buffer ()
+		{
+			delete[] m_buff;
+		}
+
+		Buffer& Buffer::operator=(const Buffer& rBuffer)
+		{
+			strncpy (m_buff, rBuffer.data (), m_size);
+			return *this;
+		}
+
+		const bool Buffer::operator==(const char* buff) const
+		{
+			return ! strncmp (m_buff, buff, m_size);
+		};
+
+		const size_t& Buffer::size () const
+		{
+			return m_size;
+		}
+
+		const char* Buffer::data () const
+		{
+			return m_buff;
+		}
+
+		char* Buffer::buff ()
+		{
+			return m_buff;
+		}
+
+		void Buffer::clear ()
+		{
+			bzero (m_buff, m_size);
+		}
+	}
 }
-
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CHANNEL_H_

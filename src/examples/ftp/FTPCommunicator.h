@@ -85,7 +85,7 @@ namespace examples {
           ss << counter;
           ss << ".ftp";
 
-          string filename = ss.str ();
+          std::string filename = ss.str ();
 
           FTPFile* pFile = new FTPFile (filename);
           pFile->setSize (size);

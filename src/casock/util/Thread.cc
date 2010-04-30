@@ -32,19 +32,18 @@
 
 #include "casock/util/Thread.h"
 
-#include <unistd.h>
-#include <signal.h>
-
-//#ifdef HAVE_SYS_SYSCALL_H
-#include <sys/syscall.h>
-//#endif
-
-#include "casock/util/Logger.h"
-
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
+#include <unistd.h>
+#include <signal.h>
+
+#ifdef HAVE_SYS_SYSCALL_H
+#include <sys/syscall.h>
+#endif
+
+#include "casock/util/Logger.h"
 
 namespace casock {
   namespace util {
@@ -52,6 +51,7 @@ namespace casock {
 
 
     Thread::Thread ()
+			: m_pthread (0), m_pthread_attr ()
     {
       m_tid = 0;
 
@@ -72,11 +72,11 @@ namespace casock {
 
       Thread *pThread = static_cast<Thread *>(p);
 
-//#ifdef HAVE_SYS_SYSCALL_H
+#ifdef HAVE_SYS_SYSCALL_H
       pThread->setTID (syscall (__NR_gettid));
-//#else
-//      pThread->setTID (syscall (Logger::GETTID_SYSCALL_ID));
-//#endif
+#else
+      pThread->setTID (syscall (Logger::GETTID_SYSCALL_ID));
+#endif
 
       pThread->run ();
 

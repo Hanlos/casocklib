@@ -37,10 +37,9 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
+#include <cstdio>
 
 #include <string>
-using std::string;
 
 #ifdef USE_THREADS
 #include "casock/util/Lockable.h"
@@ -64,36 +63,34 @@ typedef enum e_debug_level
 #define LOGMSG  Logger::getInstance ()->print
 
 
-/// class Logger - Singleton
 #ifdef USE_THREADS
 class Logger : private Lockable
 #else
 class Logger
 #endif
 {
-  // Singleton methods
   public:
     static  Logger*  getInstance ();
     static  void  finalize ();
 
-  // Constructor
   protected:
+    Logger (const Logger&);
     Logger (const e_debug &debug = NO_DEBUG,
-        const string &log_file = "", FILE *pFP = NULL);
+        const std::string &log_file = "", FILE *pFP = NULL);
 
-  // Destructor
   public:
     virtual  ~Logger ();
 
-  // Private methods
+  protected:
+    Logger& operator=(const Logger& rLogger);
+
   private:
     void  openLogFile ();
     void  closeLogFile ();
 
-  // Public methods
   public:
     void  setDebugLevel (e_debug debug);
-    void  setLogFile (const string &file);
+    void  setLogFile (const std::string &file);
     void  print (e_debug debug, char *msg, ...);
 
   public:
@@ -101,24 +98,24 @@ class Logger
     virtual  const  uint64  getMemSize ()  const;
 #endif
 
-  // Private fields
   private:
     static  Logger*  mspInstance;
 
   private:
-    e_debug m_debug_level;
-    string  m_log_file;
-    FILE*   mpFP;
+    e_debug     m_debug_level;
+    std::string m_log_file;
+    FILE*       mpFP;
 
-  // Public constant class fields
   public:
     static  const uint32  MSG_BUFF_SIZE     = BUFSIZ;  
     static  const uint32  DATE_BUFF_SIZE    = 32;  
-//#ifndef HAVE_SYS_SYSCALL_H
-//    static  const uint32  GETTID_SYSCALL_ID = 186; // x32: = 224;
-//    //static  const uint32  GETTID_SYSCALL_ID = 224;
-//#endif
+#ifndef HAVE_SYS_SYSCALL_H
+  #ifdef _LP64
+    static  const uint32  GETTID_SYSCALL_ID = 186;
+  #else
+    static  const uint32  GETTID_SYSCALL_ID = 224;
+  #endif
+#endif
 };
-
 
 #endif // __CASOCKLIB__CASOCK_UTIL__LOGGER_H_

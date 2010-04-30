@@ -48,13 +48,6 @@ namespace casock {
             LOGMSG (HIGH_LEVEL, "RPCChannel::RPCChannel ()\n");
           }
 
-          void RPCChannel::CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message* request, google::protobuf::Message*, google::protobuf::Closure*)
-          {
-            LOGMSG (HIGH_LEVEL, "RPCChannel::%s ()\n", __FUNCTION__);
-
-            mpCommunicator->write (request);
-          }
-
           void RPCChannel::RpcCall (const casock::rpc::protobuf::api::RpcRequest& request)
           {
             mpCommunicator->write (&request);

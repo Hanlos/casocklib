@@ -38,7 +38,7 @@
 #include <iomanip>
 
 #include "casock/util/Logger.h"
-#include "casock/proactor/asio/base/Buffer.h"
+#include "casock/util/Buffer.h"
 #include "casock/proactor/asio/base/Communicator.h"
 #include "casock/proactor/asio/client/SocketClient.h"
 
@@ -86,7 +86,7 @@ namespace tests {
             if (! error)
             {
               LOGMSG (LOW_LEVEL, "SocketClient1::%s () - mMyID [%04u], NO ERROR!\n", __FUNCTION__, mMyID);
-              mCommunicator.readsome (mBuffer.buff, mBuffer.size, ::boost::bind (&SocketClient1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+              mCommunicator.readsome (mBuffer.buff (), mBuffer.size (), ::boost::bind (&SocketClient1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
             }
             else
             {
@@ -105,8 +105,8 @@ namespace tests {
 
         private:
           casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
-          casock::proactor::asio::base::Buffer          mBuffer;
           casock::proactor::asio::base::Communicator    mCommunicator;
+          casock::util::Buffer                          mBuffer;
           SocketClient*                                 mpParent;
 
           uint32 mMyID;

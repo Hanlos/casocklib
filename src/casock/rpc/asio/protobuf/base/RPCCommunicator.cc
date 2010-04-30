@@ -100,7 +100,7 @@ namespace casock {
             if (! error)
             {
               pResponse = createRecvMessage ();
-              std::stringstream ss (string (buffer, mSize));
+              std::stringstream ss (std::string (buffer, mSize));
               pResponse->ParseFromIstream (&ss);
               delete[] buffer;
             }
@@ -112,12 +112,12 @@ namespace casock {
             handler (error, pResponse);
           }
 
-          void RPCCommunicator::sendMessage (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler)
+          void RPCCommunicator::sendMessage (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message->ByteSize ());
+            LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
             std::stringstream* buffer = new std::stringstream ();
-            message->SerializeToOstream (buffer);
-            write (message->ByteSize (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, buffer, handler));
+            message.SerializeToOstream (buffer);
+            write (message.ByteSize (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, buffer, handler));
           }
 
           void RPCCommunicator::recvMessage (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)

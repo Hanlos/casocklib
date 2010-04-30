@@ -33,9 +33,6 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_
 #define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_
 
-//#include <google/protobuf/service.h>
-#include "casock/rpc/protobuf/client/RPCChannel.h"
-
 namespace casock {
   namespace rpc {
     namespace protobuf {
@@ -57,14 +54,12 @@ namespace casock {
         namespace client {
           using casock::rpc::sigio::protobuf::base::RPCCommunicator;
 
-          class RPCChannel : public casock::rpc::protobuf::client::RPCChannel
+          class RPCChannel
           {
             public:
               RPCChannel (casock::rpc::sigio::protobuf::base::RPCCommunicator* pCommunicator);
 
             public:
-              void CallMethod(const google::protobuf::MethodDescriptor*, google::protobuf::RpcController*, const google::protobuf::Message*, google::protobuf::Message*, google::protobuf::Closure*);
-
               void RpcCall (const casock::rpc::protobuf::api::RpcRequest& request);
 
             private:

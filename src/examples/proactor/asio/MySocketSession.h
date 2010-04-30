@@ -37,7 +37,7 @@
 #include <boost/bind.hpp>
 
 #include "casock/util/Logger.h"
-#include "casock/proactor/asio/base/Buffer.h"
+#include "casock/util/Buffer.h"
 #include "casock/proactor/asio/server/SocketSession.h"
 
 namespace examples {
@@ -59,14 +59,14 @@ namespace examples {
           void onConnect ()
           {
             LOGMSG (LOW_LEVEL, "MySocketSession::%s ()\n", __FUNCTION__);
-            readsome (buffer.buff, buffer.size, ::boost::bind (&MySocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+            readsome (buffer.buff (), buffer.size (), ::boost::bind (&MySocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
           }
 
           void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
           {
-            LOGMSG (LOW_LEVEL, "MySocketSession::%s () - bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, bytes_transferred, buffer.buff);
+            LOGMSG (LOW_LEVEL, "MySocketSession::%s () - bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, bytes_transferred, buffer.data ());
             std::stringstream ss;
-            ss << "message received [" << buffer.buff << "]";
+            ss << "message received [" << buffer.data () << "]";
             write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&MySocketSession::onWriteBuffer, this, ::asio::placeholders::error));
 
             /*
@@ -97,7 +97,7 @@ namespace examples {
                 mrSocketServer.close ();
               }
               else
-                readsome (buffer.buff, buffer.size, ::boost::bind (&MySocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+                readsome (buffer.buff (), buffer.size (), ::boost::bind (&MySocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
             }
             else
             {
@@ -107,7 +107,7 @@ namespace examples {
           }
 
         private:
-          casock::proactor::asio::base::Buffer buffer;
+          casock::util::Buffer buffer;
           bool mShutdown;
       };
     }

@@ -42,6 +42,7 @@
 namespace casock {
   namespace util {
     Lockable::Lockable (const int& type)
+      : m_mutex_attr (), m_mutex (), m_cond ()
     {
       pthread_mutexattr_init (&m_mutex_attr);
       pthread_mutexattr_settype (&m_mutex_attr, type);

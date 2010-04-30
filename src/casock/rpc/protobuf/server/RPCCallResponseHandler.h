@@ -63,11 +63,11 @@ namespace casock {
                *
                  casock::util::SafeLock lock (mCallHash);
 
-                 unordered_map<uint32, const RPCCall*>::const_iterator it;
-                 unordered_map<uint32, const RPCCall*>::const_iterator itEnd = mCallHash.end ();
+                 LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator it;
+                 LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator itEnd = mCallHash.end ();;
 
                  for (it = mCallHash.begin (); it != itEnd; ++it)
-                 it->second->invalidateHandler ();
+                   it->second->invalidateHandler ();
 
                  mCallHash.clear ();
                */

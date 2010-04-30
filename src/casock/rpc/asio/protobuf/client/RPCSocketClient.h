@@ -56,7 +56,7 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace client {
-          class RPCClientProxy;
+          //class RPCClientProxy;
 
           using casock::rpc::protobuf::client::RPCCall;
           using casock::rpc::protobuf::client::RPCCallHash;
@@ -65,7 +65,8 @@ namespace casock {
           class RPCSocketClient : public casock::proactor::asio::client::SocketClient
           {
             public:
-              RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
+              //RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
+              RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
 
             private:
               void onConnect ();
@@ -77,7 +78,7 @@ namespace casock {
 
             private:
               RPCClientCommunicator	mCommunicator;
-              RPCClientProxy&       mrClientProxy;
+              //RPCClientProxy&       mrClientProxy;
               RPCCallHash&					mrCallHash;
               RPCCallQueue&         mrCallQueue;
 

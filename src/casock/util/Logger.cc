@@ -36,9 +36,9 @@
 #include <unistd.h>
 #include <time.h>
 
-//#ifdef HAVE_SYS_SYSCALL_H
+#ifdef HAVE_SYS_SYSCALL_H
 #include <sys/syscall.h>
-//#endif
+#endif
 
 #ifdef USE_THREADS
 #include "Thread.h"
@@ -46,9 +46,7 @@
 
 #include "types.h"
 
-
 Logger*	Logger::mspInstance = NULL;
-
 
 Logger* Logger::getInstance ()
 {
@@ -71,20 +69,28 @@ void Logger::finalize ()
 }
 
 #ifdef USE_THREADS
-Logger::Logger (const e_debug &debug, const string &log_file, FILE *pFP) : Lockable ()
+Logger::Logger (const e_debug &debug, const std::string &log_file, FILE *pFP) : Lockable ()
 #else
-Logger::Logger (const e_debug &debug, const string &log_file, FILE *pFP)
+Logger::Logger (const e_debug &debug, const std::string &log_file, FILE *pFP)
 #endif
+	: m_debug_level	(debug), m_log_file (log_file), mpFP (pFP)
 {
-	m_debug_level	= debug;
-	m_log_file	= log_file;
-	mpFP		= pFP;
+
+}
+
+Logger::Logger (const Logger& rLogger)
+	: m_debug_level	(NO_DEBUG), m_log_file (""), mpFP (NULL)
+{
+  throw std::exception ();
+}
+
+Logger& Logger::operator=(const Logger& rLogger)
+{
+  throw std::exception ();
 }
 
 Logger::~Logger ()
 {
-//	LOGMSG (NO_DEBUG, "Logger::~Logger () - [%p]\n", this);
-
 	closeLogFile ();
 }
 
@@ -93,7 +99,7 @@ void Logger::setDebugLevel (e_debug debug)
 	m_debug_level = (debug <= MAX_LEVEL ? debug:MAX_LEVEL);
 }
 
-void Logger::setLogFile (const string &file)
+void Logger::setLogFile (const std::string &file)
 {
 	m_log_file = file;
 
@@ -134,38 +140,36 @@ void Logger::print (e_debug debug, char *msg, ...)
 		localtime_r (&str_time, &str_tm);
 		strftime (log_date, Logger::DATE_BUFF_SIZE, "%d/%m/%Y-%H:%M:%S", &str_tm);
 
+#ifdef HAVE_SYS_SYSCALL_H
+			pid_t tid = syscall (__NR_gettid);
+#else
+			pid_t tid = syscall (Logger::GETTID_SYSCALL_ID);
+#endif
+
 		if (mpFP)
 		{
 #ifdef USE_THREADS
-			Lock ();
+      lock ();
 #endif
 
-//#ifdef HAVE_SYS_SYSCALL_H
-			fprintf	(mpFP, "%s-%ld: %s", log_date, syscall (__NR_gettid), buffer);
-//#else
-//			fprintf	(mpFP, "%s-%ld: %s", log_date, syscall (Logger::GETTID_SYSCALL_ID), buffer);
-//#endif
-
+			fprintf	(mpFP, "%s-%d: %s", log_date, tid, buffer);
 			fflush	(mpFP);
+
 #ifdef USE_THREADS
-			Unlock ();
+			unlock ();
 #endif
 		}
 		else
 		{
 #ifdef USE_THREADS
-			Lock ();
+			lock ();
 #endif
 
-//#ifdef HAVE_SYS_SYSCALL_H
-			fprintf	(stderr, "%s-%ld: %s", log_date, syscall (__NR_gettid), buffer);
-//#else
-//			fprintf	(stderr, "%s-%ld: %s", log_date, syscall (Logger::GETTID_SYSCALL_ID), buffer);
-//#endif
-
+			fprintf	(stderr, "%s-%d: %s", log_date, tid, buffer);
 			fflush	(stderr);
+
 #ifdef USE_THREADS
-			Unlock ();
+			unlock ();
 #endif
 		}
 
@@ -187,7 +191,7 @@ const uint64 Logger::getMemSize () const
 	uint64 size = 0;
 
 	size += sizeof (e_debug);
-	size += sizeof (string);
+	size += sizeof (std::string);
 	size += sizeof (FILE *);
 	size += m_log_file.size () + 1;
 #ifdef USE_THREADS

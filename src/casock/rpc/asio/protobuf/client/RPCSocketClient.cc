@@ -34,8 +34,9 @@
 
 #include <boost/bind.hpp>
 
-#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
+//#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
+#include "casock/rpc/protobuf/client/RPCCallHash.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
@@ -44,8 +45,10 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace client {
-          RPCSocketClient::RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
-            : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mCommunicator (this), mrClientProxy (rClientProxy), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
+          //RPCSocketClient::RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCClientProxy& rClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
+          //  : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mCommunicator (this), mrClientProxy (rClientProxy), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
+          RPCSocketClient::RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
+            : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port), mCommunicator (this), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketClient::RPCSocketClient () - host [%s], port [%s]\n", host.c_str (), port.c_str ());
 

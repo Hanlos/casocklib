@@ -37,7 +37,7 @@
 #include <boost/bind.hpp>
 
 #include "casock/util/Logger.h"
-#include "casock/proactor/asio/base/Buffer.h"
+#include "casock/util/Buffer.h"
 #include "casock/proactor/asio/server/SocketSession.h"
 
 namespace tests {
@@ -59,14 +59,14 @@ namespace tests {
           void onConnect ()
           {
             LOGMSG (MEDIUM_LEVEL, "SocketSession1::%s ()\n", __FUNCTION__);
-            readsome (buffer.buff, buffer.size, ::boost::bind (&SocketSession1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+            readsome (buffer.buff (), buffer.size (), ::boost::bind (&SocketSession1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
           }
 
           void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
           {
-            LOGMSG (LOW_LEVEL, "SocketSession1::%s () - mMyID [%04u], bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, mMyID, bytes_transferred, buffer.buff);
+            LOGMSG (LOW_LEVEL, "SocketSession1::%s () - mMyID [%04u], bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, mMyID, bytes_transferred, buffer.data ());
             std::stringstream ss;
-            ss << "message received [" << buffer.buff << "]";
+            ss << "message received [" << buffer.data () << "]";
             buffer.clear ();
             write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&SocketSession1::onWriteBuffer, this, ::asio::placeholders::error));
           }
@@ -76,7 +76,7 @@ namespace tests {
             if (! error)
             {
               LOGMSG (MEDIUM_LEVEL, "SocketSession1::%s () - NO ERROR!\n", __FUNCTION__);
-              readsome (buffer.buff, buffer.size, ::boost::bind (&SocketSession1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+              readsome (buffer.buff (), buffer.size (), ::boost::bind (&SocketSession1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
             }
             else
             {
@@ -86,7 +86,7 @@ namespace tests {
           }
 
         private:
-          casock::proactor::asio::base::Buffer buffer;
+          casock::util::Buffer buffer;
 
           uint32 mMyID;
 

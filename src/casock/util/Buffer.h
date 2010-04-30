@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/proactor/asio/base/Buffer.h
+ * \file casock/util/Buffer.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,38 +30,39 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__BUFFER_H_
-#define __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__BUFFER_H_
+#ifndef __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
+#define __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
 
 #include <cstring>
 
 namespace casock {
-  namespace proactor {
-    namespace asio {
-      namespace base {
-        class Buffer
-        {
-          public:
-            Buffer (const unsigned int& s = DEFAULT_SIZE);
-            Buffer (const char* buffer, const unsigned int& s);
-            virtual ~Buffer ();
+	namespace util {
+		class Buffer
+		{
+			public:
+				Buffer (const size_t& size = DEFAULT_SIZE);
+				Buffer (const char* buff, const size_t& size);
+				Buffer (const Buffer& rBuffer);
+				virtual ~Buffer ();
 
-          public:
-            const bool operator==(const char* str) { return ! strcmp (buff, str); };
+			public:
+				Buffer& operator=(const Buffer& rBuffer);
+				const bool operator==(const char* buff) const;
 
-          public:
-            void clear ();
+			public:
+				const size_t& size () const;
+				const char* data () const;
+        char* buff ();
+				void clear ();
 
-          public:
-            char* buff;
-            unsigned long size;
+			private:
+				size_t m_size;
+				char* m_buff;
 
-          public:
-            static const size_t DEFAULT_SIZE = 1024;
-        };
-      }
-    }
-  }
+			public:
+				static const size_t DEFAULT_SIZE = 1024;
+		};
+	}
 }
 
-#endif // __CASOCKLIB__CASOCK_PROACTOR_ASIO_BASE__BUFFER_H_
+#endif // __CASOCKLIB__CASOCK_UTIL__BUFFER_H_

@@ -80,7 +80,7 @@ namespace casock {
               void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
 
 						protected:
-              void sendMessage (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler);
+              void sendMessage (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler);
               void recvMessage (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
 
             private:

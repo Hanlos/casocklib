@@ -104,7 +104,7 @@ namespace examples {
                 ss << ++mCounter;
                 ss << ".ftp";
 
-                string filename = ss.str ();
+                std::string filename = ss.str ();
 
                 pFile = new examples::ftp::FTPFile (filename);
                 pFile->setSize (mSize);

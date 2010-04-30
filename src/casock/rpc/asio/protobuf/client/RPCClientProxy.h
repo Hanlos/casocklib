@@ -49,7 +49,7 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace api {
-        class RpcService;
+        //class RpcService;
         class RpcRequest;
       }
     }
@@ -60,7 +60,7 @@ namespace casock {
           class RPCChannel;
           class RPCSocketClient;
 
-          using casock::rpc::protobuf::api::RpcService;
+          //using casock::rpc::protobuf::api::RpcService;
 
           /*!
            * This is the workflow of an RPC request:
@@ -116,7 +116,7 @@ namespace casock {
             private:
               RPCSocketClient*  mpRPCSocketClient;
               RPCChannel*       mpChannel;
-              RpcService*       mpService;
+              //RpcService*       mpService;
           };
         }
       }

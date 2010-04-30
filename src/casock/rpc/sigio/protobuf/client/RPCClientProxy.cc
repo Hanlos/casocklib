@@ -60,13 +60,7 @@ namespace casock {
             mpClientSocket->connect ();
             mpReaderHandler = new RPCReaderHandler (rDispatcher, mpClientSocket, this, mCallHash, *mpCallQueue);
             mpChannel = new RPCChannel (&(mpReaderHandler->communicator ()));
-            mpService = new casock::rpc::protobuf::api::RpcService::Stub (mpChannel);
           }
-
-          //void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request)
-          //{
-          //  mpService->RpcCall (NULL, &request, NULL, NULL);
-          //}
 
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)
           {

@@ -89,7 +89,7 @@ namespace casock {
           {
             //casock::util::Lock* pLock = new casock::util::Lock ();
             //pLock->get ();
-            mCommunicator.sendResponse (&response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error)); //, pLock));
+            mCommunicator.sendResponse (response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error)); //, pLock));
             //pLock->wait ();
             //pLock->release ();
             //delete pLock;

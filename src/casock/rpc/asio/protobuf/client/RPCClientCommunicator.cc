@@ -49,9 +49,9 @@ namespace casock {
             return new casock::rpc::protobuf::api::RpcResponse ();
           }
 
-          void RPCClientCommunicator::sendRequest (const ::google::protobuf::Message* const message, ::boost::function<void(const ::asio::error_code&)> handler)
+          void RPCClientCommunicator::sendRequest (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            LOGMSG (NO_DEBUG, "RPCClientCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message->ByteSize ());
+            LOGMSG (NO_DEBUG, "RPCClientCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
             sendMessage (message, handler);
           }
 

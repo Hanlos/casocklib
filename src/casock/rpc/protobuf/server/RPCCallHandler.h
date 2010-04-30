@@ -123,16 +123,19 @@ namespace casock {
           void RPCCallHandler<_TpResponseHandler>::callback (RPCCallEntry* pCallEntry)
           {
             RPCCall<_TpResponseHandler>* pCall = pCallEntry->call ();
+            ::google::protobuf::Message* pResponse = pCallEntry->response ();
 
             RpcResponse rpcResponse;
             rpcResponse.set_id (pCall->request ()->id ());
             rpcResponse.set_type (casock::rpc::protobuf::api::RESPONSE_TYPE_OK);
-            rpcResponse.set_response (pCallEntry->response ()->SerializeAsString ());
+            rpcResponse.set_response (pResponse->SerializeAsString ());
 
             pCall->lock ();
             pCall->callback (rpcResponse);
             pCall->unlock ();
 
+            //delete pCall;
+            delete pResponse;
             delete pCallEntry;
           }
 
