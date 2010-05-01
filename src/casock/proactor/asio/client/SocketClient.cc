@@ -112,7 +112,7 @@ namespace casock {
             throw (casock::base::CASClosedConnectionException ("impossible to connect"));
           }
           else
-            LOGMSG (LOW_LEVEL, "SocketClient::%s () - socket connected!\n");
+            LOGMSG (LOW_LEVEL, "SocketClient::%s () - socket connected!\n", __FUNCTION__);
 
           //if (error)
           //  throw (::boost::system::system_error (error));

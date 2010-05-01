@@ -70,26 +70,28 @@ namespace casock {
 
           void RPCSocketClient::onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
           {
-            try
+            if (! error)
             {
+              LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - no error!\n", __FUNCTION__);
+
               casock::rpc::protobuf::api::RpcResponse* pResponse = static_cast<casock::rpc::protobuf::api::RpcResponse *>(pMessage);
 
               LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - response received: %d bytes - id [%u]\n", __FUNCTION__, pResponse->ByteSize (), pResponse->id ());
 
-							RPCCall* pCall = mrCallHash.pop (pResponse->id ());
+              RPCCall* pCall = mrCallHash.pop (pResponse->id ());
 
               if (pCall)
               {
                 pCall->setRpcResponse (pResponse);
                 mrCallQueue.push (pCall);
               }
-            }
-            catch (...)
-            {
-              LOGMSG (HIGH_LEVEL, "RPCReaderHandler::%s () - catch (...)\n", __FUNCTION__);
-            }
 
-            mCommunicator.recvResponse (::boost::bind (&RPCSocketClient::onRecvResponse, this, ::asio::placeholders::error, _2));
+              mCommunicator.recvResponse (::boost::bind (&RPCSocketClient::onRecvResponse, this, ::asio::placeholders::error, _2));
+            }
+            else
+            {
+              LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+            }
           }
         }
       }

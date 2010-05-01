@@ -87,6 +87,8 @@ namespace casock {
 
           void RPCSocketSession::callback (const RpcResponse& response)
           {
+            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
+
             //casock::util::Lock* pLock = new casock::util::Lock ();
             //pLock->get ();
             mCommunicator.sendResponse (response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error)); //, pLock));

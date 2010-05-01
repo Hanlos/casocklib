@@ -61,6 +61,7 @@ namespace casock {
         {
           protected:
             RPCClientProxy ();
+            virtual ~RPCClientProxy ();
 
           private:
             /*!

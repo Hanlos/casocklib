@@ -26,7 +26,7 @@ namespace examples {
       received = 0;
 
       string msg1 = "CONNECTED!";
-      mCommunicator.write (msg1.c_str (), msg1.length ());
+      mCommunicator.write (msg1.c_str (), msg1.size ());
     };
 
     void FTPServerSockReaderHandler::handle ()

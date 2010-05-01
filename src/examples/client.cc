@@ -38,8 +38,8 @@ int main ()
       while (true)
       {
         string s (10 * BUFSIZ, 'a');
-        communicator.write (s.c_str (), s.length ());
-        sent += s.length ();
+        communicator.write (s.c_str (), s.size ());
+        sent += s.size ();
 
         printf ("main () - sent: %Zu\n", sent);
 

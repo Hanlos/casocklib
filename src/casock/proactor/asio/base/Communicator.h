@@ -78,7 +78,7 @@ namespace casock {
             template<typename _WriteHandler>
               void write (const stringstream& buffer, _WriteHandler handler)
               {
-                mpChannel->write (buffer.str ().c_str (), buffer.str ().length (), handler);
+                mpChannel->write (buffer.str ().c_str (), buffer.str ().size (), handler);
               }
 
             template<typename _Type, typename WriteHandler>

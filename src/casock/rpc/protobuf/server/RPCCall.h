@@ -95,7 +95,7 @@ namespace casock {
               lock ();
               if (mpResponseHandler)
               {
-                LOGMSG (LOW_LEVEL, "RPCCall::~RPCCall () - trying to unregister from response handler [%p]...\n", __FUNCTION__, mpResponseHandler);
+                LOGMSG (LOW_LEVEL, "RPCCall<_TpResponseHandler>::~RPCCall () - trying to unregister from response handler [%p]...\n", __FUNCTION__, mpResponseHandler);
                 unregistered = mpResponseHandler->tryUnregisterCall (mpRequest->id ());
               }
               unlock ();
@@ -114,6 +114,8 @@ namespace casock {
         template<typename _TpResponseHandler>
           void RPCCall<_TpResponseHandler>::callback (const RpcResponse& response)
           {
+            LOGMSG (LOW_LEVEL, "RPCCall<_TpResponseHandler>::%s ()\n", __FUNCTION__);
+
             if (mpResponseHandler)
               mpResponseHandler->callback (response);
           }

@@ -68,13 +68,13 @@ namespace examples {
 
           do
           {
-            s = Communicator::read (buffer, size - buffer.str ().length ());
+            s = Communicator::read (buffer, size - buffer.str ().size ());
             LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - s [%zd]\n", __FUNCTION__, s);
-          } while (s > 0 && buffer.str ().length () < size);
+          } while (s > 0 && buffer.str ().size () < size);
 
-          LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - received %zu/%zu bytes\n", __FUNCTION__, buffer.str ().length (), size);
+          LOGMSG (LOW_LEVEL, "FTPCommunicator::%s () - received %zu/%zu bytes\n", __FUNCTION__, buffer.str ().size (), size);
 
-          if (buffer.str ().length () < (size_t) size)
+          if (buffer.str ().size () < (size_t) size)
             throw (casock::base::CASException ("Unfinished message!"));
 
           char* ftpbuff = new char [size];
@@ -97,7 +97,7 @@ namespace examples {
         }
 
         const size_t& getSize () { return size; }
-        const size_t getBuffSize () { return buffer.str ().length (); }
+        const size_t getBuffSize () { return buffer.str ().size (); }
 
       private:
         size_t size;

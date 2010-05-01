@@ -90,7 +90,7 @@ namespace casock {
         if (s == 0)
           throw (casock::base::CASClosedConnectionException ());
 
-        while (s > 0 && buffer.str ().length () < len)
+        while (s > 0 && buffer.str ().size () < len)
         {
           LOGMSG (HIGH_LEVEL, "Communicator::%s (stringstream&, const size_t&) - read %ld bytes\n", __FUNCTION__, s);
 
@@ -112,8 +112,8 @@ namespace casock {
 
       void Communicator::write (const stringstream& buffer)
       {
-        LOGMSG (HIGH_LEVEL, "Communicator::%s () - writing (const stringstream&): ssize_t [%ld]\n", __FUNCTION__, buffer.str ().length ());
-        mpFD->write (buffer.str ().c_str (), buffer.str ().length ());
+        LOGMSG (HIGH_LEVEL, "Communicator::%s () - writing (const stringstream&): ssize_t [%ld]\n", __FUNCTION__, buffer.str ().size ());
+        mpFD->write (buffer.str ().c_str (), buffer.str ().size ());
       }
 
       void Communicator::write (const int& buffer)

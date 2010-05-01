@@ -73,18 +73,19 @@ namespace casock {
               virtual ::google::protobuf::Message* createRecvMessage () = 0;
 
             private:
-              void onSentSize (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler);
-              void onSentBuffer (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler);
+              void onSentSize (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler);
+              void onSentBuffer (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler);
 
-              void onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
-              void onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
+              void onReadSize (const ::asio::error_code& error, size_t* pSize, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
+              void onReadBuffer (const ::asio::error_code& error, char* pBuffer, size_t* pSize, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler);
 
 						protected:
               void sendMessage (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler);
               void recvMessage (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
 
             private:
-              int mSize; /*!< should be a size_t, but ::google::protobuf::Message::ByteSize () returns an int */
+              //int mSize; /*!< should be a size_t, but ::google::protobuf::Message::ByteSize () returns an int */
+              //size_t mSize; /*!< should be a size_t, but ::google::protobuf::Message::ByteSize () returns an int */
           };
         }
       }

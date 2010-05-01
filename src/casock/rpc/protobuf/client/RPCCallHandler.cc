@@ -59,11 +59,17 @@ namespace casock {
             {
               LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], id [%u], type [%u]\n", __FUNCTION__, controller, pRpcResponse->id (), pRpcResponse->type ());
               pCall->response ()->ParseFromString (pRpcResponse->response ());
+              delete pRpcResponse;
             }
             else
+            {
               LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], pRpcResponse [%p]\n", __FUNCTION__, controller, pRpcResponse);
+              controller->SetFailed ("Error receiving response!");
+            }
 
             closure->Run ();
+
+            delete pCall;
           }
         }
       }

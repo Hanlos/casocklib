@@ -93,6 +93,7 @@ namespace casock {
           {
             public:
               RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port);
+              virtual ~RPCClientProxy ();
 
             private:
               /*!

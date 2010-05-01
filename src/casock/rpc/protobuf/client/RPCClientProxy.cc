@@ -60,6 +60,13 @@ namespace casock {
           mpCallHandler->start ();
         }
 
+        RPCClientProxy::~RPCClientProxy ()
+        {
+          mpCallHandler->cancel ();
+          delete mpCallHandler;
+          delete mpCallQueue;
+        }
+
 				void RPCClientProxy::registerRPCCall (const uint32& id, casock::rpc::protobuf::client::RPCCall* pRPCCall)
 				{
 					mCallHash.push (id, pRPCCall);

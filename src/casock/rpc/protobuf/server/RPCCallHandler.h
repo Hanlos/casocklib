@@ -68,18 +68,18 @@ namespace casock {
             class RPCCallEntry
             {
               public:
-                RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse, ::google::protobuf::RpcController* pController);
+                RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse); //, ::google::protobuf::RpcController* pController);
                 virtual ~RPCCallEntry ();
 
               public:
                 inline RPCCall<_TpResponseHandler>* call () { return mpCall; }
                 inline ::google::protobuf::Message* response () { return mpResponse; }
-                inline ::google::protobuf::RpcController* controller () { return mpController; }
+                //inline ::google::protobuf::RpcController* controller () { return mpController; }
 
               private:
                 RPCCall<_TpResponseHandler>*        mpCall;
                 ::google::protobuf::Message*        mpResponse;
-                ::google::protobuf::RpcController*  mpController;
+                //::google::protobuf::RpcController*  mpController;
             };
 
           public:
@@ -102,8 +102,8 @@ namespace casock {
          */
 
         template<typename _TpResponseHandler>
-          RPCCallHandler<_TpResponseHandler>::RPCCallEntry::RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse, ::google::protobuf::RpcController* pController)
-          : mpCall (pCall), mpResponse (pResponse), mpController (pController)
+          RPCCallHandler<_TpResponseHandler>::RPCCallEntry::RPCCallEntry (RPCCall<_TpResponseHandler>* pCall, ::google::protobuf::Message* pResponse) //, ::google::protobuf::RpcController* pController)
+          : mpCall (pCall), mpResponse (pResponse)//, mpController (pController)
           { }
 
         template<typename _TpResponseHandler>
@@ -111,7 +111,7 @@ namespace casock {
           {
             delete mpCall;
             delete mpResponse;
-            delete mpController;
+            //delete mpController;
           }
 
         template<typename _TpResponseHandler>
@@ -122,6 +122,8 @@ namespace casock {
         template<typename _TpResponseHandler>
           void RPCCallHandler<_TpResponseHandler>::callback (RPCCallEntry* pCallEntry)
           {
+            LOGMSG (LOW_LEVEL, "RPCCallHandler<_TpResponseHandler>::%s ()\n", __FUNCTION__);
+
             RPCCall<_TpResponseHandler>* pCall = pCallEntry->call ();
             ::google::protobuf::Message* pResponse = pCallEntry->response ();
 
@@ -135,7 +137,7 @@ namespace casock {
             pCall->unlock ();
 
             //delete pCall;
-            delete pResponse;
+            //delete pResponse;
             delete pCallEntry;
           }
 
@@ -144,9 +146,9 @@ namespace casock {
           {
             while (true)
             {
-              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - calling mrCallQueue.get ()...\n", __FUNCTION__);
+              LOGMSG (LOW_LEVEL, "RPCCallHandler<_TpResponseHandler>::%s () - calling mrCallQueue.get ()...\n", __FUNCTION__);
               RPCCall<_TpResponseHandler>* pCall = mrCallQueue.get ();
-              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - got pCall [%p]!\n", __FUNCTION__, pCall);
+              LOGMSG (LOW_LEVEL, "RPCCallHandler<_TpResponseHandler>::%s () - got pCall [%p]!\n", __FUNCTION__, pCall);
 
               const RpcRequest* const pRpcRequest = pCall->request ();
 
@@ -154,7 +156,7 @@ namespace casock {
 
               if (method != NULL)
               {
-                LOGMSG (NO_DEBUG, "RPCCallHandler::%s () - OK\n", __FUNCTION__);
+                LOGMSG (NO_DEBUG, "RPCCallHandler<_TpResponseHandler>::%s () - OK\n", __FUNCTION__);
 
                 ::google::protobuf::Message* request = mpService->GetRequestPrototype (method).New ();
                 request->ParseFromString (pRpcRequest->request ());
@@ -169,12 +171,14 @@ namespace casock {
                 /*!
                  * The RPCCallEntry will be deleted on callback.
                  */
-                ::google::protobuf::Closure* closure = ::google::protobuf::NewCallback (RPCCallHandler<_TpResponseHandler>::callback, new RPCCallEntry (pCall, response, controller));
+                ::google::protobuf::Closure* closure = ::google::protobuf::NewCallback (RPCCallHandler<_TpResponseHandler>::callback, new RPCCallEntry (pCall, response)); //, controller));
 
                 mpService->CallMethod (method, controller, request, response, closure);
+
+                delete request;
               }
               else
-                LOGMSG (NO_DEBUG, "RPCCallHandler::%s () - no method called [%s]\n", __FUNCTION__, pRpcRequest->operation ().c_str ());
+                LOGMSG (NO_DEBUG, "RPCCallHandler<_TpResponseHandler>::%s () - no method called [%s]\n", __FUNCTION__, pRpcRequest->operation ().c_str ());
             }
           }
       }

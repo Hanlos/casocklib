@@ -79,6 +79,7 @@ int main ()
     LOGMSG (NO_DEBUG, "%s () - catch (...)\n", __FUNCTION__);
   }
 
+  delete proxy;
   casock::proactor::asio::base::AsyncProcessor::destroy ();
 }
 

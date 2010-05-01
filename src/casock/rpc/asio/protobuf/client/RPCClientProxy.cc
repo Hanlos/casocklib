@@ -56,13 +56,22 @@ namespace casock {
             //mpService = new casock::rpc::protobuf::api::RpcService::Stub (mpChannel);
           }
 
+          RPCClientProxy::~RPCClientProxy ()
+          {
+            delete mpChannel;
+            delete mpRPCSocketClient;
+          }
+
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)
           {
+            LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
             mpChannel->RpcCall (request, ::boost::bind (&RPCClientProxy::onSentRequest, this, _1, request.id (), pCall));
           }
 
 					void RPCClientProxy::onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pCall)
 					{
+            LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
+
 						if (! error)
 						{
 							registerRPCCall (id, pCall);

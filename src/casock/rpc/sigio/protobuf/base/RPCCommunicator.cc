@@ -78,13 +78,13 @@ namespace casock {
 
             do
             {
-              s = Communicator::read (buffer, size - buffer.str ().length ());
+              s = Communicator::read (buffer, size - buffer.str ().size ());
               LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - s [%d]\n", __FUNCTION__, s);
-            } while (s > 0 && buffer.str ().length () < size);
+            } while (s > 0 && buffer.str ().size () < size);
 
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - received %Zu/%Zu bytes\n", __FUNCTION__, buffer.str ().length (), size);
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - received %Zu/%Zu bytes\n", __FUNCTION__, buffer.str ().size (), size);
 
-            if (buffer.str ().length () < (size_t) size)
+            if (buffer.str ().size () < (size_t) size)
               throw (casock::rpc::base::CASRPCUnfinishedMessageException ());
 
             message = createRequest ();

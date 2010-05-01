@@ -53,14 +53,14 @@ namespace casock {
 
           }
 
-          void RPCCommunicator::onSentSize (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler)
+          void RPCCommunicator::onSentSize (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler)
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%d]\n", __FUNCTION__, error.value ());
 
             if (! error)
             {
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - sending message with %d bytes\n", __FUNCTION__, buffer->str ().size ());
-              write (buffer->str ().c_str (), buffer->str ().length (), ::boost::bind (&RPCCommunicator::onSentBuffer, this, ::asio::placeholders::error, buffer, handler));
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - sending message with %d bytes\n", __FUNCTION__, pBuffer->str ().size ());
+              write (pBuffer->str ().c_str (), pBuffer->str ().size (), ::boost::bind (&RPCCommunicator::onSentBuffer, this, ::asio::placeholders::error, pBuffer, handler));
             }
             else
             {
@@ -68,30 +68,34 @@ namespace casock {
             }
           }
 
-          void RPCCommunicator::onSentBuffer (const ::asio::error_code& error, const std::stringstream* buffer, ::boost::function<void(const ::asio::error_code&)> handler)
+          void RPCCommunicator::onSentBuffer (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler)
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
-            delete buffer;
+            delete pBuffer;
             handler (error);
           }
 
-          void RPCCommunicator::onReadSize (const ::asio::error_code& error, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
+          void RPCCommunicator::onReadSize (const ::asio::error_code& error, size_t* pSize, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
 
             if (! error)
             {
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - mSize [%zd]\n", __FUNCTION__, mSize);
-              char* buffer = new char [mSize];
-              read (buffer, mSize, ::boost::bind (&RPCCommunicator::onReadBuffer, this, ::asio::placeholders::error, buffer, handler));
+              //LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - mSize [%zu]\n", __FUNCTION__, mSize);
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - size [%zu]\n", __FUNCTION__, *pSize);
+              //char* pBuffer = new char [mSize];
+              char* pBuffer = new char [*pSize];
+              //read (pBuffer, mSize, ::boost::bind (&RPCCommunicator::onReadBuffer, this, ::asio::placeholders::error, pBuffer, handler));
+              read (pBuffer, *pSize, ::boost::bind (&RPCCommunicator::onReadBuffer, this, ::asio::placeholders::error, pBuffer, pSize, handler));
             }
             else
             {
               LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+              delete pSize;
             }
           }
 
-          void RPCCommunicator::onReadBuffer (const ::asio::error_code& error, char* buffer, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
+          void RPCCommunicator::onReadBuffer (const ::asio::error_code& error, char* pBuffer, size_t* pSize, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
 
@@ -99,15 +103,19 @@ namespace casock {
 
             if (! error)
             {
+              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - no error!\n", __FUNCTION__);
               pResponse = createRecvMessage ();
-              std::stringstream ss (std::string (buffer, mSize));
+              //std::stringstream ss (std::string (pBuffer, mSize));
+              std::stringstream ss (std::string (pBuffer, *pSize));
               pResponse->ParseFromIstream (&ss);
-              delete[] buffer;
             }
             else
             {
               LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
             }
+
+            delete[] pBuffer;
+            delete pSize;
 
             handler (error, pResponse);
           }
@@ -115,15 +123,17 @@ namespace casock {
           void RPCCommunicator::sendMessage (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
             LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
-            std::stringstream* buffer = new std::stringstream ();
-            message.SerializeToOstream (buffer);
-            write (message.ByteSize (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, buffer, handler));
+            std::stringstream* pBuffer = new std::stringstream ();
+            message.SerializeToOstream (pBuffer);
+            //write (message.ByteSize (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, pBuffer, handler));
+            write (pBuffer->str ().size (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, pBuffer, handler));
           }
 
           void RPCCommunicator::recvMessage (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
             LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - receiving size...\n", __FUNCTION__);
-            read (mSize, ::boost::bind (&RPCCommunicator::onReadSize, this, ::asio::placeholders::error, handler));
+            size_t* pSize = new size_t;
+            read (*pSize, ::boost::bind (&RPCCommunicator::onReadSize, this, ::asio::placeholders::error, pSize, handler));
           }
         }
       }

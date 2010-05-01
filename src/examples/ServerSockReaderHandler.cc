@@ -23,7 +23,7 @@ namespace examples {
     received = 0;
 
     string msg1 = "CONNECTED!";
-    mCommunicator.write (msg1.c_str (), msg1.length ());
+    mCommunicator.write (msg1.c_str (), msg1.size ());
   };
 
   void ServerSockReaderHandler::handle ()
@@ -38,8 +38,8 @@ namespace examples {
       if (s)
       {
         stringstream response;
-        response << "received " << request.str ().length () << " bytes";
-        received += request.str ().length ();
+        response << "received " << request.str ().size () << " bytes";
+        received += request.str ().size ();
         LOGMSG (LOW_LEVEL, "ServerSockReaderHandler::%s () - response[%s], received: %Zu bytes\n", __FUNCTION__, response.str ().c_str (), received);
         mCommunicator.write (response);
       }
