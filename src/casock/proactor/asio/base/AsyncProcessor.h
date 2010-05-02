@@ -39,8 +39,6 @@ namespace casock {
   namespace proactor {
     namespace asio {
       namespace base {
-        class SocketChannel;
-
         class AsyncProcessor
         {
           public:

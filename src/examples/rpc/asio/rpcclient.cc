@@ -18,23 +18,32 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
   public:
     HelloHandler (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse)
       //: casock::rpc::protobuf::client::RPCResponseHandler (pController), mpResponse (pResponse)
-      : mpResponse (pResponse)
+      : mpController (pController), mpResponse (pResponse)
     { }
 
   public:
     void callback ()
     {
-      LOGMSG (NO_DEBUG, "HelloHandler::%s () - message [%s]\n", __FUNCTION__, mpResponse->message ().c_str ());
+      LOGMSG (NO_DEBUG, "HelloHandler::%s ()\n", __FUNCTION__);
 
-      request.set_id (2);
-      request.set_message ("shutdown");
-      HelloResponse* response = new HelloResponse ();
-      casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+      if (! mpController->Failed ())
+      {
+        LOGMSG (NO_DEBUG, "HelloHandler::%s () - message [%s]\n", __FUNCTION__, mpResponse->message ().c_str ());
 
-      service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, controller, response));
+        request.set_id (2);
+        request.set_message ("shutdown");
+        HelloResponse* response = new HelloResponse ();
+        casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+
+        service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, controller, response));
+      }
+
+      delete mpController;
+      delete mpResponse;
     }
 
   private:
+    casock::rpc::protobuf::client::RPCCallController* mpController;
     HelloResponse* mpResponse;
 };
 
@@ -90,7 +99,11 @@ void Done ()
 
 void Done (casock::rpc::protobuf::client::RPCCallController* pController, HelloResponse* pResponse)
 {
-  LOGMSG (NO_DEBUG, "Done () - message [%s]\n", pResponse->message ().c_str ());
+  LOGMSG (NO_DEBUG, "%s ()\n", __FUNCTION__);
+
+  if (! pController->Failed ())
+    LOGMSG (NO_DEBUG, "%s () - message [%s]\n", __FUNCTION__, pResponse->message ().c_str ());
+
   delete pController;
   delete pResponse;
 }

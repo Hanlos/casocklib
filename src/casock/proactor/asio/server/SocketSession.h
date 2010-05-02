@@ -56,7 +56,7 @@ namespace casock {
           protected:
             virtual void close ();
 
-          protected:
+          private:
             SocketServer& mrSocketServer;
         };
       }

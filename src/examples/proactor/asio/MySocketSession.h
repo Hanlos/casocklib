@@ -93,8 +93,8 @@ namespace examples {
 
               if (mShutdown)
               {
-                //close ();
-                mrSocketServer.close ();
+                close ();
+                //mrSocketServer.close ();
               }
               else
                 readsome (buffer.buff (), buffer.size (), ::boost::bind (&MySocketSession::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
