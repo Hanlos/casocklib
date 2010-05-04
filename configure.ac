@@ -31,6 +31,7 @@ AC_CHECK_HEADERS([arpa/inet.h fcntl.h netdb.h netinet/in.h stdlib.h string.h str
 AC_HEADER_STDBOOL
 AC_C_CONST
 AC_C_INLINE
+AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SSIZE_T
 AC_HEADER_TIME
@@ -56,6 +57,15 @@ DIR_BOOST_INC_DEFAULT=$DIR_BOOST/include
 
 # Tools
 
+# CxxTest (cxxtest.tigris.org)
+AC_PATH_PROG([CXXTESTGEN], [cxxtestgen.pl], [cxxtestgen.pl], [/usr/local/cxxtest-3.10.1/cxxtest/cxxtestgen.pl])
+
+DIR_CXXTEST_INC_DEFAULT='/usr/local/cxxtest-3.10.1/cxxtest'
+#DIR_CXXTEST_INC_DEFAULT='/usr/include'
+
+# CxxTest code generator flags:
+CXXTFLAGS='--error-printer'
+
 #   protoc: Google Protocol Buffers (http://code.google.com/p/protobuf)
 AC_PATH_PROG([PROTOC], [protoc], [protoc], [$DIR_PROTOBUF/bin])
 
@@ -69,6 +79,16 @@ CPPFLAGS='-g -Wall -O -Wno-write-strings -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCX
 CFLAGS=
 CXXFLAGS=
 
+
+dnl **********************************************************************
+dnl Check for the presence of cxxtest headers
+dnl **********************************************************************
+
+AC_ARG_WITH(cxxtest-includes,
+            AC_HELP_STRING([--with-cxxtest-includes=DIR],
+                           [Specify location of cxxtest headers]),
+                           [CPPFLAGS="$CPPFLAGS -I$withval"],
+                           [CPPFLAGS="$CPPFLAGS -I${DIR_CXXTEST_INC_DEFAULT}"])
 
 dnl **********************************************************************
 dnl Check for presence of Google Protocol Buffers libraries and headers
@@ -106,6 +126,7 @@ AC_ARG_WITH(boost-libs,
 AC_SUBST(LIB_PROTOBUF_PATH)
 AC_SUBST(LIB_BOOST_PATH)
 AC_SUBST(INCLUDES)
+AC_SUBST(CXXTFLAGS)
 
 AC_CONFIG_FILES([Makefile
                  src/Makefile
@@ -147,5 +168,8 @@ AC_CONFIG_FILES([Makefile
                  src/examples/rpc/sigio/Makefile
                  src/tests/Makefile
                  src/tests/proactor/Makefile
-                 src/tests/proactor/asio/Makefile])
+                 src/tests/proactor/asio/Makefile
+                 src/tests/rpc/Makefile
+                 src/tests/rpc/asio/Makefile
+                 src/tests/rpc/asio/protobuf/Makefile])
 AC_OUTPUT
