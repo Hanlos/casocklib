@@ -1,1 +1,1 @@
-SUBRIRS = protobuf
+SUBDIRS = protobuf

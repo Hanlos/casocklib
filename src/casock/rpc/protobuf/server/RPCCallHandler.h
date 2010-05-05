@@ -152,6 +152,10 @@ namespace casock {
 
               const RpcRequest* const pRpcRequest = pCall->request ();
 
+              LOGMSG (NO_DEBUG, "RPCCallhandler<_TpResponseHandler>::%s () - mpService [%p]\n", __FUNCTION__, mpService);
+              LOGMSG (NO_DEBUG, "RPCCallhandler<_TpResponseHandler>::%s () - mpService->GetDescriptor () [%p]\n", __FUNCTION__, mpService->GetDescriptor ());
+              LOGMSG (NO_DEBUG, "RPCCallhandler<_TpResponseHandler>::%s () - pRpcRequest [%p]\n", __FUNCTION__, pRpcRequest);
+
               const ::google::protobuf::MethodDescriptor* method = mpService->GetDescriptor ()->FindMethodByName (pRpcRequest->operation ());
 
               if (method != NULL)

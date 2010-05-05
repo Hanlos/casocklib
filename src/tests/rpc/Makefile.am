@@ -1,1 +1,1 @@
-SUBDIRS = asio
+SUBDIRS = protobuf asio

@@ -1,0 +1,15 @@
+package tests.rpc.protobuf.api;
+
+message Test1Request {
+  required uint32 id = 1;
+  required uint32 message = 2;
+}
+
+message Test1Response {
+  required uint32 id = 1;
+  required uint32 message = 2;
+}
+
+service Test1Service {
+  rpc Test1Call (Test1Request) returns (Test1Response);
+}

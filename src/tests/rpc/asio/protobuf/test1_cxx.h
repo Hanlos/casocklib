@@ -35,17 +35,61 @@
 #define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_CXX_H_
 
 #include <cxxtest/TestSuite.h>
+#include "casock/proactor/asio/base/AsyncProcessor.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
+#include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
+#include "tests/rpc/asio/protobuf/Test1ServiceImpl.h"
+#include "tests/rpc/asio/protobuf/Test1ResponseHandlerImpl.h"
+#include "tests/rpc/protobuf/api/rpc_test1.pb.h"
+#include "casock/util/Logger.h"
 
 class test1_cxx : public CxxTest::TestSuite
 {
+  private:
+    tests::rpc::asio::protobuf::Test1ServiceImpl mServiceServer;
+    casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
+
   public:
-    void setUp () { }
-    void tearDown () { }
+    void setUp ()
+    {
+      LOGGER->setDebugLevel (MAX_LEVEL);
+      casock::proactor::asio::base::AsyncProcessor::initialize ();
+      mpAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
+    }
+
+    void tearDown ()
+    {
+      casock::proactor::asio::base::AsyncProcessor::destroy ();
+      LOGGER->finalize ();
+    }
 
   public:
     void test_basic ()
     {
-      TS_ASSERT_EQUALS (1, 1);
+      /*! server */
+      casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (*mpAsyncProcessor, 2000, &mServiceServer);
+      mServiceServer.setProxy (&serverProxy);
+      serverProxy.start ();
+
+      /*! client */
+      casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
+      tests::rpc::protobuf::api::Test1Service* pServiceClient = new tests::rpc::protobuf::api::Test1Service::Stub (&clientProxy);
+
+      /*! sending message */
+      tests::rpc::protobuf::api::Test1Request* request = new tests::rpc::protobuf::api::Test1Request ();
+      tests::rpc::protobuf::api::Test1Response* response = new tests::rpc::protobuf::api::Test1Response ();
+      casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+
+      request->set_id (1);
+      request->set_message (2);
+      tests::rpc::asio::protobuf::Test1ResponseHandlerImpl handler (controller, response);
+      pServiceClient->Test1Call (controller, request, response, handler.closure ());
+
+      /*! running async processor */
+      mpAsyncProcessor->run ();
+
+      TS_ASSERT_EQUALS (request->id (), response->id ());
+      TS_ASSERT_EQUALS (request->message (), response->message ());
     }
 };
 
