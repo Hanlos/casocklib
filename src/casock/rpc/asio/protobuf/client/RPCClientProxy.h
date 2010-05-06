@@ -114,6 +114,9 @@ namespace casock {
 
 							void onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pCall);
 
+            public:
+              void close ();
+
             private:
               RPCSocketClient*  mpRPCSocketClient;
               RPCChannel*       mpChannel;

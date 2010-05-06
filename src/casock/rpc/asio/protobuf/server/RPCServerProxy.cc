@@ -75,6 +75,11 @@ namespace casock {
 
             m_running = false;
           }
+
+          void RPCServerProxy::stopReceivingCalls ()
+          {
+            mpSocketServer->closeAcceptor ();
+          }
         }
       }
     }

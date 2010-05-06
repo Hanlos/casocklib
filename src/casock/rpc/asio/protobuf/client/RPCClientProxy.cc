@@ -82,6 +82,11 @@ namespace casock {
               mpCallQueue->push (pCall);
 						}
 					}
+
+          void RPCClientProxy::close ()
+          {
+            mpRPCSocketClient->close ();
+          }
         }
       }
     }

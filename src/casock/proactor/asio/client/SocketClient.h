@@ -57,6 +57,7 @@ namespace casock {
           public:
             void syncConnect ();
             void asyncConnect ();
+            using casock::proactor::asio::base::SocketChannel::close;
 
           private:
             ::asio::ip::tcp::resolver         m_resolver;

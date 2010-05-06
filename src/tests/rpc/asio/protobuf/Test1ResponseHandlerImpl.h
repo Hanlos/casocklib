@@ -33,6 +33,7 @@
 #ifndef __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_RESPONSE_HANDLER_IMPL_H_
 #define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_RESPONSE_HANDLER_IMPL_H_
 
+#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
 #include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "tests/rpc/protobuf/api/rpc_test1.pb.h"
@@ -50,15 +51,24 @@ namespace tests {
             { }
 
           public:
+            void setProxy (casock::rpc::asio::protobuf::client::RPCClientProxy* pClientProxy)
+            {
+              mpClientProxy = pClientProxy;
+            }
+
+          public:
             void callback ()
             {
               LOGMSG (NO_DEBUG, "Test1ResponseHandlerImpl::%s ()\n", __FUNCTION__);
 
               if (! mpController->Failed ())
                 LOGMSG (NO_DEBUG, "Test1ResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
+
+              mpClientProxy->close ();
             }
 
           private:
+            casock::rpc::asio::protobuf::client::RPCClientProxy* mpClientProxy;
             casock::rpc::protobuf::client::RPCCallController* mpController;
             tests::rpc::protobuf::api::Test1Response* mpResponse;
         };

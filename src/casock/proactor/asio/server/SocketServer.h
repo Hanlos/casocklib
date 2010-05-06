@@ -62,6 +62,7 @@ namespace casock {
           public:
             void start ();
             void close ();
+            void closeAcceptor ();
             void removeSession (SocketSession* pSocketSession);
 
           private:

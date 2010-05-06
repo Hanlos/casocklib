@@ -86,6 +86,7 @@ namespace casock {
             public:
               void start ();
               void stop ();
+              void stopReceivingCalls ();
 
             private:
               RPCSocketServer*  mpSocketServer;

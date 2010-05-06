@@ -96,6 +96,11 @@ namespace casock {
           mSessionSet.clear ();
         }
 
+        void SocketServer::closeAcceptor ()
+        {
+          m_acceptor.close ();
+        }
+
         void SocketServer::removeSession (SocketSession* pSocketSession)
         {
           mSessionSet.erase (pSocketSession);

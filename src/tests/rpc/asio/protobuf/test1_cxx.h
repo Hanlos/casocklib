@@ -83,6 +83,7 @@ class test1_cxx : public CxxTest::TestSuite
       request->set_id (1);
       request->set_message (2);
       tests::rpc::asio::protobuf::Test1ResponseHandlerImpl handler (controller, response);
+      handler.setProxy (&clientProxy);
       pServiceClient->Test1Call (controller, request, response, handler.closure ());
 
       /*! running async processor */

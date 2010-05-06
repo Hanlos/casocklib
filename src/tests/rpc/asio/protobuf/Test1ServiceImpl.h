@@ -61,8 +61,7 @@ namespace tests {
               response->set_message (request->message ());
               done->Run ();
 
-              sleep (1);
-              mpServerProxy->stop ();
+              mpServerProxy->stopReceivingCalls ();
             }
 
           private:
