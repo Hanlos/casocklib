@@ -80,9 +80,9 @@ namespace casock {
 			return m_buff;
 		}
 
-		char* Buffer::buff ()
+		char* Buffer::buff (const size_t& offset)
 		{
-			return m_buff;
+			return m_buff + offset;
 		}
 
 		void Buffer::clear ()

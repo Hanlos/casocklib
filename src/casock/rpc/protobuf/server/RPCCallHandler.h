@@ -173,7 +173,7 @@ namespace casock {
                 ::google::protobuf::Message* response = mpService->GetResponsePrototype (method).New ();
 
                 /*!
-                 * The RPCCallEntry will be deleted on callback.
+                 * The RPCCallEntry will be deleted on RPCCallHandler<_TpResponseHandler>::callback (RPCCallEntry*).
                  */
                 ::google::protobuf::Closure* closure = ::google::protobuf::NewCallback (RPCCallHandler<_TpResponseHandler>::callback, new RPCCallEntry (pCall, response)); //, controller));
 

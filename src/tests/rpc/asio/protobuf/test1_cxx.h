@@ -40,7 +40,7 @@
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
 #include "tests/rpc/asio/protobuf/Test1ServiceImpl.h"
 #include "tests/rpc/asio/protobuf/Test1ResponseHandlerImpl.h"
-#include "tests/rpc/protobuf/api/rpc_test1.pb.h"
+#include "tests/rpc/protobuf/api/rpc_test.pb.h"
 #include "casock/util/Logger.h"
 
 class test1_cxx : public CxxTest::TestSuite
@@ -73,18 +73,18 @@ class test1_cxx : public CxxTest::TestSuite
 
       /*! client */
       casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
-      tests::rpc::protobuf::api::Test1Service* pServiceClient = new tests::rpc::protobuf::api::Test1Service::Stub (&clientProxy);
+      tests::rpc::protobuf::api::TestService* pServiceClient = new tests::rpc::protobuf::api::TestService::Stub (&clientProxy);
 
       /*! sending message */
-      tests::rpc::protobuf::api::Test1Request* request = new tests::rpc::protobuf::api::Test1Request ();
-      tests::rpc::protobuf::api::Test1Response* response = new tests::rpc::protobuf::api::Test1Response ();
+      tests::rpc::protobuf::api::TestRequest* request = new tests::rpc::protobuf::api::TestRequest ();
+      tests::rpc::protobuf::api::TestResponse* response = new tests::rpc::protobuf::api::TestResponse ();
       casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
 
       request->set_id (1);
       request->set_message (2);
       tests::rpc::asio::protobuf::Test1ResponseHandlerImpl handler (controller, response);
       handler.setProxy (&clientProxy);
-      pServiceClient->Test1Call (controller, request, response, handler.closure ());
+      pServiceClient->TestCall (controller, request, response, handler.closure ());
 
       /*! running async processor */
       mpAsyncProcessor->run ();

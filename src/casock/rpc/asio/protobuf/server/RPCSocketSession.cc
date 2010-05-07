@@ -67,6 +67,11 @@ namespace casock {
 
               LOGMSG (HIGH_LEVEL, "RPCSocketSession::%s () - request received: %d bytes - id [%u], operation [%s]\n", __FUNCTION__, request->ByteSize (), request->id (), request->operation ().c_str ());
 
+              /*!
+               * The RPCCall<RPCCallResponseHandler> will be deleted by RPCCallEntry destructor.
+               * The RPCCallEntry will be created by RPCCallHandler<_TpResponseHandler>::run () 
+               *  and deleted on RPCCallHandler<_TpResponseHandler>::callback (RPCCallEntry*).
+               */
               mrCallQueue.push (new casock::rpc::protobuf::server::RPCCall<RPCCallResponseHandler> (this, request));
 
               mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
@@ -85,7 +90,7 @@ namespace casock {
             //pLock->release ();
           }
 
-          void RPCSocketSession::callback (const RpcResponse& response)
+          void RPCSocketSession::callback (const casock::rpc::protobuf::api::RpcResponse& response)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
 

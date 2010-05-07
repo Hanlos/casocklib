@@ -12,6 +12,7 @@ void Done (casock::rpc::protobuf::client::RPCCallController* pController, HelloR
 casock::rpc::asio::protobuf::client::RPCClientProxy* proxy;
 HelloService* service;
 HelloRequest request;
+HelloRequest request2;
 
 class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 {
@@ -26,16 +27,28 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
     {
       LOGMSG (NO_DEBUG, "HelloHandler::%s ()\n", __FUNCTION__);
 
-      if (! mpController->Failed ())
+      if (! mpController->Failed () && mpResponse->id () < 2)
       {
         LOGMSG (NO_DEBUG, "HelloHandler::%s () - message [%s]\n", __FUNCTION__, mpResponse->message ().c_str ());
 
-        request.set_id (2);
+//        // using the same request and controller to send the next messages
+//        request.set_id (request.id () + 1);
+//        request.set_message (request.message () + " / " + "Hello!");
+//        service->HelloCall (mpController, &request, mpResponse, closure ());
+      }
+      else
+      {
+        LOGMSG (NO_DEBUG, "HelloHandler::%s () - message [%s]\n", __FUNCTION__, mpResponse->message ().c_str ());
+
+        request.set_id (3);
         request.set_message ("shutdown");
         HelloResponse* response = new HelloResponse ();
         casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
 
         service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, controller, response));
+
+//        delete mpController;
+//        delete mpResponse;
       }
 
       delete mpController;
@@ -62,17 +75,24 @@ int main ()
     service = new HelloService::Stub (proxy);
 
     HelloResponse* response = new HelloResponse ();
+    HelloResponse* response2 = new HelloResponse ();
     casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+    casock::rpc::protobuf::client::RPCCallController* controller2 = new casock::rpc::protobuf::client::RPCCallController ();
 
     request.set_id (1);
     request.set_message ("Hello!");
 
+    request2.set_id (2);
+    request2.set_message ("Hello again!");
+
     HelloHandler handler (controller, response);
+    HelloHandler handler2 (controller2, response2);
     LOGMSG (NO_DEBUG, "%s () - service->HelloCall (...)\n", __FUNCTION__);
 
     try
     {
       service->HelloCall (controller, &request, response, handler.closure ());
+      service->HelloCall (controller2, &request2, response2, handler2.closure ());
     }
     catch (casock::base::CASClosedConnectionException& e)
     {

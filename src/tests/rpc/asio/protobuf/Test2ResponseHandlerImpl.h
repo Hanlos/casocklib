@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test1ResponseHandlerImpl.h
+ * \file tests/rpc/asio/protobuf/Test2ResponseHandlerImpl.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,10 +30,9 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_RESPONSE_HANDLER_IMPL_H_
-#define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_RESPONSE_HANDLER_IMPL_H_
+#ifndef __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_RESPONSE_HANDLER_IMPL_H_
+#define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_RESPONSE_HANDLER_IMPL_H_
 
-#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
 #include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "tests/rpc/protobuf/api/rpc_test.pb.h"
@@ -43,38 +42,35 @@ namespace tests {
   namespace rpc {
     namespace asio {
       namespace protobuf {
-        class Test1ResponseHandlerImpl : public casock::rpc::protobuf::client::RPCResponseHandler
+        class Test2Manager;
+
+        class Test2ResponseHandlerImpl : public casock::rpc::protobuf::client::RPCResponseHandler
         {
           public:
-            Test1ResponseHandlerImpl (casock::rpc::protobuf::client::RPCCallController* pController, tests::rpc::protobuf::api::TestResponse* pResponse)
-              : mpController (pController), mpResponse (pResponse)
+            Test2ResponseHandlerImpl (casock::rpc::protobuf::client::RPCCallController* pController, tests::rpc::protobuf::api::TestResponse* pResponse, Test2Manager* pManager)
+              : mpController (pController), mpResponse (pResponse), mpManager (pManager)
             { }
-
-          public:
-            void setProxy (casock::rpc::asio::protobuf::client::RPCClientProxy* pClientProxy)
-            {
-              mpClientProxy = pClientProxy;
-            }
 
           public:
             void callback ()
             {
-              LOGMSG (NO_DEBUG, "Test1ResponseHandlerImpl::%s ()\n", __FUNCTION__);
+              LOGMSG (NO_DEBUG, "Test2ResponseHandlerImpl::%s ()\n", __FUNCTION__);
 
               if (! mpController->Failed ())
-                LOGMSG (NO_DEBUG, "Test1ResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
-
-              mpClientProxy->close ();
+              {
+                LOGMSG (NO_DEBUG, "Test2ResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
+                mpManager->setResponseReceivedByID (mpResponse->id ());
+              }
             }
 
           private:
-            casock::rpc::asio::protobuf::client::RPCClientProxy* mpClientProxy;
             casock::rpc::protobuf::client::RPCCallController* mpController;
             tests::rpc::protobuf::api::TestResponse* mpResponse;
+            Test2Manager* mpManager;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_RESPONSE_HANDLER_IMPL_H_
+#endif // __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_RESPONSE_HANDLER_IMPL_H_

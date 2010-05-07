@@ -57,7 +57,6 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace server {
-          using casock::rpc::protobuf::api::RpcResponse;
           using casock::rpc::protobuf::server::RPCCallQueue;
           using casock::rpc::protobuf::server::RPCCallResponseHandler;
 
@@ -75,7 +74,7 @@ namespace casock {
               void onSentResponse (const ::asio::error_code& error); //, casock::util::Lock* pLock);
 
             public:
-              void callback (const RpcResponse& response);
+              void callback (const casock::rpc::protobuf::api::RpcResponse& response);
 
             private:
               RPCServerCommunicator                 mCommunicator;

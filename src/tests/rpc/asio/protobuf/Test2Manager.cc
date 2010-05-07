@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/util/Buffer.h
+ * \file tests/rpc/asio/protobuf/Test2Manager.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,39 +30,28 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
-#define __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
+#include "tests/rpc/asio/protobuf/Test2Manager.h"
 
-#include <cstring>
+namespace tests {
+  namespace rpc {
+    namespace asio {
+      namespace protobuf {
+        uint32 Test2Manager::mID = 0;
 
-namespace casock {
-	namespace util {
-		class Buffer
-		{
-			public:
-				Buffer (const size_t& size = DEFAULT_SIZE);
-				Buffer (const char* buff, const size_t& size);
-				Buffer (const Buffer& rBuffer);
-				virtual ~Buffer ();
+        Test2Manager::CallEntry::CallEntry (
+            const uint32& id,
+            tests::rpc::protobuf::api::TestRequest* request,
+            tests::rpc::protobuf::api::TestResponse* response,
+            casock::rpc::protobuf::client::RPCCallController* controller,
+            Test2ResponseHandlerImpl* handler)
+          : mID (id), mpRequest (request), mpResponse (response), mpController (controller), mpHandler (handler), mResponseReceived (false)
+        { }
 
-			public:
-				Buffer& operator=(const Buffer& rBuffer);
-				const bool operator==(const char* buff) const;
-
-			public:
-				const size_t& size () const;
-				const char* data () const;
-        char* buff (const size_t& offset = 0);
-				void clear ();
-
-			private:
-				size_t m_size;
-				char* m_buff;
-
-			public:
-				static const size_t DEFAULT_SIZE = 1024;
-		};
-	}
+        void Test2Manager::CallEntry::setResponseReceived (const bool& responseReceived)
+        {
+          mResponseReceived = responseReceived;
+        }
+      }
+    }
+  }
 }
-
-#endif // __CASOCKLIB__CASOCK_UTIL__BUFFER_H_

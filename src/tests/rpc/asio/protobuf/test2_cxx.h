@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/util/Buffer.h
+ * \file tests/rpc/asio/protobuf/test2_cxx.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,39 +30,37 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
-#define __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
 
-#include <cstring>
+#ifndef __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_CXX_H_
+#define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_CXX_H_
 
-namespace casock {
-	namespace util {
-		class Buffer
-		{
-			public:
-				Buffer (const size_t& size = DEFAULT_SIZE);
-				Buffer (const char* buff, const size_t& size);
-				Buffer (const Buffer& rBuffer);
-				virtual ~Buffer ();
+#include <cxxtest/TestSuite.h>
+#include "casock/proactor/asio/base/AsyncProcessor.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
+#include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
+#include "tests/rpc/asio/protobuf/Test1ServiceImpl.h"
+#include "tests/rpc/asio/protobuf/Test1ResponseHandlerImpl.h"
+#include "tests/rpc/protobuf/api/rpc_test.pb.h"
+#include "casock/util/Logger.h"
 
-			public:
-				Buffer& operator=(const Buffer& rBuffer);
-				const bool operator==(const char* buff) const;
+class test2_cxx : public CxxTest::TestSuite
+{
+  public:
+    void setUp ()
+    {
+      LOGGER->setDebugLevel (MAX_LEVEL);
+    }
 
-			public:
-				const size_t& size () const;
-				const char* data () const;
-        char* buff (const size_t& offset = 0);
-				void clear ();
+    void tearDown ()
+    {
+      LOGGER->finalize ();
+    }
 
-			private:
-				size_t m_size;
-				char* m_buff;
+  public:
+    void test_basic ()
+    {
+      TS_ASSERT_EQUALS (1, 1);
+    }
+};
 
-			public:
-				static const size_t DEFAULT_SIZE = 1024;
-		};
-	}
-}
-
-#endif // __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
+#endif // __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_CXX_H_

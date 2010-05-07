@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/util/Buffer.h
+ * \file tests/rpc/asio/protobuf/Test2ServerThread.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,39 +30,23 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
-#define __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
+#ifndef __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_SERVER_THREAD_H_
+#define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_SERVER_THREAD_H_
 
-#include <cstring>
+#include "casock/util/Thread.h"
 
-namespace casock {
-	namespace util {
-		class Buffer
-		{
-			public:
-				Buffer (const size_t& size = DEFAULT_SIZE);
-				Buffer (const char* buff, const size_t& size);
-				Buffer (const Buffer& rBuffer);
-				virtual ~Buffer ();
-
-			public:
-				Buffer& operator=(const Buffer& rBuffer);
-				const bool operator==(const char* buff) const;
-
-			public:
-				const size_t& size () const;
-				const char* data () const;
-        char* buff (const size_t& offset = 0);
-				void clear ();
-
-			private:
-				size_t m_size;
-				char* m_buff;
-
-			public:
-				static const size_t DEFAULT_SIZE = 1024;
-		};
-	}
+namespace tests {
+  namespace rpc {
+    namespace asio {
+      namespace protobuf {
+        class Test2ServerThread : public casock::util::Thread
+        {
+          public:
+            void run ();
+        };
+      }
+    }
+  }
 }
 
-#endif // __CASOCKLIB__CASOCK_UTIL__BUFFER_H_
+#endif // __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_SERVER_THREAD_H_

@@ -1,10 +1,10 @@
-RPC_PROTO = rpc_test1.proto
-RPC_PB_H  = rpc_test1.pb.h
-RPC_PB_C  = rpc_test1.pb.cc
+RPC_PROTO = rpc_test.proto
+RPC_PB_H  = rpc_test.pb.h
+RPC_PB_C  = rpc_test.pb.cc
 
-noinst_LTLIBRARIES = libcasrpcpbt1api.la
+noinst_LTLIBRARIES = libcasrpcpbtapi.la
 
-libcasrpcpbt1api_la_SOURCES = $(RPC_PB_C)
+libcasrpcpbtapi_la_SOURCES  = $(RPC_PB_C)
 BUILT_SOURCES               = $(RPC_PB_C)
 
 $(RPC_PB_C): $(RPC_PROTO)
