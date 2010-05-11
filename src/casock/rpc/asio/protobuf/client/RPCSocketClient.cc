@@ -70,6 +70,8 @@ namespace casock {
 
           void RPCSocketClient::onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
           {
+            LOGMSG (MAX_LEVEL, "RPCSocketClient::%s ()\n", __FUNCTION__);
+
             if (! error)
             {
               LOGMSG (LOW_LEVEL, "RPCReaderHandler::%s () - no error!\n", __FUNCTION__);

@@ -57,6 +57,7 @@ namespace casock {
 
           void RPCClientCommunicator::recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
+            LOGMSG (NO_DEBUG, "RPCClientCommunicator::%s ()\n", __FUNCTION__);
             recvMessage (handler);
           }
         }

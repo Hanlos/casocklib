@@ -54,7 +54,15 @@ namespace casock {
           void RPCSocketSession::onConnect ()
           {
             LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
-            mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
+
+            try
+            {
+              mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
+            }
+            catch (casock::base::CASClosedConnectionException& e)
+            {
+              LOGMSG (NO_DEBUG, "RPCSocketSession::%s () - catch (casock::base::CASClosedConnectionException&) [%s]\n", __FUNCTION__, e.what ());
+            }
           }
 
           void RPCSocketSession::onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
@@ -74,7 +82,15 @@ namespace casock {
                */
               mrCallQueue.push (new casock::rpc::protobuf::server::RPCCall<RPCCallResponseHandler> (this, request));
 
-              mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
+              try
+              {
+                mCommunicator.recvRequest (::boost::bind (&RPCSocketSession::onRecvRequest, this, ::asio::placeholders::error, _2));
+              }
+              catch (casock::base::CASClosedConnectionException& e)
+              {
+                LOGMSG (NO_DEBUG, "RPCSocketSession::%s () - catch (casock::base::CASClosedConnectionException&) [%s]\n", __FUNCTION__, e.what ());
+                invalidateCalls ();
+              }
             }
             else
             {
@@ -82,24 +98,23 @@ namespace casock {
             }
           }
 
-          void RPCSocketSession::onSentResponse (const ::asio::error_code& error) //, casock::util::Lock* pLock)
+          void RPCSocketSession::onSentResponse (const ::asio::error_code& error)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketSession::%s () - error [%d]\n", __FUNCTION__, error.value ());
-            //pLock->get ();
-            //pLock->signal ();
-            //pLock->release ();
           }
 
           void RPCSocketSession::callback (const casock::rpc::protobuf::api::RpcResponse& response)
           {
             LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
 
-            //casock::util::Lock* pLock = new casock::util::Lock ();
-            //pLock->get ();
-            mCommunicator.sendResponse (response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error)); //, pLock));
-            //pLock->wait ();
-            //pLock->release ();
-            //delete pLock;
+            try
+            {
+              mCommunicator.sendResponse (response, ::boost::bind (&RPCSocketSession::onSentResponse, this, ::asio::placeholders::error));
+            }
+            catch (casock::base::CASClosedConnectionException& e)
+            {
+              LOGMSG (NO_DEBUG, "RPCSocketSession::%s () - catch (casock::base::CASClosedConnectionException&) [%s]\n", __FUNCTION__, e.what ());
+            }
           }
         }
       }
