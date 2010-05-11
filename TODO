@@ -7,3 +7,15 @@
 * Documentation!!!
 	- We need Doxygen comments;
 	- We need update the UML diagrams in astah-community document (doc/casocklib.asta)
+
+=== casock::rpc::protobuf::asio ===
+
+* Implement timeouts for calls, it should be possible for the user to decide what timeout to use;
+* Implement a configurable number of threads for client and server;
+* Make tests using more than 1 proxy (in client and server);
+* Implement different failure types (timeout is an example);
+* Implement a callback to AsynchProcessor::run (). It should be possible for the user to know if and when the processor started to run;
+* Make tests simulating failures and crashes;
+* Implement a way to reject new calls and/or connections when the server queue is too long;
+* It should be possible to configure a maximum number of concurrent connections, requst queue size, and request calls per second;
+* Implement failure handling: if the server crashes, the client handles the calls. If the client craches, the server discards the calls.
