@@ -35,6 +35,18 @@
 
 #include "casock/util/Thread.h"
 
+namespace casock {
+  namespace rpc {
+    namespace asio {
+      namespace protobuf {
+        namespace client {
+          class RPCClientProxy;
+        }
+      }
+    }
+  }
+}
+
 namespace tests {
   namespace rpc {
     namespace protobuf {
@@ -56,6 +68,7 @@ namespace tests {
             void setNumCalls (const uint32& calls) { mNumCalls = calls; }
             void setService (tests::rpc::protobuf::api::TestService* pService) { mpService = pService; }
             void setManager (Test2Manager* pManager) { mpManager = pManager; }
+            void setProxy (casock::rpc::asio::protobuf::client::RPCClientProxy* pProxy) { mpProxy = pProxy; }
 
           public:
             void run ();
@@ -64,6 +77,7 @@ namespace tests {
             uint32 mNumCalls;
             tests::rpc::protobuf::api::TestService* mpService;
             Test2Manager* mpManager;
+            casock::rpc::asio::protobuf::client::RPCClientProxy* mpProxy;
         };
       }
     }

@@ -30,10 +30,12 @@
  * $Revision$
  */
 
-#include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "tests/rpc/asio/protobuf/Test2ClientThread.h"
+
+#include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "tests/rpc/asio/protobuf/Test2Manager.h"
 #include "tests/rpc/asio/protobuf/Test2ResponseHandlerImpl.h"
+#include "tests/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.h"
 #include "tests/rpc/protobuf/api/rpc_test.pb.h"
 
 namespace tests {
@@ -61,6 +63,17 @@ namespace tests {
 
             mpManager->addCallEntry (id, request, response, controller, handler);
           }
+
+          uint32 id = Test2Manager::getID ();
+
+          tests::rpc::protobuf::api::TestRequest* request = new tests::rpc::protobuf::api::TestRequest ();
+          tests::rpc::protobuf::api::TestResponse* response = new tests::rpc::protobuf::api::TestResponse ();
+          casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+          tests::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl* handler = new tests::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl (controller, response, mpManager, mpProxy);
+
+          request->set_id (id);
+          request->set_message (id * id);
+          mpService->TestShutdown (controller, request, response, handler->closure ());
         }
       }
     }

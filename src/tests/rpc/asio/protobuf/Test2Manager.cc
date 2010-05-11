@@ -44,12 +44,32 @@ namespace tests {
             tests::rpc::protobuf::api::TestResponse* response,
             casock::rpc::protobuf::client::RPCCallController* controller,
             Test2ResponseHandlerImpl* handler)
-          : mID (id), mpRequest (request), mpResponse (response), mpController (controller), mpHandler (handler), mResponseReceived (false)
+          : mID (id), mpRequest (request), mpResponse (response), mpController (controller), mpHandler (handler)
         { }
 
-        void Test2Manager::CallEntry::setResponseReceived (const bool& responseReceived)
+        void Test2Manager::addCallEntry (
+            const uint32& id,
+            tests::rpc::protobuf::api::TestRequest* request,
+            tests::rpc::protobuf::api::TestResponse* response,
+            casock::rpc::protobuf::client::RPCCallController* controller,
+            Test2ResponseHandlerImpl* handler)
         {
-          mResponseReceived = responseReceived;
+          casock::util::SafeLock lock (mCallEntryHash);
+          mCallEntryHash [id] = new CallEntry (id, request, response, controller, handler);
+        }
+
+        void Test2Manager::setResponseReceivedByID (const uint32& id)
+        {
+          casock::util::SafeLock lockHash (mCallEntryHash);
+
+          if (mCallEntryHash.find (id) != mCallEntryHash.end ())
+          {
+            CallEntry* pEntry = mCallEntryHash [id];
+            mCallEntryHash.erase (id);
+
+            casock::util::SafeLock lockRespHash (mCallEntryRespHash);
+            mCallEntryRespHash [id] = pEntry;
+          }
         }
       }
     }

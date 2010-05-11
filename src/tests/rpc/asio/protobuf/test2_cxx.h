@@ -38,28 +38,60 @@
 #include "casock/proactor/asio/base/AsyncProcessor.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
-#include "tests/rpc/asio/protobuf/Test1ServiceImpl.h"
-#include "tests/rpc/asio/protobuf/Test1ResponseHandlerImpl.h"
+#include "tests/rpc/asio/protobuf/Test2ServiceImpl.h"
+#include "tests/rpc/asio/protobuf/Test2Manager.h"
+#include "tests/rpc/asio/protobuf/Test2ClientThread.h"
 #include "tests/rpc/protobuf/api/rpc_test.pb.h"
 #include "casock/util/Logger.h"
 
 class test2_cxx : public CxxTest::TestSuite
 {
+  private:
+    tests::rpc::asio::protobuf::Test2Manager      mManager;
+    tests::rpc::asio::protobuf::Test2ServiceImpl  mServiceServer;
+    tests::rpc::asio::protobuf::Test2ClientThread mClientThread;
+    casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
+
   public:
     void setUp ()
     {
-      LOGGER->setDebugLevel (MAX_LEVEL);
+      LOGGER->setDebugLevel (NO_DEBUG);
+      casock::proactor::asio::base::AsyncProcessor::initialize ();
+      mpAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
     }
 
     void tearDown ()
     {
+      casock::proactor::asio::base::AsyncProcessor::destroy ();
       LOGGER->finalize ();
     }
 
   public:
     void test_basic ()
     {
-      TS_ASSERT_EQUALS (1, 1);
+      size_t numCalls = 10;
+
+      /*! server */
+      casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (*mpAsyncProcessor, 2000, &mServiceServer);
+      mServiceServer.setProxy (&serverProxy);
+      serverProxy.start ();
+
+      /*! client */
+      casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
+      tests::rpc::protobuf::api::TestService* pServiceClient = new tests::rpc::protobuf::api::TestService::Stub (&clientProxy);
+
+      /*! running client thread */
+      mClientThread.setNumCalls (numCalls);
+      mClientThread.setService (pServiceClient);
+      mClientThread.setManager (&mManager);
+      mClientThread.setProxy (&clientProxy);
+      mClientThread.start ();
+
+      /*! running async processor */
+      mpAsyncProcessor->run ();
+
+      TS_ASSERT (mManager.getCallEntryHash ().empty ());
+      TS_ASSERT_EQUALS (mManager.getCallEntryRespHash ().size (), static_cast<size_t> (numCalls));
     }
 };
 

@@ -64,7 +64,15 @@ namespace tests {
               if (! mpController->Failed ())
                 LOGMSG (NO_DEBUG, "Test1ResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
 
-              mpClientProxy->close ();
+              try
+              {
+                mpClientProxy->close ();
+              }
+              catch (::std::exception& e)
+              {
+                LOGMSG (NO_DEBUG, "Test1ResponseHandlerImpl::%s () - catch (::std::exception&) [%s]\n", __FUNCTION__, e.what ());
+                throw e;
+              }
             }
 
           private:

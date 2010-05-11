@@ -4,7 +4,7 @@ CXXSRCS_TEST2		= test2_cxx.cc
 CXXTSRCS        = $(CXXTSRCS_TEST1) $(CXXSRCS_TEST2)
 
 SRCS_TEST1      = $(CXXTSRCS_TEST1)
-SRCS_TEST2			= $(CXXSRCS_TEST2) Test2Manager.cc Test2ClientThread.cc
+SRCS_TEST2			= $(CXXSRCS_TEST2) Test2Manager.cc Test2ClientThread.cc Test2ResponseHandlerImpl.cc Test2ShutdownResponseHandlerImpl.cc
 
 LIB_UTIL      = $(top_srcdir)/src/casock/util/libcasutil.la
 LIB_RPCCLIENT = $(top_srcdir)/src/casock/rpc/asio/protobuf/client/libcasrpcaiopbclient.la

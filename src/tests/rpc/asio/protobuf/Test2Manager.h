@@ -35,6 +35,7 @@
 
 #include "casock/util/Thread.h"
 #include "casock/util/LockableHash.h"
+#include "casock/util/SafeLock.h"
 
 namespace casock {
   namespace rpc {
@@ -72,16 +73,12 @@ namespace tests {
                     casock::rpc::protobuf::client::RPCCallController* controller,
                     Test2ResponseHandlerImpl* handler);
 
-              public:
-                void setResponseReceived (const bool& responseReceived);
-
               private:
                 uint32 mID;
                 tests::rpc::protobuf::api::TestRequest* mpRequest;
                 tests::rpc::protobuf::api::TestResponse* mpResponse;
                 casock::rpc::protobuf::client::RPCCallController* mpController;
                 Test2ResponseHandlerImpl* mpHandler;
-                bool mResponseReceived;
             };
 
           public:
@@ -93,26 +90,18 @@ namespace tests {
                 tests::rpc::protobuf::api::TestRequest* request,
                 tests::rpc::protobuf::api::TestResponse* response,
                 casock::rpc::protobuf::client::RPCCallController* controller,
-                Test2ResponseHandlerImpl* handler)
-            {
-              mCallEntryHash.lock ();
-              mCallEntryHash [id] = new CallEntry (id, request, response, controller, handler);
-              mCallEntryHash.unlock ();
-            }
+                Test2ResponseHandlerImpl* handler);
 
-            void setResponseReceivedByID (const uint32& id)
-            {
-              mCallEntryHash.lock ();
+            void setResponseReceivedByID (const uint32& id);
 
-              if (mCallEntryHash.find (id) != mCallEntryHash.end ())
-                mCallEntryHash [id]->setResponseReceived (true);
 
-              mCallEntryHash.unlock ();
-            }
+            const casock::util::LockableHash<uint32, CallEntry*>& getCallEntryHash () const { return mCallEntryHash; }
+            const casock::util::LockableHash<uint32, CallEntry*>& getCallEntryRespHash () const { return mCallEntryRespHash; }
 
           private:
             static uint32 mID;
             casock::util::LockableHash<uint32, CallEntry*> mCallEntryHash;
+            casock::util::LockableHash<uint32, CallEntry*> mCallEntryRespHash;
         };
       }
     }

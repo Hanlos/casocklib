@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2ResponseHandlerImpl.h
+ * \file tests/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,8 +30,8 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_RESPONSE_HANDLER_IMPL_H_
-#define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_RESPONSE_HANDLER_IMPL_H_
+#ifndef __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_SHUTDOWN_RESPONSE_HANDLER_IMPL_H_
+#define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_SHUTDOWN_RESPONSE_HANDLER_IMPL_H_
 
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
 
@@ -40,6 +40,14 @@ namespace casock {
     namespace protobuf {
       namespace client {
         class RPCCallController;
+      }
+    }
+
+    namespace asio {
+      namespace protobuf {
+        namespace client {
+          class RPCClientProxy;
+        }
       }
     }
   }
@@ -57,13 +65,14 @@ namespace tests {
       namespace protobuf {
         class Test2Manager;
 
-        class Test2ResponseHandlerImpl : public casock::rpc::protobuf::client::RPCResponseHandler
+        class Test2ShutdownResponseHandlerImpl : public casock::rpc::protobuf::client::RPCResponseHandler
         {
           public:
-            Test2ResponseHandlerImpl (
+            Test2ShutdownResponseHandlerImpl (
                 casock::rpc::protobuf::client::RPCCallController* pController,
                 tests::rpc::protobuf::api::TestResponse* pResponse,
-                Test2Manager* pManager);
+                Test2Manager* pManager,
+                casock::rpc::asio::protobuf::client::RPCClientProxy* pProxy);
 
           public:
             void callback ();
@@ -72,10 +81,11 @@ namespace tests {
             casock::rpc::protobuf::client::RPCCallController* mpController;
             tests::rpc::protobuf::api::TestResponse* mpResponse;
             Test2Manager* mpManager;
+            casock::rpc::asio::protobuf::client::RPCClientProxy* mpProxy;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_RESPONSE_HANDLER_IMPL_H_
+#endif // __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST2_SHUTDOWN_RESPONSE_HANDLER_IMPL_H_
