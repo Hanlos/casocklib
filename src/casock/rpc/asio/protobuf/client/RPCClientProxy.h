@@ -49,7 +49,6 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace api {
-        //class RpcService;
         class RpcRequest;
       }
     }
@@ -59,8 +58,6 @@ namespace casock {
         namespace client {
           class RPCChannel;
           class RPCSocketClient;
-
-          //using casock::rpc::protobuf::api::RpcService;
 
           /*!
            * This is the workflow of an RPC request:
@@ -97,15 +94,7 @@ namespace casock {
 
             private:
               /*!
-               * Overridden from casock::rpc::protobuf::client::RPCClientProxy
-               *
-               * Used by casock::rpc::protobuf::client::RPCClientProxy::CallMethod (...)
-               * to send an RPC request to the RPC server.
-               */
-              //void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request);
-
-              /*!
-               * This is an alternative way to send the message to RPC server.
+               * This is our way to send the message to RPC server.
                * Because we implemented our own controllers, we don't need the
                * RPC service provided by Google Protocol Buffers. We only need
                * the messages and serializations.
@@ -120,7 +109,6 @@ namespace casock {
             private:
               RPCSocketClient*  mpRPCSocketClient;
               RPCChannel*       mpChannel;
-              //RpcService*       mpService;
           };
         }
       }

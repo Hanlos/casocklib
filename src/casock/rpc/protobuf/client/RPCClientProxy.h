@@ -65,18 +65,13 @@ namespace casock {
 
           private:
             /*!
-             * Used to send the an RPC request to the RPC server.
-             *
-             * The Template Method Pattern is used because the mechanisms
-             * to send messages will be defined by sub-classes.
-             */
-            //virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request) = 0;
-
-            /*!
-             * This is an alternative way to send the message to RPC server.
+             * This is our way to send the message to RPC server.
              * Because we implemented our own controllers, we don't need the
              * RPC service provided by Google Protocol Buffers. We only need
              * the messages and serializations.
+             *
+             * The Template Method Pattern is used because the mechanisms
+             * to send messages will be defined by sub-classes.
              */
             virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall) = 0;
 

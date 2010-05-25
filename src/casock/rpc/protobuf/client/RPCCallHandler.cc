@@ -49,7 +49,7 @@ namespace casock {
         {
           while (true)
           {
-            casock::rpc::protobuf::client::RPCCall* pCall = mrCallQueue.get ();
+            casock::rpc::protobuf::client::RPCCall* pCall = mrCallQueue.pop ();
 
             RpcResponse* pRpcResponse = static_cast<RpcResponse*>(pCall->rpcResponse ());
             google::protobuf::RpcController* controller = pCall->controller ();

@@ -50,10 +50,8 @@ namespace casock {
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
-            //mpRPCSocketClient = new RPCSocketClient (rAsyncProcessor, host, port, *this, mCallHash, *mpCallQueue);
             mpRPCSocketClient = new RPCSocketClient (rAsyncProcessor, host, port, mCallHash, *mpCallQueue);
             mpChannel = new RPCChannel (mpRPCSocketClient->communicator ());
-            //mpService = new casock::rpc::protobuf::api::RpcService::Stub (mpChannel);
           }
 
           RPCClientProxy::~RPCClientProxy ()

@@ -146,8 +146,8 @@ namespace casock {
           {
             while (true)
             {
-              LOGMSG (LOW_LEVEL, "RPCCallHandler<_TpResponseHandler>::%s () - calling mrCallQueue.get ()...\n", __FUNCTION__);
-              RPCCall<_TpResponseHandler>* pCall = mrCallQueue.get ();
+              LOGMSG (LOW_LEVEL, "RPCCallHandler<_TpResponseHandler>::%s () - calling mrCallQueue.pop ()...\n", __FUNCTION__);
+              RPCCall<_TpResponseHandler>* pCall = mrCallQueue.pop ();
               LOGMSG (LOW_LEVEL, "RPCCallHandler<_TpResponseHandler>::%s () - got pCall [%p]!\n", __FUNCTION__, pCall);
 
               const RpcRequest* const pRpcRequest = pCall->request ();

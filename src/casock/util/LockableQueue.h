@@ -63,7 +63,7 @@ namespace casock {
             cond_signal ();
           }
 
-          _Tp get ()
+          _Tp pop ()
           {
             SafeLock lock (*this);
 
