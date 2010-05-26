@@ -33,6 +33,8 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_H_
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_H_
 
+#include <vector>
+
 #include <google/protobuf/service.h>
 #include "casock/rpc/protobuf/client/RPCCallHash.h"
 
@@ -47,21 +49,26 @@ namespace casock {
         class RPCCall;
         class RPCCallQueue;
         class RPCCallHandler;
-      }
-    }
+        class RPCCallHandlerFactory;
 
-    namespace protobuf {
-      namespace client {
         using casock::util::LockableHash;
         using casock::rpc::protobuf::client::RPCCall;
         using casock::rpc::protobuf::client::RPCCallQueue;
         using casock::rpc::protobuf::client::RPCCallHandler;
+        using casock::rpc::protobuf::client::RPCCallHandlerFactory;
 
         class RPCClientProxy : public ::google::protobuf::RpcChannel
         {
           protected:
-            RPCClientProxy ();
+            RPCClientProxy (RPCCallHandlerFactory* pCallHandlerFactory = NULL);
             virtual ~RPCClientProxy ();
+
+          private:
+            void addCallHandlers (const uint32& n);
+            void removeCallHandlers (const uint32& n);
+
+          public:
+            void setNumCallHandlers (const uint32& n);
 
           private:
             /*!
@@ -88,8 +95,9 @@ namespace casock {
             void CallMethod (const ::google::protobuf::MethodDescriptor*, ::google::protobuf::RpcController*, const ::google::protobuf::Message*, ::google::protobuf::Message*, ::google::protobuf::Closure*);
 
           protected:
-            RPCCallQueue*   mpCallQueue;
-            RPCCallHandler* mpCallHandler;
+            RPCCallQueue*                   mpCallQueue;
+            ::std::vector<RPCCallHandler*>  mCallHandlers;
+            RPCCallHandlerFactory*          mpCallHandlerFactory;
 
             /*!
              * Used to register the RPC requests, indexed by the RpcRequest ID.
@@ -102,6 +110,9 @@ namespace casock {
 
           private:
             static uint32 mID;
+
+          public:
+            static uint32 DEFAULT_NUM_CALL_HANDLERS;
         };
       }
     }

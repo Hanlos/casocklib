@@ -53,8 +53,11 @@ namespace tests {
           if (! mpController->Failed ())
           {
             LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
+            LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - close proxy\n", __FUNCTION__);
             mpProxy->close ();
           }
+
+          LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - end\n", __FUNCTION__);
         }
       }
     }

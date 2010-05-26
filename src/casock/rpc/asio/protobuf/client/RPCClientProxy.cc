@@ -32,38 +32,47 @@
 
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 
+#include <boost/bind.hpp>
 #include <google/protobuf/descriptor.h>
 
 #include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
-#include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
-#include "casock/rpc/asio/protobuf/client/RPCChannel.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClientImpl.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClientFactory.h"
+#include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
   namespace rpc {
     namespace asio {
       namespace protobuf {
         namespace client {
+          /*
           RPCClientProxy::RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port)
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
-            mpRPCSocketClient = new RPCSocketClient (rAsyncProcessor, host, port, mCallHash, *mpCallQueue);
-            mpChannel = new RPCChannel (mpRPCSocketClient->communicator ());
+            mpRPCSocketClient = new RPCSocketClientImpl (rAsyncProcessor, host, port, mCallHash, *mpCallQueue);
+          }
+          */
+
+          RPCClientProxy::RPCClientProxy (RPCSocketClientFactory* pSocketClientFactory, RPCCallHandlerFactory* pCallHandlerFactory)
+            : casock::rpc::protobuf::client::RPCClientProxy (pCallHandlerFactory)
+          {
+            LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
+            mpRPCSocketClient = pSocketClientFactory->buildRPCSocketClient (mCallHash, *mpCallQueue);
           }
 
           RPCClientProxy::~RPCClientProxy ()
           {
-            delete mpChannel;
             delete mpRPCSocketClient;
           }
 
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
-            mpChannel->RpcCall (request, ::boost::bind (&RPCClientProxy::onSentRequest, this, _1, request.id (), pCall));
+            mpRPCSocketClient->communicator ().sendRequest (request, ::boost::bind (&RPCClientProxy::onSentRequest, this, _1, request.id (), pCall));
           }
 
 					void RPCClientProxy::onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pCall)

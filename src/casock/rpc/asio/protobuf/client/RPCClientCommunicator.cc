@@ -40,18 +40,19 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace client {
-          RPCClientCommunicator::RPCClientCommunicator (SocketChannel* const pChannel)
+          RPCClientCommunicator::RPCClientCommunicator (casock::proactor::asio::base::SocketChannel* const pChannel)
             : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel)
           { }
 
           ::google::protobuf::Message* RPCClientCommunicator::createRecvMessage ()
           {
+            LOGMSG (MEDIUM_LEVEL, "RPCClientCommunicator::%s ()\n", __FUNCTION__);
             return new casock::rpc::protobuf::api::RpcResponse ();
           }
 
           void RPCClientCommunicator::sendRequest (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            LOGMSG (NO_DEBUG, "RPCClientCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
+            LOGMSG (MEDIUM_LEVEL, "RPCClientCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
             sendMessage (message, handler);
           }
 

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCCallHandler.h
+ * \file casock/rpc/asio/protobuf/client/RPCSocketClientFactoryImpl.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,41 +30,33 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_H_
-#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_FACTORY_IMPL_H_
+#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_FACTORY_IMPL_H_
 
-#include "casock/util/Thread.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClientFactory.h"
 
 namespace casock {
   namespace rpc {
-    namespace protobuf {
-      namespace client {
-        class RPCCallQueue;
-      }
-    }
+    namespace asio {
+      namespace protobuf {
+        namespace client {
+          class RPCSocketClientFactoryImpl : public RPCSocketClientFactory
+          {
+            public:
+              RPCSocketClientFactoryImpl (
+                  AsyncProcessor& rAsyncProcessor,
+                  const std::string& host,
+                  const std::string& port);
 
-    namespace protobuf {
-      namespace client {
-        using casock::rpc::protobuf::client::RPCCallQueue;
-
-        class RPCCallHandler : public casock::util::Thread
-        {
-          public:
-            RPCCallHandler (RPCCallQueue& rCallQueue)
-              : mrCallQueue (rCallQueue)
-            { };
-            virtual ~RPCCallHandler ()
-            { };
-
-          public:
-            virtual void run () = 0;
-
-          protected:
-            RPCCallQueue& mrCallQueue;
-        };
+            public:
+              RPCSocketClient* buildRPCSocketClient (
+                  casock::rpc::protobuf::client::RPCCallHash& rCallHash,
+                  casock::rpc::protobuf::client::RPCCallQueue& rCallQueue);
+          };
+        }
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_H_
+#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_FACTORY_IMPL_H_

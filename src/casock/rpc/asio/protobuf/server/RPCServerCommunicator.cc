@@ -47,19 +47,19 @@ namespace casock {
 
           ::google::protobuf::Message* RPCServerCommunicator::createRecvMessage ()
           {
-            LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
             return new casock::rpc::protobuf::api::RpcRequest ();
           }
 
           void RPCServerCommunicator::recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
-            LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
             recvMessage (handler);
           }
 
           void RPCServerCommunicator::sendResponse (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
             sendMessage (message, handler);
           }
         }

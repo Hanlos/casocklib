@@ -1,7 +1,9 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
 #include "casock/rpc/protobuf/client/RPCCallController.h"
+#include "casock/rpc/protobuf/client/RPCCallHandlerFactoryImpl.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClientFactoryImpl.h"
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
 #include "casock/base/CASClosedConnectionException.h"
 #include "examples/rpc/protobuf/api/rpc_hello.pb.h"
@@ -62,7 +64,7 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 
 int main ()
 {
-  LOGGER->setDebugLevel (MAX_LEVEL);
+  LOGGER->setDebugLevel (LOW_LEVEL);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
   casock::proactor::asio::base::AsyncProcessor::initialize ();
@@ -70,7 +72,10 @@ int main ()
   try
   {
     casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
-    proxy = new casock::rpc::asio::protobuf::client::RPCClientProxy (*pAsyncProcessor, "localhost", "2000");
+    casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*pAsyncProcessor, "localhost", "2000");
+    casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl* pCallHandlerFactory = new casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl ();
+    //proxy = new casock::rpc::asio::protobuf::client::RPCClientProxy (*pAsyncProcessor, "localhost", "2000");
+    proxy = new casock::rpc::asio::protobuf::client::RPCClientProxy (&clientSocketFactory, pCallHandlerFactory);
 
     service = new HelloService::Stub (proxy);
 

@@ -32,6 +32,7 @@
 
 #include "casock/util/Lockable.h"
 
+#include <cstring>
 #include <unistd.h>
 #include <sys/time.h>
 
@@ -44,6 +45,8 @@ namespace casock {
     Lockable::Lockable (const int& type)
       : m_mutex_attr (), m_mutex (), m_cond ()
     {
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
+
       pthread_mutexattr_init (&m_mutex_attr);
       pthread_mutexattr_settype (&m_mutex_attr, type);
       pthread_mutex_init (&m_mutex, &m_mutex_attr);
@@ -52,8 +55,15 @@ namespace casock {
 
     Lockable::~Lockable ()
     {
-      while (pthread_mutex_destroy (&m_mutex) != 0)
+      LOGMSG (LOW_LEVEL, "%s - p [%zp]\n", __PRETTY_FUNCTION__, this);
+
+      int errno = 0;
+
+      while ((errno = pthread_mutex_destroy (&m_mutex)) != 0)
+      {
+        LOGMSG (LOW_LEVEL, "%s - p [%zp] - errno [%d] [%s] - sleeping...\n", __PRETTY_FUNCTION__, this, errno, strerror (errno));
         sleep (1);
+      }
 
       pthread_mutexattr_destroy (&m_mutex_attr);
       pthread_cond_destroy (&m_cond);
@@ -61,23 +71,26 @@ namespace casock {
 
     void Lockable::lock () const
     {
-      LOGMSG (DISABLE, "Lockable::%s () - p [%p]\n", __FUNCTION__, this);
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
       pthread_mutex_lock (&m_mutex);
     }
 
     void Lockable::unlock () const
     {
-      LOGMSG (DISABLE, "Lockable::%s () - p [%p]\n", __FUNCTION__, this);
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
       pthread_mutex_unlock (&m_mutex);
     }
 
     bool Lockable::tryLock () const
     {
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
       return (pthread_mutex_trylock (&m_mutex) == 0);
     }
 
     int Lockable::cond_wait (const uint32& timeout) const
     {
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
+
       int ret = 0;
 
       if (timeout == 0)
@@ -100,11 +113,13 @@ namespace casock {
 
     void Lockable::cond_broadcast () const
     {
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
       pthread_cond_broadcast (&m_cond);
     }
 
     void Lockable::cond_signal () const
     {
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
       pthread_cond_signal (&m_cond);
     }
 

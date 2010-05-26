@@ -50,7 +50,7 @@ namespace casock {
         namespace base {
           RPCCommunicator::RPCCommunicator (SocketChannel* const pChannel) : casock::proactor::asio::base::Communicator (pChannel)
           {
-
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::RPCCommunicator () - p [%zp]\n", this);
           }
 
           /*
@@ -79,14 +79,14 @@ namespace casock {
 
           void RPCCommunicator::onSentMessage (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - p [%zp]\n", __FUNCTION__, this);
             delete pBuffer;
             handler (error);
           }
 
           void RPCCommunicator::onReadSize (const ::asio::error_code& error, size_t* pSize, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
           {
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - p [%zp]\n", __FUNCTION__, this);
 
             if (! error)
             {
@@ -103,7 +103,7 @@ namespace casock {
 
           void RPCCommunicator::onReadBuffer (const ::asio::error_code& error, char* pBuffer, size_t* pSize, ::boost::function<void(const ::asio::error_code&, google::protobuf::Message*)> handler)
           {
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - p [%zp]\n", __FUNCTION__, this);
 
             google::protobuf::Message* pResponse = NULL;
 
@@ -127,6 +127,7 @@ namespace casock {
 
           void RPCCommunicator::sendMessage (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - p [%zp]\n", __FUNCTION__, this);
             LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
 
             /*
@@ -145,6 +146,7 @@ namespace casock {
 
           void RPCCommunicator::recvMessage (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
+            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - p [%zp]\n", __FUNCTION__, this);
             LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - receiving size...\n", __FUNCTION__);
             size_t* pSize = new size_t;
             read (*pSize, ::boost::bind (&RPCCommunicator::onReadSize, this, ::asio::placeholders::error, pSize, handler));

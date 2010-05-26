@@ -44,7 +44,6 @@ using std::stringstream;
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
-#include "casock/rpc/sigio/protobuf/client/RPCChannel.h"
 #include "casock/rpc/sigio/protobuf/client/RPCReaderHandler.h"
 
 namespace casock {
@@ -58,15 +57,14 @@ namespace casock {
 
             mpClientSocket = new ClientSocket (rDispatcher, host, port);
             mpClientSocket->connect ();
-            mpReaderHandler = new RPCReaderHandler (rDispatcher, mpClientSocket, this, mCallHash, *mpCallQueue);
-            mpChannel = new RPCChannel (&(mpReaderHandler->communicator ()));
+            mpReaderHandler = new RPCReaderHandler (rDispatcher, mpClientSocket, mCallHash, *mpCallQueue);
           }
 
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)
           {
             try
             {
-              mpChannel->RpcCall (request);
+              mpReaderHandler->communicator ().write (&request);
               registerRPCCall (request.id (), pCall);
             }
             catch (std::exception& e)

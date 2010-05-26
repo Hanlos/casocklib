@@ -51,13 +51,19 @@ namespace casock {
       namespace api {
         class RpcRequest;
       }
+
+      namespace client {
+        class RPCCallHandlerFactory;
+      }
     }
 
     namespace asio {
       namespace protobuf {
         namespace client {
-          class RPCChannel;
           class RPCSocketClient;
+          class RPCSocketClientFactory;
+
+          using casock::rpc::protobuf::client::RPCCallHandlerFactory;
 
           /*!
            * This is the workflow of an RPC request:
@@ -73,9 +79,9 @@ namespace casock {
            * on the call hash and executes the method RPCClientProxy::sendRpcRequest ().
            *
            * 4) The google protobuf framework is also used to send the request
-           *  to the server. The RPCChannel is used to it.
+           *  to the server. The TODO: RPCChannel is used to it.
            *
-           * 5) The RPCClientCommunicator is used by RPCChannel to send the
+           * 5) The RPCClientCommunicator is used by TODO: RPCChannel to send the
            *  request to the server. The RPCSocketClient is used as the
            *  communication channel.
            *
@@ -89,7 +95,8 @@ namespace casock {
           class RPCClientProxy : public casock::rpc::protobuf::client::RPCClientProxy
           {
             public:
-              RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port);
+              //RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port);
+              RPCClientProxy (RPCSocketClientFactory* pSocketClientFactory, RPCCallHandlerFactory* pCallHandlerFactory);
               virtual ~RPCClientProxy ();
 
             private:
@@ -108,7 +115,6 @@ namespace casock {
 
             private:
               RPCSocketClient*  mpRPCSocketClient;
-              RPCChannel*       mpChannel;
           };
         }
       }

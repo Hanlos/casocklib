@@ -78,6 +78,7 @@ namespace casock {
 
           void RPCServerProxy::stopReceivingCalls ()
           {
+            LOGMSG (LOW_LEVEL, "RPCServerProxy::%s ()\n", __FUNCTION__);
             mpSocketServer->closeAcceptor ();
           }
         }

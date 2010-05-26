@@ -154,6 +154,7 @@ namespace casock {
             }
             else
             {
+              LOGMSG (LOW_LEVEL, "SocketChannel::%s (char*) - socket is not open!\n", __FUNCTION__);
               throw (casock::base::CASClosedConnectionException ("socket is not open"));
             }
           }
@@ -172,6 +173,7 @@ namespace casock {
             }
             else
             {
+              LOGMSG (LOW_LEVEL, "SocketChannel::%s (char*) - socket is not open!\n", __FUNCTION__);
               throw (casock::base::CASClosedConnectionException ("socket is not open"));
             }
           }
@@ -191,6 +193,7 @@ namespace casock {
             }
             else
             {
+              LOGMSG (LOW_LEVEL, "SocketChannel::%s (const char*) - socket is not open!\n", __FUNCTION__);
               throw (casock::base::CASClosedConnectionException ("socket is not open"));
             }
           }

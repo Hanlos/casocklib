@@ -1,4 +1,4 @@
-SRCS = RPCClientProxy.cc RPCCallHandler.cc RPCCallHash.cc
+SRCS = RPCClientProxy.cc RPCCallHandlerImpl.cc RPCCallHandlerFactoryImpl.cc RPCCallHash.cc
 
 LIBS = $(top_srcdir)/src/casock/rpc/protobuf/api/libcasrpcpbapi.la
 

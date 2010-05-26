@@ -66,6 +66,7 @@ namespace tests {
 
               try
               {
+                LOGMSG (NO_DEBUG, "Test1ResponseHandlerImpl::%s () - close proxy\n", __FUNCTION__);
                 mpClientProxy->close ();
               }
               catch (::std::exception& e)

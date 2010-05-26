@@ -56,8 +56,6 @@ namespace casock {
     namespace sigio {
       namespace protobuf {
         namespace client {
-          class RPCClientProxy;
-
           using casock::rpc::protobuf::client::RPCCall;
           using casock::rpc::protobuf::client::RPCCallHash;
           using casock::rpc::protobuf::client::RPCCallQueue;
@@ -65,7 +63,7 @@ namespace casock {
           class RPCReaderHandler : public casock::sigio::base::Handler
           {
             public:
-              RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCClientProxy* pClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
+              RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
 
             private:
               void destroy () { delete this; }
@@ -76,7 +74,6 @@ namespace casock {
 
             private:
               RPCClientCommunicator mCommunicator; /*!< used to read from socket, returns an object of type casock::rpc::protobuf::api::RpcResponse */
-              RPCClientProxy*       mpClientProxy;
 
               RPCCallHash&					mrCallHash;
               RPCCallQueue&         mrCallQueue;

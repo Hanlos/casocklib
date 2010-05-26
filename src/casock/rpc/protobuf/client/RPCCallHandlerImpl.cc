@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCCallHandler.cc
+ * \file casock/rpc/protobuf/client/RPCCallHandlerImpl.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,7 +30,7 @@
  * $Revision$
  */
 
-#include "casock/rpc/protobuf/client/RPCCallHandler.h"
+#include "casock/rpc/protobuf/client/RPCCallHandlerImpl.h"
 
 #include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
@@ -41,21 +41,15 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        RPCCallHandler::RPCCallHandler (RPCCallQueue& rCallQueue)
-          : mrCallQueue (rCallQueue)
+        RPCCallHandlerImpl::RPCCallHandlerImpl (RPCCallQueue& rCallQueue)
+          : RPCCallHandler (rCallQueue)
         {
           LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
         }
 
-        RPCCallHandler::~RPCCallHandler ()
+        void RPCCallHandlerImpl::run ()
         {
           LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
-        }
-
-        /*
-        void RPCCallHandler::run ()
-        {
-          LOGMSG (NO_DEBUG, "RPCCallHandler::%s ()\n", __FUNCTION__);
 
           while (true)
           {
@@ -67,13 +61,13 @@ namespace casock {
 
             if (pRpcResponse)
             {
-              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], id [%u], type [%u]\n", __FUNCTION__, controller, pRpcResponse->id (), pRpcResponse->type ());
+              LOGMSG (LOW_LEVEL, "RPCCallHandlerImpl::%s () - controller [%p], id [%u], type [%u]\n", __FUNCTION__, controller, pRpcResponse->id (), pRpcResponse->type ());
               pCall->response ()->ParseFromString (pRpcResponse->response ());
               delete pRpcResponse;
             }
             else
             {
-              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], pRpcResponse [%p]\n", __FUNCTION__, controller, pRpcResponse);
+              LOGMSG (LOW_LEVEL, "RPCCallHandlerImpl::%s () - controller [%p], pRpcResponse [%p]\n", __FUNCTION__, controller, pRpcResponse);
               controller->SetFailed ("Error receiving response!");
             }
 
@@ -82,7 +76,6 @@ namespace casock {
             delete pCall;
           }
         }
-        */
       }
     }
   }

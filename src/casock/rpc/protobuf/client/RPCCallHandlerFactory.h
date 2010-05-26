@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCCallHandler.h
+ * \file casock/rpc/protobuf/client/RPCCallHandlerFactory.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,41 +30,24 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_H_
-#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_H_
-
-#include "casock/util/Thread.h"
+#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_FACTORY_H_
+#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_FACTORY_H_
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
+        class RPCCallHandler;
         class RPCCallQueue;
-      }
-    }
 
-    namespace protobuf {
-      namespace client {
-        using casock::rpc::protobuf::client::RPCCallQueue;
-
-        class RPCCallHandler : public casock::util::Thread
+        class RPCCallHandlerFactory
         {
           public:
-            RPCCallHandler (RPCCallQueue& rCallQueue)
-              : mrCallQueue (rCallQueue)
-            { };
-            virtual ~RPCCallHandler ()
-            { };
-
-          public:
-            virtual void run () = 0;
-
-          protected:
-            RPCCallQueue& mrCallQueue;
+            virtual RPCCallHandler* buildRPCCallHandler (RPCCallQueue& rCallQueue) = 0;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_H_
+#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_HANDLER_FACTORY_H_

@@ -35,9 +35,14 @@
 #define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_CXX_H_
 
 #include <cxxtest/TestSuite.h>
+
 #include "casock/proactor/asio/base/AsyncProcessor.h"
+
+#include "casock/rpc/protobuf/client/RPCCallHandlerFactoryImpl.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClientFactoryImpl.h"
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
+
 #include "tests/rpc/asio/protobuf/Test1ServiceImpl.h"
 #include "tests/rpc/asio/protobuf/Test1ResponseHandlerImpl.h"
 #include "tests/rpc/protobuf/api/rpc_test.pb.h"
@@ -52,13 +57,15 @@ class test1_cxx : public CxxTest::TestSuite
   public:
     void setUp ()
     {
-      LOGGER->setDebugLevel (NO_DEBUG);
+      LOGMSG (LOW_LEVEL, "test1_cxx::setUp ()\n");
+      LOGGER->setDebugLevel (SILENT);
       casock::proactor::asio::base::AsyncProcessor::initialize ();
       mpAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
     }
 
     void tearDown ()
     {
+      LOGMSG (LOW_LEVEL, "test1_cxx::tearDown ()\n");
       casock::proactor::asio::base::AsyncProcessor::destroy ();
       LOGGER->finalize ();
     }
@@ -74,7 +81,10 @@ class test1_cxx : public CxxTest::TestSuite
         serverProxy.start ();
 
         /*! client */
-        casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
+        casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*mpAsyncProcessor, "localhost", "2000");
+        casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl* pCallHandlerFactory = new casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl ();
+        //casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
+        casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (&clientSocketFactory, pCallHandlerFactory);
         tests::rpc::protobuf::api::TestService* pServiceClient = new tests::rpc::protobuf::api::TestService::Stub (&clientProxy);
 
         /*! sending message */
@@ -96,9 +106,11 @@ class test1_cxx : public CxxTest::TestSuite
       //}
       //catch (::std::exception& e)
       //{
-      //  LOGMSG (NO_DEBUG, "test_basic () - catch (::std::exception&) [%s]\n", e.what ());
+      //  LOGMSG (LOW_LEVEL, "test_basic () - catch (::std::exception&) [%s]\n", e.what ());
       //  TS_FAIL (::std::string ("::std::exception [") + e.what () + "]");
       //}
+      //
+      LOGMSG (LOW_LEVEL, "test1_cxx::test_basic () - end\n");
     }
 };
 

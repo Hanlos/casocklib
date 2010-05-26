@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/asio/protobuf/client/RPCClientCommunicator.h
+ * \file casock/rpc/asio/protobuf/client/RPCSocketClientFactoryImpl.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,33 +30,32 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_
-#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_
-
-#include "casock/rpc/asio/protobuf/base/RPCCommunicator.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClientFactoryImpl.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClientImpl.h"
 
 namespace casock {
   namespace rpc {
-
     namespace asio {
       namespace protobuf {
         namespace client {
-          class RPCClientCommunicator : public casock::rpc::asio::protobuf::base::RPCCommunicator
+          RPCSocketClientFactoryImpl::RPCSocketClientFactoryImpl (
+                  AsyncProcessor& rAsyncProcessor,
+                  const std::string& host,
+                  const std::string& port)
+            : RPCSocketClientFactory (rAsyncProcessor, host, port)
           {
-            public:
-              RPCClientCommunicator (casock::proactor::asio::base::SocketChannel* const pChannel);
+            LOGMSG (LOW_LEVEL, "%s - host [%s], port [%s]\n", __PRETTY_FUNCTION__, host.c_str (), port.c_str ());
+          }
 
-            private:
-              ::google::protobuf::Message* createRecvMessage ();
-
-            public:
-              void sendRequest (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler);
-              void recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
-          };
+          RPCSocketClient* RPCSocketClientFactoryImpl::buildRPCSocketClient (
+              casock::rpc::protobuf::client::RPCCallHash& rCallHash,
+              casock::rpc::protobuf::client::RPCCallQueue& rCallQueue)
+          {
+            LOGMSG (LOW_LEVEL, "%s - m_host [%s], m_port [%s]\n", __PRETTY_FUNCTION__, m_host.c_str (), m_port.c_str ());
+            return new RPCSocketClientImpl (mrAsyncProcessor, m_host, m_port, rCallHash, rCallQueue);
+          }
         }
       }
     }
   }
 }
-
-#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_

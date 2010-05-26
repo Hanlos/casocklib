@@ -42,29 +42,80 @@ using std::stringstream;
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
-#include "casock/rpc/protobuf/client/RPCCallHandler.h"
-#include "casock/rpc/sigio/protobuf/client/RPCReaderHandler.h"
+#include "casock/rpc/protobuf/client/RPCCallHandlerImpl.h"
+#include "casock/rpc/protobuf/client/RPCCallHandlerFactoryImpl.h"
+//#include "casock/rpc/sigio/protobuf/client/RPCReaderHandler.h"
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
         uint32 RPCClientProxy::mID = 0;
+        uint32 RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS = 1;
 
-        RPCClientProxy::RPCClientProxy ()
+        RPCClientProxy::RPCClientProxy (RPCCallHandlerFactory* pCallHandlerFactory)
+          : mpCallHandlerFactory (pCallHandlerFactory)
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
           mpCallQueue = new RPCCallQueue ();
-          mpCallHandler = new RPCCallHandler (*mpCallQueue);
-          mpCallHandler->start ();
+
+          if (! mpCallHandlerFactory)
+            mpCallHandlerFactory = new RPCCallHandlerFactoryImpl ();
+
+          setNumCallHandlers (RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS);
         }
 
         RPCClientProxy::~RPCClientProxy ()
         {
-          mpCallHandler->cancel ();
-          delete mpCallHandler;
+          /*!
+           * The call handlers are threads waiting for messages in the call queue.
+           * Before we delete the call queue we need to cancel the call handlers.
+           */
+          LOGMSG (LOW_LEVEL, "%s - remove call handlers...\n", __PRETTY_FUNCTION__);
+          removeCallHandlers (mCallHandlers.size ());
+
+          LOGMSG (LOW_LEVEL, "%s - delete mpCallHandlerFactory [%zp]...\n", __PRETTY_FUNCTION__, mpCallHandlerFactory);
+          delete mpCallHandlerFactory;
+
+          LOGMSG (LOW_LEVEL, "%s - delete mpCallQueue [%zp]...\n", __PRETTY_FUNCTION__, mpCallQueue);
           delete mpCallQueue;
+
+          LOGMSG (LOW_LEVEL, "%s\n - end", __PRETTY_FUNCTION__);
+        }
+
+        void RPCClientProxy::addCallHandlers (const uint32& n)
+        {
+          for (uint32 i = 0; i < n; i++)
+          {
+            //RPCCallHandler* pCallHandler = new RPCCallHandlerImpl (*mpCallQueue);
+            RPCCallHandler* pCallHandler = mpCallHandlerFactory->buildRPCCallHandler (*mpCallQueue);
+            pCallHandler->start ();
+            mCallHandlers.push_back (pCallHandler);
+          }
+        }
+
+        void RPCClientProxy::removeCallHandlers (const uint32& n)
+        {
+          LOGMSG (LOW_LEVEL, "%s - n [%u]\n", __PRETTY_FUNCTION__, n);
+
+          for (uint32 i = 0; i < n; i++)
+          {
+            RPCCallHandler* pCallHandler = mCallHandlers.back ();
+            mCallHandlers.pop_back ();
+            LOGMSG (LOW_LEVEL, "RPCClientProxy::%s () - cancel handler [%zp]\n", __FUNCTION__, pCallHandler);
+            pCallHandler->cancel ();
+            LOGMSG (LOW_LEVEL, "RPCClientProxy::%s () - handler canceled [%zp]\n", __FUNCTION__, pCallHandler);
+            delete pCallHandler;
+          }
+        }
+
+        void RPCClientProxy::setNumCallHandlers (const uint32& n)
+        {
+          if (mCallHandlers.size () < n)
+            addCallHandlers (n - mCallHandlers.size ());
+          else if (mCallHandlers.size () > n)
+            removeCallHandlers (mCallHandlers.size () - n);
         }
 
 				void RPCClientProxy::registerRPCCall (const uint32& id, casock::rpc::protobuf::client::RPCCall* pRPCCall)

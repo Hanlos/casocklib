@@ -46,8 +46,8 @@ namespace casock {
     namespace sigio {
       namespace protobuf {
         namespace client {
-          RPCReaderHandler::RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCClientProxy* pClientProxy, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
-            : Handler (rDispatcher, pFileDescriptor), mCommunicator (pFileDescriptor), mpClientProxy (pClientProxy), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
+          RPCReaderHandler::RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
+            : Handler (rDispatcher, pFileDescriptor), mCommunicator (pFileDescriptor), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
           {
           }
 

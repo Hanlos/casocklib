@@ -66,9 +66,9 @@ namespace casock {
 
         void AsyncProcessor::run ()
         {
-          LOGMSG (HIGH_LEVEL, "AsyncProcessor::%s ()\n", __FUNCTION__);
-
+          LOGMSG (LOW_LEVEL, "%s\n", __PRETTY_FUNCTION__);
           m_service.run ();
+          LOGMSG (LOW_LEVEL, "%s - end\n", __PRETTY_FUNCTION__);
         }
       }
     }

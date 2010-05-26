@@ -98,6 +98,7 @@ namespace casock {
 
         void SocketServer::closeAcceptor ()
         {
+          LOGMSG (LOW_LEVEL, "SocketServer::%s ()\n", __FUNCTION__);
           m_acceptor.close ();
         }
 
