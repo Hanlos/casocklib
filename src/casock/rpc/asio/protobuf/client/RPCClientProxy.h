@@ -95,8 +95,7 @@ namespace casock {
           class RPCClientProxy : public casock::rpc::protobuf::client::RPCClientProxy
           {
             public:
-              //RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port);
-              RPCClientProxy (RPCSocketClientFactory* pSocketClientFactory, RPCCallHandlerFactory* pCallHandlerFactory);
+              RPCClientProxy (const RPCSocketClientFactory& rSocketClientFactory, const RPCCallHandlerFactory& rCallHandlerFactory);
               virtual ~RPCClientProxy ();
 
             private:

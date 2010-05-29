@@ -83,9 +83,8 @@ class test2_cxx : public CxxTest::TestSuite
 
       /*! client */
       casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*mpAsyncProcessor, "localhost", "2000");
-        casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl* pCallHandlerFactory = new casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl ();
-      //casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
-      casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (&clientSocketFactory, pCallHandlerFactory);
+      casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
+      casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (clientSocketFactory, callHandlerFactory);
       tests::rpc::protobuf::api::TestService* pServiceClient = new tests::rpc::protobuf::api::TestService::Stub (&clientProxy);
 
       /*! running client thread */

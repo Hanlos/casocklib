@@ -3,6 +3,7 @@
 #include "casock/base/CASException.h"
 #include "casock/base/CASClosedConnectionException.h"
 #include "casock/client/CASClientException.h"
+#include "casock/rpc/protobuf/client/RPCCallHandlerFactoryImpl.h"
 #include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "casock/rpc/sigio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
@@ -41,7 +42,8 @@ int main ()
 
   try
   {
-    casock::rpc::sigio::protobuf::client::RPCClientProxy proxy (*pDispatcher, "localhost", 2000);
+    casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
+    casock::rpc::sigio::protobuf::client::RPCClientProxy proxy (*pDispatcher, "localhost", 2000, callHandlerFactory);
     casock::rpc::protobuf::client::RPCCallController controller;
 
     HelloService* service = new HelloService::Stub (&proxy);

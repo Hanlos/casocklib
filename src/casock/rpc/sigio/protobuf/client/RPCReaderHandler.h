@@ -48,7 +48,7 @@ namespace casock {
     namespace protobuf {
       namespace client {
         class RPCCall;
-				class RPCCallHash;
+        class RPCCallHash;
         class RPCCallQueue;
       }
     }
@@ -75,8 +75,8 @@ namespace casock {
             private:
               RPCClientCommunicator mCommunicator; /*!< used to read from socket, returns an object of type casock::rpc::protobuf::api::RpcResponse */
 
-              RPCCallHash&					mrCallHash;
-              RPCCallQueue&         mrCallQueue;
+              RPCCallHash&  mrCallHash;
+              RPCCallQueue& mrCallQueue;
           };
         }
       }

@@ -60,7 +60,7 @@ namespace casock {
         class RPCClientProxy : public ::google::protobuf::RpcChannel
         {
           protected:
-            RPCClientProxy (RPCCallHandlerFactory* pCallHandlerFactory = NULL);
+            RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers = DEFAULT_NUM_CALL_HANDLERS);
             virtual ~RPCClientProxy ();
 
           private:
@@ -97,7 +97,7 @@ namespace casock {
           protected:
             RPCCallQueue*                   mpCallQueue;
             ::std::vector<RPCCallHandler*>  mCallHandlers;
-            RPCCallHandlerFactory*          mpCallHandlerFactory;
+            const RPCCallHandlerFactory&    mrCallHandlerFactory;
 
             /*!
              * Used to register the RPC requests, indexed by the RpcRequest ID.

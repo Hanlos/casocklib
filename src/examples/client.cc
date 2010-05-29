@@ -8,7 +8,7 @@
 #include "casock/sigio/base/Communicator.h"
 #include "casock/base/CASException.h"
 #include "casock/base/CASClosedConnectionException.h"
-#include "casock/sigio/client/ClientSocket.h"
+#include "casock/sigio/client/SocketClient.h"
 #include "casock/client/CASClientException.h"
 #include "ClientSockReaderHandler.h"
 
@@ -26,7 +26,7 @@ int main ()
 
   try
   {
-    casock::sigio::client::ClientSocket client (*pDispatcher, "localhost", 2000);
+    casock::sigio::client::SocketClient client (*pDispatcher, "localhost", 2000);
     client.connect ();
     ClientSockReaderHandler handler (*pDispatcher, &client);
     casock::sigio::base::Communicator& communicator = handler.communicator ();

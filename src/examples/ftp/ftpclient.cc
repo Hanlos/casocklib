@@ -10,7 +10,7 @@
 #include "casock/sigio/base/Dispatcher.h"
 #include "casock/base/CASException.h"
 #include "casock/base/CASClosedConnectionException.h"
-#include "casock/sigio/client/ClientSocket.h"
+#include "casock/sigio/client/SocketClient.h"
 #include "casock/client/CASClientException.h"
 #include "FTPClientSockReaderHandler.h"
 #include "FTPCommunicator.h"
@@ -81,7 +81,7 @@ void sendfile (const string& server, const unsigned short& port, const FTPFile& 
 
   try
   {
-    casock::sigio::client::ClientSocket client (*pDispatcher, "localhost", 2000);
+    casock::sigio::client::SocketClient client (*pDispatcher, "localhost", 2000);
     client.connect ();
     FTPClientSockReaderHandler handler (*pDispatcher, &client);
     FTPCommunicator& communicator = handler.communicator ();

@@ -39,8 +39,9 @@
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
-#include "casock/rpc/asio/protobuf/client/RPCSocketClientImpl.h"
+#include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
 #include "casock/rpc/asio/protobuf/client/RPCSocketClientFactory.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
@@ -48,20 +49,11 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace client {
-          /*
-          RPCClientProxy::RPCClientProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port)
-          {
-            LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
-
-            mpRPCSocketClient = new RPCSocketClientImpl (rAsyncProcessor, host, port, mCallHash, *mpCallQueue);
-          }
-          */
-
-          RPCClientProxy::RPCClientProxy (RPCSocketClientFactory* pSocketClientFactory, RPCCallHandlerFactory* pCallHandlerFactory)
-            : casock::rpc::protobuf::client::RPCClientProxy (pCallHandlerFactory)
+          RPCClientProxy::RPCClientProxy (const RPCSocketClientFactory& rSocketClientFactory, const RPCCallHandlerFactory& rCallHandlerFactory)
+            : casock::rpc::protobuf::client::RPCClientProxy (rCallHandlerFactory)
           {
             LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
-            mpRPCSocketClient = pSocketClientFactory->buildRPCSocketClient (mCallHash, *mpCallQueue);
+            mpRPCSocketClient = rSocketClientFactory.buildRPCSocketClient (mCallHash, *mpCallQueue);
           }
 
           RPCClientProxy::~RPCClientProxy ()

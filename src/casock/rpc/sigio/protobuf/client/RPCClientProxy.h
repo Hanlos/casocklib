@@ -63,11 +63,12 @@ namespace casock {
         namespace client {
           class RPCReaderHandler;
           using casock::sigio::client::SocketClient;
+          using casock::rpc::protobuf::client::RPCCallHandlerFactory;
 
           class RPCClientProxy : public casock::rpc::protobuf::client::RPCClientProxy
           {
             public:
-              RPCClientProxy (casock::sigio::base::Dispatcher& rDispatcher, const std::string& host, const unsigned int& port);
+              RPCClientProxy (casock::sigio::base::Dispatcher& rDispatcher, const std::string& host, const unsigned int& port, const RPCCallHandlerFactory& rCallHandlerFactory);
 
             private:
               void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall);

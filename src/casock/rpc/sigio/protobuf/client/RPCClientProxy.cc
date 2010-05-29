@@ -51,7 +51,8 @@ namespace casock {
     namespace sigio {
       namespace protobuf {
         namespace client {
-          RPCClientProxy::RPCClientProxy (casock::sigio::base::Dispatcher& rDispatcher, const string& host, const unsigned int& port)
+          RPCClientProxy::RPCClientProxy (casock::sigio::base::Dispatcher& rDispatcher, const string& host, const unsigned int& port, const RPCCallHandlerFactory& rCallHandlerFactory)
+            : casock::rpc::protobuf::client::RPCClientProxy (rCallHandlerFactory)
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 

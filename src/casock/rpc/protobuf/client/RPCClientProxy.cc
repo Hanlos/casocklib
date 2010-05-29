@@ -53,17 +53,14 @@ namespace casock {
         uint32 RPCClientProxy::mID = 0;
         uint32 RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS = 1;
 
-        RPCClientProxy::RPCClientProxy (RPCCallHandlerFactory* pCallHandlerFactory)
-          : mpCallHandlerFactory (pCallHandlerFactory)
+        RPCClientProxy::RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers)
+          : mrCallHandlerFactory (rCallHandlerFactory)
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
           mpCallQueue = new RPCCallQueue ();
 
-          if (! mpCallHandlerFactory)
-            mpCallHandlerFactory = new RPCCallHandlerFactoryImpl ();
-
-          setNumCallHandlers (RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS);
+          setNumCallHandlers (numCallHandlers);
         }
 
         RPCClientProxy::~RPCClientProxy ()
@@ -75,9 +72,6 @@ namespace casock {
           LOGMSG (LOW_LEVEL, "%s - remove call handlers...\n", __PRETTY_FUNCTION__);
           removeCallHandlers (mCallHandlers.size ());
 
-          LOGMSG (LOW_LEVEL, "%s - delete mpCallHandlerFactory [%zp]...\n", __PRETTY_FUNCTION__, mpCallHandlerFactory);
-          delete mpCallHandlerFactory;
-
           LOGMSG (LOW_LEVEL, "%s - delete mpCallQueue [%zp]...\n", __PRETTY_FUNCTION__, mpCallQueue);
           delete mpCallQueue;
 
@@ -88,8 +82,7 @@ namespace casock {
         {
           for (uint32 i = 0; i < n; i++)
           {
-            //RPCCallHandler* pCallHandler = new RPCCallHandlerImpl (*mpCallQueue);
-            RPCCallHandler* pCallHandler = mpCallHandlerFactory->buildRPCCallHandler (*mpCallQueue);
+            RPCCallHandler* pCallHandler = mrCallHandlerFactory.buildRPCCallHandler (*mpCallQueue);
             pCallHandler->start ();
             mCallHandlers.push_back (pCallHandler);
           }
