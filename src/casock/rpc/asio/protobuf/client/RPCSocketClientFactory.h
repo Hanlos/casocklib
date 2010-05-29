@@ -33,17 +33,7 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_FACTORY_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_FACTORY_H_
 
-#include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
-
 namespace casock {
-  namespace proactor {
-    namespace asio {
-      namespace base {
-        class AsyncProcessor;
-      }
-    }
-  }
-
   namespace rpc {
     namespace protobuf {
       namespace client {
@@ -55,27 +45,14 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace client {
-          using casock::proactor::asio::base::AsyncProcessor;
+          class RPCSocketClient;
 
           class RPCSocketClientFactory
           {
             public:
-              RPCSocketClientFactory (
-                  AsyncProcessor& rAsyncProcessor,
-                  const std::string& host,
-                  const std::string& port)
-                : mrAsyncProcessor (rAsyncProcessor), m_host (host), m_port (port)
-              { }
-
-            public:
               virtual RPCSocketClient* buildRPCSocketClient (
                   casock::rpc::protobuf::client::RPCCallHash& rCallHash,
-                  casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) = 0;
-
-            protected:
-              AsyncProcessor& mrAsyncProcessor;
-              const ::std::string m_host;
-              const ::std::string m_port;
+                  casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const = 0;
           };
         }
       }
