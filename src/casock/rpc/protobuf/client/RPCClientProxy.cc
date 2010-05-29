@@ -44,7 +44,7 @@ using std::stringstream;
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandlerImpl.h"
 #include "casock/rpc/protobuf/client/RPCCallHandlerFactoryImpl.h"
-//#include "casock/rpc/sigio/protobuf/client/RPCReaderHandler.h"
+#include "casock/rpc/protobuf/client/RPCRequestBuilder.h"
 
 namespace casock {
   namespace rpc {
@@ -59,6 +59,7 @@ namespace casock {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
           mpCallQueue = new RPCCallQueue ();
+          mpRequestBuilder = new RPCRequestBuilder ();
 
           setNumCallHandlers (numCallHandlers);
         }
@@ -120,6 +121,11 @@ namespace casock {
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
 
+          /*!
+           * TODO:
+           * \todo Implement a RpcRequest factory with its own unique ID
+           */
+          /*
           casock::rpc::protobuf::api::RpcRequest rpcRequest;
 
           rpcRequest.set_id (++RPCClientProxy::mID);
@@ -127,6 +133,11 @@ namespace casock {
           rpcRequest.set_request (request->SerializeAsString ());
 
           sendRpcRequest (rpcRequest, new RPCCall (response, controller, done));
+          */
+
+          casock::rpc::protobuf::api::RpcRequest* pRpcRequest = mpRequestBuilder->buildRpcRequest (method, request);
+          sendRpcRequest (*pRpcRequest, new RPCCall (response, controller, done));
+          delete pRpcRequest;
         }
       }
     }

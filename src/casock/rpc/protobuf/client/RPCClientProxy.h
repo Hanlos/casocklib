@@ -50,6 +50,7 @@ namespace casock {
         class RPCCallQueue;
         class RPCCallHandler;
         class RPCCallHandlerFactory;
+        class RPCRequestBuilder;
 
         using casock::util::LockableHash;
         using casock::rpc::protobuf::client::RPCCall;
@@ -93,6 +94,9 @@ namespace casock {
              * RPC service method is called.
              */
             void CallMethod (const ::google::protobuf::MethodDescriptor*, ::google::protobuf::RpcController*, const ::google::protobuf::Message*, ::google::protobuf::Message*, ::google::protobuf::Closure*);
+
+          private:
+            RPCRequestBuilder* mpRequestBuilder;
 
           protected:
             RPCCallQueue*                   mpCallQueue;
