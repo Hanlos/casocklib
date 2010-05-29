@@ -45,9 +45,10 @@ namespace casock {
       namespace protobuf {
         namespace client {
           RPCSocketClientImpl::RPCSocketClientImpl (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
-            : RPCSocketClient (rAsyncProcessor, host, port, rCallHash, rCallQueue)
+            : RPCSocketClient (rAsyncProcessor, host, port), mCommunicator (this), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
           {
             LOGMSG (LOW_LEVEL, "%s - host [%s], port [%s]\n", __PRETTY_FUNCTION__, host.c_str (), port.c_str ());
+            syncConnect ();
             onConnect ();
           }
 

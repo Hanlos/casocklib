@@ -33,42 +33,24 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_H_
 
-//#include <boost/bind.hpp>
-
 #include "casock/proactor/asio/client/SocketClient.h"
-#include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
 
 namespace casock {
   namespace rpc {
-    namespace protobuf {
-      namespace api {
-        class RpcResponse;
-      }
-
-      namespace client {
-				class RPCCallHash;
-        class RPCCallQueue;
-      }
-    }
-
     namespace asio {
       namespace protobuf {
         namespace client {
-          using casock::rpc::protobuf::client::RPCCallHash;
-          using casock::rpc::protobuf::client::RPCCallQueue;
+          class RPCClientCommunicator;
 
           class RPCSocketClient : public casock::proactor::asio::client::SocketClient
           {
             public:
-              RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
+              RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port)
+                : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port)
+              { }
 
             public:
-              RPCClientCommunicator& communicator () { return mCommunicator; }
-
-            protected:
-              RPCClientCommunicator	mCommunicator;
-              RPCCallHash&					mrCallHash;
-              RPCCallQueue&         mrCallQueue;
+              virtual RPCClientCommunicator& communicator () = 0;
           };
         }
       }

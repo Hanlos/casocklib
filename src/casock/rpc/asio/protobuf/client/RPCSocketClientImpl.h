@@ -34,12 +34,29 @@
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_IMPL_H_
 
 #include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
 
 namespace casock {
   namespace rpc {
+    namespace protobuf {
+      namespace api {
+        class RpcResponse;
+      }
+    }
+
+    namespace protobuf {
+      namespace client {
+				class RPCCallHash;
+        class RPCCallQueue;
+      }
+    }
+
     namespace asio {
       namespace protobuf {
         namespace client {
+          using casock::rpc::protobuf::client::RPCCallHash;
+          using casock::rpc::protobuf::client::RPCCallQueue;
+
           class RPCSocketClientImpl : public RPCSocketClient
           {
             public:
@@ -49,6 +66,14 @@ namespace casock {
               void onConnect ();
               void onConnectionFailure ();
               void onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
+
+            public:
+              RPCClientCommunicator& communicator () { return mCommunicator; }
+
+            private:
+              RPCClientCommunicator	mCommunicator;
+              RPCCallHash&					mrCallHash;
+              RPCCallQueue&         mrCallQueue;
           };
         }
       }
