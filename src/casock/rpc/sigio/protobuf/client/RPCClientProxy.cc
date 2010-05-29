@@ -39,7 +39,7 @@ using std::stringstream;
 #include <google/protobuf/descriptor.h>
 
 #include "casock/util/Logger.h"
-#include "casock/sigio/client/ClientSocket.h"
+#include "casock/sigio/client/SocketClient.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
@@ -55,9 +55,9 @@ namespace casock {
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
-            mpClientSocket = new ClientSocket (rDispatcher, host, port);
-            mpClientSocket->connect ();
-            mpReaderHandler = new RPCReaderHandler (rDispatcher, mpClientSocket, mCallHash, *mpCallQueue);
+            mpSocketClient = new SocketClient (rDispatcher, host, port);
+            mpSocketClient->connect ();
+            mpReaderHandler = new RPCReaderHandler (rDispatcher, mpSocketClient, mCallHash, *mpCallQueue);
           }
 
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)

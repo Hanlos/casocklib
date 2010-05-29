@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/sigio/client/ClientSocket.cc
+ * \file casock/sigio/client/SocketClient.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,7 +30,7 @@
  * $Revision$
  */
 
-#include "ClientSocket.h"
+#include "casock/sigio/client/SocketClient.h"
 
 #include <errno.h>
 #include <string.h>
@@ -43,7 +43,7 @@
 namespace casock {
   namespace sigio {
     namespace client {
-      ClientSocket::ClientSocket (casock::sigio::base::Dispatcher& rDispatcher, const string& host, const unsigned int& port) : casock::sigio::base::Socket (rDispatcher, port), m_host (host)
+      SocketClient::SocketClient (casock::sigio::base::Dispatcher& rDispatcher, const string& host, const unsigned int& port) : casock::sigio::base::Socket (rDispatcher, port), m_host (host)
       {
         struct hostent* p_hostent = gethostbyname (m_host.c_str ());
 
@@ -56,18 +56,17 @@ namespace casock {
           throw (casock::client::CASClientException (strerror (errno)));
       }
 
-      ClientSocket::~ClientSocket ()
+      SocketClient::~SocketClient ()
       {
         if (m_connected)
         {
           FileDescriptor::close ();
-          m_connected = false;
         }
       }
 
-      void ClientSocket::connect ()
+      void SocketClient::connect ()
       {
-        LOGMSG (HIGH_LEVEL, "ClientSocket::%s () - begin\n", __FUNCTION__);
+        LOGMSG (HIGH_LEVEL, "SocketClient::%s () - begin\n", __FUNCTION__);
 
         if (m_fd > 0)
         {
@@ -77,10 +76,10 @@ namespace casock {
             throw (casock::client::CASClientException (strerror (errno)));
         }
 
-        LOGMSG (HIGH_LEVEL, "ClientSocket::%s () - end\n", __FUNCTION__);
+        LOGMSG (HIGH_LEVEL, "SocketClient::%s () - end\n", __FUNCTION__);
       }
 
-      void ClientSocket::close ()
+      void SocketClient::close ()
       {
         if (m_connected)
         {

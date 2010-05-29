@@ -43,7 +43,7 @@ namespace casock {
     }
 
     namespace client {
-      class ClientSocket;
+      class SocketClient;
     }
   }
 
@@ -62,7 +62,7 @@ namespace casock {
       namespace protobuf {
         namespace client {
           class RPCReaderHandler;
-          using casock::sigio::client::ClientSocket;
+          using casock::sigio::client::SocketClient;
 
           class RPCClientProxy : public casock::rpc::protobuf::client::RPCClientProxy
           {
@@ -73,7 +73,7 @@ namespace casock {
               void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall);
 
             private:
-              ClientSocket*     mpClientSocket; /*!< the client socket used to connect into RPC server socket */
+              SocketClient*     mpSocketClient; /*!< the client socket used to connect into RPC server socket */
               RPCReaderHandler* mpReaderHandler; /*!< responsable for asynchronously receive responses from RPC server */
           };
         }

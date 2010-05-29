@@ -1,4 +1,4 @@
-SRCS = ClientSocket.cc
+SRCS = SocketClient.cc
 
 LIB_BASE = $(top_srcdir)/src/casock/sigio/base/libcassiobase.la
 

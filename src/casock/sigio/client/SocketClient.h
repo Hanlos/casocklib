@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/sigio/client/ClientSocket.h
+ * \file casock/sigio/client/SocketClient.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -41,17 +41,17 @@ using std::string;
 namespace casock {
   namespace sigio {
     namespace client {
-      class ClientSocket : public casock::sigio::base::Socket
+      class SocketClient : public casock::sigio::base::Socket
       {
         public:
-          ClientSocket (casock::sigio::base::Dispatcher& rDispatcher, const string& host, const unsigned int& port);
-          virtual ~ClientSocket ();
+          SocketClient (casock::sigio::base::Dispatcher& rDispatcher, const string& host, const unsigned int& port);
+          virtual ~SocketClient ();
 
         public:
           void connect ();
           void close ();
 
-          const bool connected () { return m_connected; }
+          const bool& connected () { return m_connected; }
 
         private:
           string  m_host;
