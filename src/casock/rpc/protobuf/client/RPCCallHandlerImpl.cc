@@ -42,7 +42,7 @@ namespace casock {
     namespace protobuf {
       namespace client {
         RPCCallHandlerImpl::RPCCallHandlerImpl (RPCCallQueue& rCallQueue)
-          : RPCCallHandler (rCallQueue)
+          : mrCallQueue (rCallQueue)
         {
           LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
         }

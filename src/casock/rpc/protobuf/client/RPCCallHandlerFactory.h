@@ -43,7 +43,7 @@ namespace casock {
         class RPCCallHandlerFactory
         {
           public:
-            virtual RPCCallHandler* buildRPCCallHandler (RPCCallQueue& rCallQueue) = 0;
+            virtual RPCCallHandler* buildRPCCallHandler (RPCCallQueue& rCallQueue) const = 0;
         };
       }
     }

@@ -39,28 +39,10 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        class RPCCallQueue;
-      }
-    }
-
-    namespace protobuf {
-      namespace client {
-        using casock::rpc::protobuf::client::RPCCallQueue;
-
         class RPCCallHandler : public casock::util::Thread
         {
           public:
-            RPCCallHandler (RPCCallQueue& rCallQueue)
-              : mrCallQueue (rCallQueue)
-            { };
-            virtual ~RPCCallHandler ()
-            { };
-
-          public:
             virtual void run () = 0;
-
-          protected:
-            RPCCallQueue& mrCallQueue;
         };
       }
     }

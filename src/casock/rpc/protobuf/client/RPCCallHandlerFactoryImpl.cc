@@ -37,7 +37,7 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        RPCCallHandler* RPCCallHandlerFactoryImpl::buildRPCCallHandler (RPCCallQueue& rCallQueue)
+        RPCCallHandler* RPCCallHandlerFactoryImpl::buildRPCCallHandler (RPCCallQueue& rCallQueue) const
         {
           return new RPCCallHandlerImpl (rCallQueue);
         }

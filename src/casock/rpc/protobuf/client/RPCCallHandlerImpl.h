@@ -39,6 +39,8 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
+        class RPCCallQueue;
+
         class RPCCallHandlerImpl : public RPCCallHandler
         {
           public:
@@ -46,6 +48,9 @@ namespace casock {
 
           public:
             void run ();
+
+          private:
+            RPCCallQueue& mrCallQueue;
         };
       }
     }

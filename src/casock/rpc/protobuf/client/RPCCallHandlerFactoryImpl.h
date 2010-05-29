@@ -44,7 +44,7 @@ namespace casock {
         class RPCCallHandlerFactoryImpl : public RPCCallHandlerFactory
         {
           public:
-            RPCCallHandler* buildRPCCallHandler (RPCCallQueue& rCallQueue);
+            RPCCallHandler* buildRPCCallHandler (RPCCallQueue& rCallQueue) const;
         };
       }
     }
