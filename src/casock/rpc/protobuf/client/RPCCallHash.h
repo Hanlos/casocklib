@@ -36,23 +36,25 @@
 #include "casock/util/LockableHash.h"
 
 namespace casock {
-	namespace util {
-		class SafeLock;
-	}
+  namespace util {
+    class SafeLock;
+  }
 
   namespace rpc {
     namespace protobuf {
       namespace client {
         class RPCCall;
         class RPCCallHash : private casock::util::LockableHash<uint32, RPCCall*>
-				{
-					private:
-						friend class SafeLock;
+        {
+          private:
+            friend class SafeLock;
 
-					public:
-						void push (const uint32& id, RPCCall* pCall);
-						RPCCall* pop (const uint32& id);
-				};
+          public:
+            void push (const uint32& id, RPCCall* pCall);
+            RPCCall* pop (const uint32& id);
+            using casock::util::LockableHash<uint32, RPCCall*>::empty;
+            using casock::util::LockableHash<uint32, RPCCall*>::size;
+        };
       }
     }
   }

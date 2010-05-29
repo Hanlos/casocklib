@@ -51,38 +51,6 @@ namespace casock {
         {
           LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
         }
-
-        /*
-        void RPCCallHandler::run ()
-        {
-          LOGMSG (NO_DEBUG, "RPCCallHandler::%s ()\n", __FUNCTION__);
-
-          while (true)
-          {
-            casock::rpc::protobuf::client::RPCCall* pCall = mrCallQueue.pop ();
-
-            RpcResponse* pRpcResponse = static_cast<RpcResponse*>(pCall->rpcResponse ());
-            google::protobuf::RpcController* controller = pCall->controller ();
-            google::protobuf::Closure* closure = pCall->closure ();
-
-            if (pRpcResponse)
-            {
-              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], id [%u], type [%u]\n", __FUNCTION__, controller, pRpcResponse->id (), pRpcResponse->type ());
-              pCall->response ()->ParseFromString (pRpcResponse->response ());
-              delete pRpcResponse;
-            }
-            else
-            {
-              LOGMSG (LOW_LEVEL, "RPCCallHandler::%s () - controller [%p], pRpcResponse [%p]\n", __FUNCTION__, controller, pRpcResponse);
-              controller->SetFailed ("Error receiving response!");
-            }
-
-            closure->Run ();
-
-            delete pCall;
-          }
-        }
-        */
       }
     }
   }

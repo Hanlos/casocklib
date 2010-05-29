@@ -63,7 +63,7 @@ namespace casock {
             RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers = DEFAULT_NUM_CALL_HANDLERS);
             virtual ~RPCClientProxy ();
 
-          private:
+          protected:
             void addCallHandlers (const uint32& n);
             void removeCallHandlers (const uint32& n);
 

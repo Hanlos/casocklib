@@ -61,15 +61,15 @@ namespace casock {
                * TODO:
                * \todo We need to invalidate the calls
                *
-                 casock::util::SafeLock lock (mCallHash);
-
-                 LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator it;
-                 LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator itEnd = mCallHash.end ();;
-
-                 for (it = mCallHash.begin (); it != itEnd; ++it)
-                   it->second->invalidateHandler ();
-
-                 mCallHash.clear ();
+               * casock::util::SafeLock lock (mCallHash);
+               *
+               * LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator it;
+               * LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator itEnd = mCallHash.end ();;
+               *
+               * for (it = mCallHash.begin (); it != itEnd; ++it)
+               *   it->second->invalidateHandler ();
+               *
+               * mCallHash.clear ();
                */
             }
 
