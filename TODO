@@ -1,12 +1,23 @@
+* Unit tests
+  We already have unit tests for casock::rpc::protobuf::client::RPCClientProxy. Now we need tests to other phases of the process:
+    - The sending of a message by client (casock::rpc::asio::protobuf::client::RPCClientProxy, socket client, communicator, etc.);
+    - The receiving and handling of a message by server (casock::rpc::protobuf::server::RPCCallHandler, communicator, socket session, etc.);
+    - The receiving and handling of a response by client (casock::rpc::protobuf::client::RPCCallHandler, socket client, communicator, etc.);
+
 * Tests!!!!
   Unit, system and performance tests
 
 * Refactoring!!!
-  - We don't need casock::rpc::protobuf::api::RpcService anymore. This class was created to encapsulate RPCChannel in the client side of Google Protocols RPC, but now we are calling RPCChannel directly.
+  - We don't need casock::rpc::protobuf::api::RpcService anymore. This class was created to encapsulate RPCChannel in the client side of Google Protocols RPC, but now we are calling RPCChannel directly;
+  - RPCClientCommunicator should be removed from RPCSocketClient:
+    RPCClientProxy should create an RPCSocketClient, synchronously connect to the server, and create an RPCClientCommunicator for it.
+  - RPCServerCommunicator should be removed from RPCSocketServer:
+    RPCSocketSession shoud register itself in RPCClientProxy, and RPCClientProxy should create an RPCServerCommunicator for each RPCSocketSession.
+  - Use googletest, googlemock and google-glog.
 
 * Documentation!!!
 	- We need Doxygen comments;
-	- We need update the UML diagrams in astah-community document (doc/casocklib.asta)
+	- We need update the UML diagrams in astah-community document (doc/casocklib.asta).
 
 === casock::rpc::protobuf::asio ===
 
