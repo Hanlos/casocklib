@@ -112,8 +112,8 @@ namespace casock {
              */
             RPCCallHash	mCallHash;
 
-          private:
-            static uint32 mID;
+//          private:
+//            static uint32 mID;
 
           public:
             static uint32 DEFAULT_NUM_CALL_HANDLERS;

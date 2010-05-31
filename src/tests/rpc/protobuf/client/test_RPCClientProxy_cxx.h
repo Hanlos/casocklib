@@ -45,7 +45,7 @@
 #include "tests/rpc/protobuf/client/RPCClientProxyTest.h"
 #include "tests/rpc/protobuf/client/RPCCallHandlerFactoryMock.h"
 #include "tests/rpc/protobuf/client/RPCCallHandlerFactoryStub.h"
-#include "tests/rpc/protobuf/client/RPCResponseHandlerStub.h"
+#include "tests/rpc/protobuf/client/RPCResponseHandlerMock.h"
 
 class test_RPCClientProxy_cxx : public CxxTest::TestSuite
 {
@@ -128,7 +128,7 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
       tests::rpc::protobuf::api::TestRequest request;
       tests::rpc::protobuf::api::TestResponse response;
       casock::rpc::protobuf::client::RPCCallController controller;
-      tests::rpc::protobuf::client::RPCResponseHandlerStub handler;
+      tests::rpc::protobuf::client::RPCResponseHandlerMock handler;
 
       request.set_id (1);
       request.set_message (2);
@@ -143,7 +143,9 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
 
       TS_ASSERT_EQUALS (&response, proxy.requests.front ().second->response ());
       TS_ASSERT_EQUALS (&controller, proxy.requests.front ().second->controller ());
-      //TS_ASSERT_EQUALS (handler.closure (), proxy.requests.front ().second->closure ());
+
+      proxy.requests.front ().second->closure ()->Run ();
+      TS_ASSERT_EQUALS (true, handler.called);
     }
 };
 

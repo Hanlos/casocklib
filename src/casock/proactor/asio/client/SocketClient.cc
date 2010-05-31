@@ -97,13 +97,9 @@ namespace casock {
           ::asio::ip::tcp::resolver::iterator it = m_resolver.resolve (m_query);
           ::asio::ip::tcp::resolver::iterator itEnd;
 
-          //::boost::system::error_code error = ::boost::asio::error::host_not_found;
-
-          //while (error && it != itEnd)
           while (! m_socket.is_open () && it != itEnd)
           {
             m_socket.close ();
-            //m_socket.connect (*it, error);
             m_socket.connect (*it);
           }
 
@@ -114,11 +110,8 @@ namespace casock {
           else
           {
             LOGMSG (LOW_LEVEL, "SocketClient::%s () - socket connected!\n", __FUNCTION__);
-            //onConnect ();
+            onConnect ();
           }
-
-          //if (error)
-          //  throw (::boost::system::system_error (error));
         }
 
         void SocketClient::asyncConnect ()

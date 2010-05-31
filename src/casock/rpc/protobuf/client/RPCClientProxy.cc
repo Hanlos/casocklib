@@ -50,7 +50,7 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        uint32 RPCClientProxy::mID = 0;
+        //uint32 RPCClientProxy::mID = 0;
         uint32 RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS = 1;
 
         RPCClientProxy::RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers)

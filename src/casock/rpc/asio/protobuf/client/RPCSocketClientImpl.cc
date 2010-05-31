@@ -49,7 +49,7 @@ namespace casock {
           {
             LOGMSG (LOW_LEVEL, "%s - host [%s], port [%s]\n", __PRETTY_FUNCTION__, host.c_str (), port.c_str ());
             syncConnect ();
-            onConnect ();
+//            onConnect ();
           }
 
           void RPCSocketClientImpl::onConnect ()
