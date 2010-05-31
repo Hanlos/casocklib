@@ -173,5 +173,6 @@ AC_CONFIG_FILES([Makefile
                  src/tests/rpc/asio/Makefile
                  src/tests/rpc/asio/protobuf/Makefile
                  src/tests/rpc/protobuf/Makefile
-                 src/tests/rpc/protobuf/api/Makefile])
+                 src/tests/rpc/protobuf/api/Makefile
+                 src/tests/rpc/protobuf/client/Makefile])
 AC_OUTPUT

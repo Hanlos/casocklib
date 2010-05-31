@@ -15,13 +15,16 @@ LIB_RPCTEST1  = $(top_srcdir)/src/tests/rpc/protobuf/api/libcasrpcpbtapi.la
 AM_CPPFLAGS = -DUSE_UT_CXXTEST
 
 check_PROGRAMS    = test1_cxx test2_cxx
+
 test1_cxx_SOURCES = $(SRCS_TEST1)
 test1_cxx_LDADD   = $(LIB_RPCCLIENT) $(LIB_RPCSERVER) $(LIB_UTIL) $(LIB_RPCTEST1) $(LIB_PROTOBUF)
 test1_cxx_LDFLAGS = -static
+
 test2_cxx_SOURCES = $(SRCS_TEST2)
 test2_cxx_LDADD   = $(LIB_RPCCLIENT) $(LIB_RPCSERVER) $(LIB_UTIL) $(LIB_RPCTEST1) $(LIB_PROTOBUF)
 test2_cxx_LDFLAGS = -static
-TESTS             = $(check_PROGRAMS)
+
+TESTS	= $(check_PROGRAMS)
 
 %_cxx.cc: %_cxx.h
 	$(CXXTESTGEN) $(CXXTFLAGS) $< -o $@

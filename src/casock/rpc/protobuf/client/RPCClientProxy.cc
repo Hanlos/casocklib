@@ -81,17 +81,24 @@ namespace casock {
 
         void RPCClientProxy::addCallHandlers (const uint32& n)
         {
+          LOGMSG (MEDIUM_LEVEL, "%s - n [%zu]\n", __PRETTY_FUNCTION__, n);
+
           for (uint32 i = 0; i < n; i++)
           {
+            LOGMSG (HIGH_LEVEL, "%s - i [%zu] - build call handler\n", __PRETTY_FUNCTION__, i);
             RPCCallHandler* pCallHandler = mrCallHandlerFactory.buildRPCCallHandler (*mpCallQueue);
+
+            LOGMSG (HIGH_LEVEL, "%s - i [%zu] - start call handler\n", __PRETTY_FUNCTION__, i);
             pCallHandler->start ();
+
+            LOGMSG (HIGH_LEVEL, "%s - i [%zu] - push call handler back\n", __PRETTY_FUNCTION__, i);
             mCallHandlers.push_back (pCallHandler);
           }
         }
 
         void RPCClientProxy::removeCallHandlers (const uint32& n)
         {
-          LOGMSG (LOW_LEVEL, "%s - n [%u]\n", __PRETTY_FUNCTION__, n);
+          LOGMSG (LOW_LEVEL, "%s - n [%zu]\n", __PRETTY_FUNCTION__, n);
 
           for (uint32 i = 0; i < n; i++)
           {

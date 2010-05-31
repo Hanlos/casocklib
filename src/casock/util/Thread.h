@@ -64,7 +64,7 @@ namespace casock {
       public:
         virtual void start ();
         void join () const;
-        void cancel () const;
+        virtual void cancel () const;
         void kill (int32 &signal) const;
 #ifdef USE_MEM_SIZE
         virtual const uint64 getMemSize () const;
