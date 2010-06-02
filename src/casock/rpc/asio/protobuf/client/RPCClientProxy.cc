@@ -53,18 +53,21 @@ namespace casock {
             : casock::rpc::protobuf::client::RPCClientProxy (rCallHandlerFactory)
           {
             LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
-            mpRPCSocketClient = rSocketClientFactory.buildRPCSocketClient (mCallHash, *mpCallQueue);
+            mpSocketClient = rSocketClientFactory.buildRPCSocketClient ();
+            mpCommunicator = mpSocketClient->buildCommunicator (mCallHash, *mpCallQueue);
+            mpCommunicator->startReceivingResponses ();
           }
 
           RPCClientProxy::~RPCClientProxy ()
           {
-            delete mpRPCSocketClient;
+            delete mpSocketClient;
+            delete mpCommunicator;
           }
 
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)
           {
             LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
-            mpRPCSocketClient->communicator ().sendRequest (request, ::boost::bind (&RPCClientProxy::onSentRequest, this, _1, request.id (), pCall));
+            mpCommunicator->sendRequest (request, ::boost::bind (&RPCClientProxy::onSentRequest, this, _1, request.id (), pCall));
           }
 
 					void RPCClientProxy::onSentRequest (const ::asio::error_code& error, const uint32 id, casock::rpc::protobuf::client::RPCCall* pCall)
@@ -84,7 +87,7 @@ namespace casock {
 
           void RPCClientProxy::close ()
           {
-            mpRPCSocketClient->close ();
+            mpSocketClient->close ();
           }
         }
       }

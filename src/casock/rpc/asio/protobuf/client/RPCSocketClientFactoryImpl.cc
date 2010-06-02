@@ -47,12 +47,10 @@ namespace casock {
             LOGMSG (LOW_LEVEL, "%s - host [%s], port [%s]\n", __PRETTY_FUNCTION__, host.c_str (), port.c_str ());
           }
 
-          RPCSocketClient* RPCSocketClientFactoryImpl::buildRPCSocketClient (
-              casock::rpc::protobuf::client::RPCCallHash& rCallHash,
-              casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const
+          RPCSocketClient* RPCSocketClientFactoryImpl::buildRPCSocketClient () const
           {
             LOGMSG (LOW_LEVEL, "%s - m_host [%s], m_port [%s]\n", __PRETTY_FUNCTION__, m_host.c_str (), m_port.c_str ());
-            return new RPCSocketClientImpl (mrAsyncProcessor, m_host, m_port, rCallHash, rCallQueue);
+            return new RPCSocketClientImpl (mrAsyncProcessor, m_host, m_port);
           }
         }
       }

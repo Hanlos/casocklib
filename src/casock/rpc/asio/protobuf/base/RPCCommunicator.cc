@@ -32,9 +32,7 @@
 
 #include "casock/rpc/asio/protobuf/base/RPCCommunicator.h"
 
-//#include <arpa/inet.h>
 #include <boost/bind.hpp>
-
 #include <google/protobuf/message.h>
 
 #include "casock/util/Logger.h"
@@ -52,30 +50,6 @@ namespace casock {
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::RPCCommunicator () - p [%zp]\n", this);
           }
-
-          /*
-          void RPCCommunicator::onSentSize (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler)
-          {
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%d]\n", __FUNCTION__, error.value ());
-
-            if (! error)
-            {
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - sending message with %d bytes\n", __FUNCTION__, pBuffer->str ().size ());
-              write (pBuffer->str ().c_str (), pBuffer->str ().size (), ::boost::bind (&RPCCommunicator::onSentBuffer, this, ::asio::placeholders::error, pBuffer, handler));
-            }
-            else
-            {
-              LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
-            }
-          }
-
-          void RPCCommunicator::onSentBuffer (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler)
-          {
-            LOGMSG (LOW_LEVEL, "RPCCommunicator::%s ()\n", __FUNCTION__);
-            delete pBuffer;
-            handler (error);
-          }
-          */
 
           void RPCCommunicator::onSentMessage (const ::asio::error_code& error, const std::stringstream* pBuffer, ::boost::function<void(const ::asio::error_code&)> handler)
           {
@@ -129,13 +103,6 @@ namespace casock {
           {
             LOGMSG (LOW_LEVEL, "RPCCommunicator::%s () - p [%zp]\n", __FUNCTION__, this);
             LOGMSG (NO_DEBUG, "RPCCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
-
-            /*
-            std::stringstream* pBuffer = new std::stringstream ();
-            message.SerializeToOstream (pBuffer);
-            //write (message.ByteSize (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, pBuffer, handler));
-            write (pBuffer->str ().size (), ::boost::bind (&RPCCommunicator::onSentSize, this, ::asio::placeholders::error, pBuffer, handler));
-            */
 
             size_t size = message.ByteSize ();
             std::stringstream* pBuffer = new std::stringstream (std::ios_base::in | std::ios_base::out | std::ios_base::binary);

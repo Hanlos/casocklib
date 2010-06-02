@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/asio/protobuf/client/RPCClientCommunicator.cc
+ * \file casock/rpc/asio/protobuf/client/RPCClientCommunicatorImpl.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,7 +30,7 @@
  * $Revision$
  */
 
-#include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientCommunicatorImpl.h"
 
 #include <boost/bind.hpp>
 
@@ -45,17 +45,17 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace client {
-          RPCClientCommunicator::RPCClientCommunicator (casock::proactor::asio::base::SocketChannel* const pChannel, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
+          RPCClientCommunicatorImpl::RPCClientCommunicatorImpl (casock::proactor::asio::base::SocketChannel* const pChannel, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
             : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
           { }
 
-          ::google::protobuf::Message* RPCClientCommunicator::createRecvMessage ()
+          ::google::protobuf::Message* RPCClientCommunicatorImpl::createRecvMessage ()
           {
-            LOGMSG (MEDIUM_LEVEL, "RPCClientCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (MEDIUM_LEVEL, "RPCClientCommunicatorImpl::%s ()\n", __FUNCTION__);
             return new casock::rpc::protobuf::api::RpcResponse ();
           }
 
-          void RPCClientCommunicator::onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
+          void RPCClientCommunicatorImpl::onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
           {
             LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
 
@@ -82,7 +82,7 @@ namespace casock {
 
               try
               {
-                recvResponse (::boost::bind (&RPCClientCommunicator::onRecvResponse, this, ::asio::placeholders::error, _2));
+                recvResponse (::boost::bind (&RPCClientCommunicatorImpl::onRecvResponse, this, ::asio::placeholders::error, _2));
               }
               catch (casock::base::CASClosedConnectionException& e)
               {
@@ -95,11 +95,11 @@ namespace casock {
             }
           }
 
-          void RPCClientCommunicator::startReceivingResponses ()
+          void RPCClientCommunicatorImpl::startReceivingResponses ()
           {
             try
             {
-              recvResponse (::boost::bind (&RPCClientCommunicator::onRecvResponse, this, ::asio::placeholders::error, _2));
+              recvResponse (::boost::bind (&RPCClientCommunicatorImpl::onRecvResponse, this, ::asio::placeholders::error, _2));
             }
             catch (casock::base::CASClosedConnectionException& e)
             {
@@ -107,15 +107,15 @@ namespace casock {
             }
           }
 
-          void RPCClientCommunicator::sendRequest (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
+          void RPCClientCommunicatorImpl::sendRequest (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler)
           {
-            LOGMSG (MEDIUM_LEVEL, "RPCClientCommunicator::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
+            LOGMSG (MEDIUM_LEVEL, "RPCClientCommunicatorImpl::%s () - sending size [%zd]\n", __FUNCTION__, message.ByteSize ());
             sendMessage (message, handler);
           }
 
-          void RPCClientCommunicator::recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
+          void RPCClientCommunicatorImpl::recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
           {
-            LOGMSG (NO_DEBUG, "RPCClientCommunicator::%s ()\n", __FUNCTION__);
+            LOGMSG (NO_DEBUG, "RPCClientCommunicatorImpl::%s ()\n", __FUNCTION__);
             recvMessage (handler);
           }
         }

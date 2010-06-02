@@ -33,24 +33,31 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_H_
 
-#include "casock/proactor/asio/client/SocketClient.h"
-
 namespace casock {
   namespace rpc {
+    namespace protobuf {
+      namespace client {
+				class RPCCallHash;
+        class RPCCallQueue;
+      }
+    }
+
     namespace asio {
       namespace protobuf {
         namespace client {
           class RPCClientCommunicator;
 
-          class RPCSocketClient : public casock::proactor::asio::client::SocketClient
+          class RPCSocketClient
           {
             public:
-              RPCSocketClient (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port)
-                : casock::proactor::asio::client::SocketClient (rAsyncProcessor, host, port)
-              { }
+              virtual ~RPCSocketClient () { }
 
             public:
-              virtual RPCClientCommunicator& communicator () = 0;
+              virtual RPCClientCommunicator* buildCommunicator (
+                  casock::rpc::protobuf::client::RPCCallHash& rCallHash,
+                  casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) = 0;
+
+              virtual void close () = 0;
           };
         }
       }

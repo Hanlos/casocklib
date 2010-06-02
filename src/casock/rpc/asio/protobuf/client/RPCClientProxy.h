@@ -38,14 +38,6 @@
 #include "casock/rpc/protobuf/client/RPCClientProxy.h"
 
 namespace casock {
-  namespace proactor {
-    namespace asio {
-      namespace base {
-        class AsyncProcessor;
-      }
-    }
-  }
-
   namespace rpc {
     namespace protobuf {
       namespace api {
@@ -62,6 +54,7 @@ namespace casock {
         namespace client {
           class RPCSocketClient;
           class RPCSocketClientFactory;
+          class RPCClientCommunicator;
 
           using casock::rpc::protobuf::client::RPCCallHandlerFactory;
 
@@ -113,7 +106,8 @@ namespace casock {
               void close ();
 
             private:
-              RPCSocketClient*  mpRPCSocketClient;
+              RPCSocketClient*        mpSocketClient;
+              RPCClientCommunicator*  mpCommunicator;
           };
         }
       }

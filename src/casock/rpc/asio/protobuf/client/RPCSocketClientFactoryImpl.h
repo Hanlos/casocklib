@@ -60,9 +60,7 @@ namespace casock {
                   const std::string& port);
 
             public:
-              RPCSocketClient* buildRPCSocketClient (
-                  casock::rpc::protobuf::client::RPCCallHash& rCallHash,
-                  casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const;
+              RPCSocketClient* buildRPCSocketClient () const;
 
             private:
               AsyncProcessor& mrAsyncProcessor;

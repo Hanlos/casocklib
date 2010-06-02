@@ -33,25 +33,27 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_
 
-#include "casock/rpc/asio/protobuf/base/RPCCommunicator.h"
+#include <asio.hpp>
+
+namespace google {
+  namespace protobuf {
+    class Message;
+  }
+}
 
 namespace casock {
   namespace rpc {
-
     namespace asio {
       namespace protobuf {
         namespace client {
-          class RPCClientCommunicator : public casock::rpc::asio::protobuf::base::RPCCommunicator
+          class RPCClientCommunicator
           {
             public:
-              RPCClientCommunicator (casock::proactor::asio::base::SocketChannel* const pChannel);
-
-            private:
-              ::google::protobuf::Message* createRecvMessage ();
+              virtual ~RPCClientCommunicator () { };
 
             public:
-              void sendRequest (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler);
-              void recvResponse (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
+              virtual void startReceivingResponses () = 0;
+              virtual void sendRequest (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler) = 0;
           };
         }
       }

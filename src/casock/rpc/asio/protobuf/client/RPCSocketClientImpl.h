@@ -33,47 +33,34 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_IMPL_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_SOCKET_CLIENT_IMPL_H_
 
+#include "casock/proactor/asio/client/SocketClient.h"
 #include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
-#include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
 
 namespace casock {
   namespace rpc {
-    namespace protobuf {
-      namespace api {
-        class RpcResponse;
-      }
-    }
-
-    namespace protobuf {
-      namespace client {
-				class RPCCallHash;
-        class RPCCallQueue;
-      }
-    }
-
     namespace asio {
       namespace protobuf {
         namespace client {
-          using casock::rpc::protobuf::client::RPCCallHash;
-          using casock::rpc::protobuf::client::RPCCallQueue;
+          class RPCClientCommunicator;
 
-          class RPCSocketClientImpl : public RPCSocketClient
+          class RPCSocketClientImpl : public RPCSocketClient, public casock::proactor::asio::client::SocketClient
           {
             public:
-              RPCSocketClientImpl (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port, RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
+              RPCSocketClientImpl (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const std::string& host, const std::string& port);
 
             private:
               void onConnect ();
               void onConnectionFailure ();
-              void onRecvResponse (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
 
             public:
-              RPCClientCommunicator& communicator () { return mCommunicator; }
+              virtual RPCClientCommunicator* buildCommunicator (
+                  casock::rpc::protobuf::client::RPCCallHash& rCallHash,
+                  casock::rpc::protobuf::client::RPCCallQueue& rCallQueue);
 
-            private:
-              RPCClientCommunicator	mCommunicator;
-              RPCCallHash&					mrCallHash;
-              RPCCallQueue&         mrCallQueue;
+              void close ()
+              {
+                casock::proactor::asio::client::SocketClient::close ();
+              }
           };
         }
       }

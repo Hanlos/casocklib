@@ -35,13 +35,6 @@
 
 namespace casock {
   namespace rpc {
-    namespace protobuf {
-      namespace client {
-        class RPCCallHash;
-        class RPCCallQueue;
-      }
-    }
-
     namespace asio {
       namespace protobuf {
         namespace client {
@@ -50,9 +43,7 @@ namespace casock {
           class RPCSocketClientFactory
           {
             public:
-              virtual RPCSocketClient* buildRPCSocketClient (
-                  casock::rpc::protobuf::client::RPCCallHash& rCallHash,
-                  casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const = 0;
+              virtual RPCSocketClient* buildRPCSocketClient () const = 0;
           };
         }
       }
