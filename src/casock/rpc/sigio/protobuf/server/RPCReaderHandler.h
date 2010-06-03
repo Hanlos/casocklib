@@ -34,7 +34,7 @@
 #define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_SERVER__RPC_READER_HANDLER_H_
 
 #include "casock/sigio/base/Handler.h"
-#include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
+#include "casock/rpc/protobuf/server/RPCCallResponseHandlerImpl.h"
 #include "casock/rpc/sigio/protobuf/server/RPCServerCommunicator.h"
 
 namespace casock {
@@ -47,8 +47,7 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace server {
-        template<typename _TpResponseHandler>
-          class RPCCallQueue;
+        class RPCCallQueue;
       }
     }
 
@@ -62,13 +61,13 @@ namespace casock {
       namespace protobuf {
         namespace server {
           using casock::rpc::protobuf::api::RpcResponse;
-          using casock::rpc::protobuf::server::RPCCallResponseHandler;
+          using casock::rpc::protobuf::server::RPCCallResponseHandlerImpl;
           using casock::rpc::protobuf::server::RPCCallQueue;
 
-          class RPCReaderHandler : public casock::sigio::base::Handler, public RPCCallResponseHandler
+          class RPCReaderHandler : public casock::sigio::base::Handler, public RPCCallResponseHandlerImpl
           {
             public:
-              RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const int& fd, RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
+              RPCReaderHandler (casock::sigio::base::Dispatcher& rDispatcher, const int& fd, RPCCallQueue& rCallQueue);
 
             private:
               void destroy () { delete this; }
@@ -78,8 +77,8 @@ namespace casock {
               void callback (const RpcResponse& response);
 
             private:
-              RPCServerCommunicator                 mCommunicator;
-              RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
+              RPCServerCommunicator mCommunicator;
+              RPCCallQueue&         mrCallQueue;
           };
         }
       }

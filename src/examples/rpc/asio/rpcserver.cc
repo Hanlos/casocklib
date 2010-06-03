@@ -1,5 +1,6 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
+#include "casock/rpc/protobuf/server/RPCCallHandlerFactoryImpl.h"
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
 
 #include "examples/rpc/protobuf/api/rpc_hello.pb.h"
@@ -36,11 +37,12 @@ int main ()
   casock::proactor::asio::base::AsyncProcessor::initialize ();
 
   HelloServiceImpl service;
+  casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactory (&service);
 
   try
   {
     casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
-    proxy = new casock::rpc::asio::protobuf::server::RPCServerProxy (*pAsyncProcessor, 2000, &service);
+    proxy = new casock::rpc::asio::protobuf::server::RPCServerProxy (callHandlerFactory, *pAsyncProcessor, 2000);
     proxy->start ();
 
     pAsyncProcessor->run ();

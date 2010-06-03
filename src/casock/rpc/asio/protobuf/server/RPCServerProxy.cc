@@ -44,8 +44,11 @@ namespace casock {
     namespace asio {
       namespace protobuf {
         namespace server {
-          RPCServerProxy::RPCServerProxy (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const uint32& port, google::protobuf::Service* pService)
-            : casock::rpc::protobuf::server::RPCServerProxy (pService)
+          RPCServerProxy::RPCServerProxy (
+              RPCCallHandlerFactory& rCallHandlerFactory,
+              casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
+              const uint32& port)
+            : casock::rpc::protobuf::server::RPCServerProxy (rCallHandlerFactory)
           {
             LOGMSG (HIGH_LEVEL, "RPCServerProxy::RPCServerProxy (const uint32&) - port [%u]\n", port);
 
@@ -54,8 +57,8 @@ namespace casock {
 
           RPCServerProxy::~RPCServerProxy ()
           {
-            if (m_running)
-              stop ();
+            //if (m_running)
+            //  stop ();
 
             delete mpSocketServer;
           }
@@ -63,17 +66,15 @@ namespace casock {
           void RPCServerProxy::start ()
           {
             mpSocketServer->start ();
-            mpCallHandler->start ();
 
-            m_running = true;
+            //m_running = true;
           }
 
           void RPCServerProxy::stop ()
           {
             mpSocketServer->close ();
-            mpCallHandler->cancel ();
 
-            m_running = false;
+            //m_running = false;
           }
 
           void RPCServerProxy::stopReceivingCalls ()

@@ -102,8 +102,8 @@ class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
 
     void test_concurrent ()
     {
-      uint32 numThreads = 100;
-      uint32 numRequestsByThread = 100000;
+      uint32 numThreads = 10;
+      uint32 numRequestsByThread = 1000;
       std::string methodName = "TestCall";
 
       tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;

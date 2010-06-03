@@ -49,6 +49,7 @@ namespace casock {
       namespace protobuf {
         namespace server {
           class RPCSocketServer;
+          using casock::rpc::protobuf::server::RPCCallHandlerFactory;
 
           /*!
            * This is the workflow of an RPC request:
@@ -78,9 +79,9 @@ namespace casock {
           {
             public:
               RPCServerProxy (
+                  RPCCallHandlerFactory& rCallHandlerFactory,
                   casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
-                  const unsigned int& port,
-                  ::google::protobuf::Service* pService);
+                  const unsigned int& port);
               virtual ~RPCServerProxy ();
 
             public:

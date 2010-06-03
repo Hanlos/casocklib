@@ -35,50 +35,35 @@
 
 #include "casock/proactor/asio/server/SocketSession.h"
 #include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
-#include "casock/rpc/asio/protobuf/server/RPCServerCommunicator.h"
 
 namespace casock {
-  namespace util {
-    class Lock;
-  }
-
   namespace rpc {
     namespace protobuf {
-      namespace api {
-        class RpcResponse;
-      }
-
       namespace server {
-        template<typename _TpResponseHandler>
-          class RPCCallQueue;
+        class RPCCallQueue;
       }
     }
 
     namespace asio {
       namespace protobuf {
         namespace server {
-          using casock::rpc::protobuf::server::RPCCallQueue;
+          class RPCServerCommunicator;
           using casock::rpc::protobuf::server::RPCCallResponseHandler;
 
-          class RPCSocketSession : public casock::proactor::asio::server::SocketSession, public RPCCallResponseHandler
+          class RPCSocketSession : public casock::proactor::asio::server::SocketSession
           {
             public:
               RPCSocketSession (
                   casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
                   casock::proactor::asio::server::SocketServer& rSocketServer,
-                  RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
+                  casock::rpc::protobuf::server::RPCCallQueue& rCallQueue);
+              virtual ~RPCSocketSession ();
 
             private:
               void onConnect ();
-              void onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
-              void onSentResponse (const ::asio::error_code& error); //, casock::util::Lock* pLock);
-
-            public:
-              void callback (const casock::rpc::protobuf::api::RpcResponse& response);
 
             private:
-              RPCServerCommunicator                 mCommunicator;
-              RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
+              RPCServerCommunicator*  mpCommunicator;
           };
         }
       }

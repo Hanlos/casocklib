@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/server/RPCCall.h
+ * \file casock/rpc/protobuf/server/RPCCallHandlerImpl.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,46 +30,44 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_HANDLER_IMPL_H_
+#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_HANDLER_IMPL_H_
 
+//#include <google/protobuf/descriptor.h>
+//#include <google/protobuf/service.h>
+//
 //#include "casock/util/Logger.h"
-#include "casock/util/Lockable.h"
-//#include "casock/util/SafeLock.h"
+//#include "casock/util/Thread.h"
 //#include "casock/rpc/protobuf/api/rpc.pb.h"
-//#include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
+//#include "casock/rpc/protobuf/server/RPCCall.h"
+
+#include "casock/rpc/protobuf/server/RPCCallHandler.h"
+
+namespace google {
+  namespace protobuf {
+    class Service;
+  }
+}
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
-      namespace api {
-        class RpcRequest;
-        class RpcResponse;
-      }
-
       namespace server {
-        class RPCCallResponseHandler;
-        using casock::rpc::protobuf::api::RpcRequest;
-        using casock::rpc::protobuf::api::RpcResponse;
-
-        class RPCCall : public casock::util::Lockable
+        class RPCCallHandlerImpl : public casock::rpc::protobuf::server::RPCCallHandler
         {
           public:
-            RPCCall (RPCCallResponseHandler* const pResponseHandler, const RpcRequest* const pRequest);
-            virtual ~RPCCall ();
+            RPCCallHandlerImpl (RPCCallQueue& rCallQueue, ::google::protobuf::Service* pService);
 
           public:
-            void invalidateHandler ();
-            void callback (const RpcResponse& response);
-            const RpcRequest* const request () { return mpRequest; }
+            void run ();
 
           private:
-            RPCCallResponseHandler* mpResponseHandler;
-            const RpcRequest* const mpRequest;
+            RPCCallQueue&                 mrCallQueue;
+            ::google::protobuf::Service*  mpService;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_H_
+#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_HANDLER_IMPL_H_

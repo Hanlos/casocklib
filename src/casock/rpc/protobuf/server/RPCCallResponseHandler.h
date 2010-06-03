@@ -33,8 +33,7 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_RESPONSE_HANDLER_H_
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_CALL_RESPONSE_HANDLER_H_
 
-#include "casock/util/LockableHash.h"
-#include "casock/util/SafeLock.h"
+#include "casock/util/types.h"
 
 namespace casock {
   namespace rpc {
@@ -46,63 +45,21 @@ namespace casock {
 
     namespace protobuf {
       namespace server {
-        template<typename _TpResponseHandler>
-          class RPCCall;
+        class RPCCall;
 
-        using casock::util::LockableHash;
-        using casock::rpc::protobuf::api::RpcResponse;
-
-        class RPCCallResponseHandler : private casock::util::Lockable
+        class RPCCallResponseHandler
         {
+          public:
+            virtual ~RPCCallResponseHandler () { }
+
           protected:
-            void invalidateCalls ()
-            {
-              /*!
-               * TODO:
-               * \todo We need to invalidate the calls
-               *
-               * casock::util::SafeLock lock (mCallHash);
-               *
-               * LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator it;
-               * LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>::iterator itEnd = mCallHash.end ();;
-               *
-               * for (it = mCallHash.begin (); it != itEnd; ++it)
-               *   it->second->invalidateHandler ();
-               *
-               * mCallHash.clear ();
-               */
-            }
+            virtual void invalidateCalls () = 0;
 
           public:
-            void registerCall (const uint32& id, const RPCCall<RPCCallResponseHandler>* const pCall)
-            {
-              casock::util::SafeLock lock (mCallHash);
-              mCallHash [id] = pCall;
-            }
-
-            void unregisterCall (const uint32& id)
-            {
-              casock::util::SafeLock lock (mCallHash);
-              mCallHash.erase (id);
-            }
-
-            const bool tryUnregisterCall (const uint32& id)
-            {
-              bool ret = false;
-
-              if ((ret = mCallHash.tryLock ()) == true)
-              {
-                mCallHash.erase (id);
-                mCallHash.unlock ();
-              }
-
-              return ret;
-            }
-
-            virtual void callback (const RpcResponse& response) = 0;
-
-          private:
-            LockableHash<uint32, const RPCCall<RPCCallResponseHandler>*>  mCallHash;
+            virtual void registerCall (const uint32& id, const RPCCall* const pCall) = 0;
+            virtual void unregisterCall (const uint32& id) = 0;
+            virtual const bool tryUnregisterCall (const uint32& id) = 0;
+            virtual void callback (const casock::rpc::protobuf::api::RpcResponse& response) = 0;
         };
       }
     }

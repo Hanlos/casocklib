@@ -51,11 +51,15 @@ namespace casock {
       namespace protobuf {
         namespace server {
           class RPCAcceptorHandler;
+          using casock::rpc::protobuf::server::RPCCallHandlerFactory;
 
           class RPCServerProxy : public casock::rpc::protobuf::server::RPCServerProxy
           {
             public:
-              RPCServerProxy (casock::sigio::base::Dispatcher& rDispatcher, const unsigned int& port, google::protobuf::Service* pService);
+              RPCServerProxy (
+                  RPCCallHandlerFactory& rCallHandlerFactory,
+                  casock::sigio::base::Dispatcher& rDispatcher,
+                  const unsigned int& port);
               virtual ~RPCServerProxy ();
 
             public:

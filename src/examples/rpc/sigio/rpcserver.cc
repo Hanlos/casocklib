@@ -1,6 +1,7 @@
 #include "casock/util/Logger.h"
 #include "casock/sigio/base/Dispatcher.h"
 #include "casock/server/CASServerException.h"
+#include "casock/rpc/protobuf/server/RPCCallHandlerFactoryImpl.h"
 #include "casock/rpc/sigio/protobuf/server/RPCServerProxy.h"
 
 #include "examples/rpc/protobuf/api/rpc_hello.pb.h"
@@ -30,9 +31,12 @@ int main ()
   Dispatcher::initialize ();
   Dispatcher* pDispatcher = Dispatcher::getInstance ();
 
+  HelloServiceImpl service;
+  casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactory (&service);
+
   try
   {
-    casock::rpc::sigio::protobuf::server::RPCServerProxy proxy (*pDispatcher, 2000, new HelloServiceImpl ());
+    casock::rpc::sigio::protobuf::server::RPCServerProxy proxy (callHandlerFactory, *pDispatcher, 2000);
     proxy.start ();
 
     pDispatcher->waitForever ();

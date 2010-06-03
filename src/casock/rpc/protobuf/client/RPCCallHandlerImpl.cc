@@ -32,6 +32,8 @@
 
 #include "casock/rpc/protobuf/client/RPCCallHandlerImpl.h"
 
+#include <google/protobuf/service.h>
+
 #include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"

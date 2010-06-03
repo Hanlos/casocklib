@@ -34,12 +34,18 @@
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SERVER_COMMUNICATOR_H_
 
 #include "casock/rpc/asio/protobuf/base/RPCCommunicator.h"
+#include "casock/rpc/protobuf/server/RPCCallResponseHandlerImpl.h"
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace api {
         class RpcRequest;
+        class RpcResponse;
+      }
+
+      namespace server {
+        class RPCCallQueue;
       }
     }
 
@@ -47,21 +53,30 @@ namespace casock {
       namespace protobuf {
         namespace server {
           using casock::proactor::asio::base::SocketChannel;
+          using casock::rpc::protobuf::server::RPCCallQueue;
+          using casock::rpc::protobuf::server::RPCCallResponseHandlerImpl;
 
-          class RPCServerCommunicator : public casock::rpc::asio::protobuf::base::RPCCommunicator
+          class RPCServerCommunicator : public casock::rpc::asio::protobuf::base::RPCCommunicator, public RPCCallResponseHandlerImpl
           {
             public:
-              RPCServerCommunicator (SocketChannel* const pChannel);
+              RPCServerCommunicator (SocketChannel* const pChannel,
+                  RPCCallQueue& rCallQueue);
 
             private:
               ::google::protobuf::Message* createRecvMessage ();
+              void onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage);
+              void onSentResponse (const ::asio::error_code& error); //, casock::util::Lock* pLock);
 
             public:
+              void startReceivingRequests ();
               void recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler);
               void sendResponse (const ::google::protobuf::Message& message, ::boost::function<void(const ::asio::error_code&)> handler);
 
-//            private:
-//              size_t mSize;
+            public:
+              void callback (const casock::rpc::protobuf::api::RpcResponse& response);
+
+            private:
+              RPCCallQueue& mrCallQueue;
           };
         }
       }

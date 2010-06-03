@@ -39,12 +39,10 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace server {
-        template<typename _TpResponseHandler>
-          class RPCCall;
+        class RPCCall;
 
-				template<typename _TpResponseHandler>
-					class RPCCallQueue
-					: public casock::util::LockableQueue<RPCCall<_TpResponseHandler>*>
+        class RPCCallQueue
+					: public casock::util::LockableQueue<RPCCall*>
 					{ };
       }
     }

@@ -39,6 +39,8 @@
 #include "casock/proactor/asio/base/AsyncProcessor.h"
 
 #include "casock/rpc/protobuf/client/RPCCallHandlerFactoryImpl.h"
+#include "casock/rpc/protobuf/server/RPCCallHandlerFactoryImpl.h"
+
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "casock/rpc/asio/protobuf/client/RPCSocketClientFactoryImpl.h"
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
@@ -76,7 +78,8 @@ class test1_cxx : public CxxTest::TestSuite
       //try
       //{
         /*! server */
-        casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (*mpAsyncProcessor, 2000, &mServiceServer);
+        casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactoryServer (&mServiceServer);
+        casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (callHandlerFactoryServer, *mpAsyncProcessor, 2000);
         mServiceServer.setProxy (&serverProxy);
         serverProxy.start ();
 

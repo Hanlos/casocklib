@@ -36,17 +36,20 @@
 #include "casock/util/Logger.h"
 #include "casock/sigio/server/SocketServer.h"
 #include "casock/rpc/sigio/protobuf/server/RPCAcceptorHandler.h"
-#include "casock/rpc/protobuf/server/RPCCallQueue.h"
-#include "casock/rpc/protobuf/server/RPCCallHandler.h"
-#include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
+//#include "casock/rpc/protobuf/server/RPCCallQueue.h"
+//#include "casock/rpc/protobuf/server/RPCCallHandler.h"
+//#include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
 
 namespace casock {
   namespace rpc {
     namespace sigio {
       namespace protobuf {
         namespace server {
-          RPCServerProxy::RPCServerProxy (casock::sigio::base::Dispatcher& rDispatcher, const uint32& port, google::protobuf::Service* pService)
-            : casock::rpc::protobuf::server::RPCServerProxy (pService), mrDispatcher (rDispatcher)
+          RPCServerProxy::RPCServerProxy (
+              RPCCallHandlerFactory& rCallHandlerFactory,
+              casock::sigio::base::Dispatcher& rDispatcher,
+              const uint32& port)
+            : casock::rpc::protobuf::server::RPCServerProxy (rCallHandlerFactory), mrDispatcher (rDispatcher)
           {
             LOGMSG (HIGH_LEVEL, "RPCServerProxy::RPCServerProxy (const uint32&) - port [%u]\n", port);
 
@@ -56,8 +59,8 @@ namespace casock {
 
           RPCServerProxy::~RPCServerProxy ()
           {
-            if (m_running)
-              stop ();
+            //if (m_running)
+            //  stop ();
 
             delete mpSocketServer;
           }
@@ -65,12 +68,12 @@ namespace casock {
           void RPCServerProxy::start ()
           {
             mpSocketServer->listen ();
-            mpCallHandler->start ();
+            //mpCallHandler->start ();
 
             if (! mpAcceptorHandler)
               mpAcceptorHandler = new RPCAcceptorHandler (mrDispatcher, mpSocketServer, *mpCallQueue);
 
-            m_running = true;
+            //m_running = true;
           }
 
           void RPCServerProxy::stop ()
@@ -83,9 +86,9 @@ namespace casock {
             }
 
             mpSocketServer->close ();
-            mpCallHandler->cancel ();
+            //mpCallHandler->cancel ();
 
-            m_running = false;
+            //m_running = false;
           }
         }
       }

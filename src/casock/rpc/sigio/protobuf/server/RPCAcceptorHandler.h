@@ -48,9 +48,7 @@ namespace casock {
     namespace protobuf {
       namespace server {
         class RPCCallResponseHandler;
-
-        template<typename _TpResponseHandler>
-          class RPCCallQueue;
+        class RPCCallQueue;
       }
     }
 
@@ -63,14 +61,14 @@ namespace casock {
           class RPCAcceptorHandler : public casock::sigio::server::SockAcceptorHandler
           {
             public:
-              RPCAcceptorHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue);
+              RPCAcceptorHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCCallQueue& rCallQueue);
 
             private:
               void createHandler (const int& fd);
 
             private:
               casock::sigio::base::Dispatcher&      mrDispatcher;
-              RPCCallQueue<RPCCallResponseHandler>& mrCallQueue;
+              RPCCallQueue& mrCallQueue;
           };
         }
       }

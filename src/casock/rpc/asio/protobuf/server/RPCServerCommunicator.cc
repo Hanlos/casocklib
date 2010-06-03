@@ -35,20 +35,76 @@
 #include <boost/bind.hpp>
 
 #include "casock/rpc/protobuf/api/rpc.pb.h"
+#include "casock/rpc/protobuf/server/RPCCall.h"
+#include "casock/rpc/protobuf/server/RPCCallQueue.h"
 
 namespace casock {
   namespace rpc {
     namespace asio {
       namespace protobuf {
         namespace server {
-          RPCServerCommunicator::RPCServerCommunicator (SocketChannel* const pChannel)
-            : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel)
+          RPCServerCommunicator::RPCServerCommunicator (
+              SocketChannel* const pChannel,
+              RPCCallQueue& rCallQueue)
+            : casock::rpc::asio::protobuf::base::RPCCommunicator (pChannel), mrCallQueue (rCallQueue)
           { }
 
           ::google::protobuf::Message* RPCServerCommunicator::createRecvMessage ()
           {
             LOGMSG (MEDIUM_LEVEL, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
             return new casock::rpc::protobuf::api::RpcRequest ();
+          }
+
+          void RPCServerCommunicator::onRecvRequest (const ::asio::error_code& error, ::google::protobuf::Message* pMessage)
+          {
+            LOGMSG (LOW_LEVEL, "RPCServerCommunicator::%s () - error [%d], pMessage [%p]\n", __FUNCTION__, error.value (), pMessage);
+
+            if (! error)
+            {
+              casock::rpc::protobuf::api::RpcRequest* request = static_cast<casock::rpc::protobuf::api::RpcRequest *> (pMessage);
+
+              LOGMSG (HIGH_LEVEL, "RPCServerCommunicator::%s () - request received: %d bytes - id [%u], operation [%s]\n", __FUNCTION__, request->ByteSize (), request->id (), request->operation ().c_str ());
+
+              /*!
+               * The RPCCall will be deleted by RPCCallEntry destructor.
+               * The RPCCallEntry will be created by RPCCallHandler<_TpResponseHandler>::run () 
+               *  and deleted on RPCCallHandler<_TpResponseHandler>::callback (RPCCallEntry*).
+               */
+              mrCallQueue.push (new casock::rpc::protobuf::server::RPCCall (this, request));
+
+              try
+              {
+                recvRequest (::boost::bind (&RPCServerCommunicator::onRecvRequest, this, ::asio::placeholders::error, _2));
+              }
+              catch (casock::base::CASClosedConnectionException& e)
+              {
+                LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s () - catch (casock::base::CASClosedConnectionException&) [%s]\n", __FUNCTION__, e.what ());
+                invalidateCalls ();
+              }
+            }
+            else
+            {
+              invalidateCalls ();
+            }
+          }
+
+          void RPCServerCommunicator::onSentResponse (const ::asio::error_code& error)
+          {
+            LOGMSG (LOW_LEVEL, "RPCServerCommunicator::%s () - error [%d]\n", __FUNCTION__, error.value ());
+          }
+
+          void RPCServerCommunicator::startReceivingRequests ()
+          {
+            LOGMSG (LOW_LEVEL, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
+
+            try
+            {
+              recvRequest (::boost::bind (&RPCServerCommunicator::onRecvRequest, this, ::asio::placeholders::error, _2));
+            }
+            catch (casock::base::CASClosedConnectionException& e)
+            {
+              LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s () - catch (casock::base::CASClosedConnectionException&) [%s]\n", __FUNCTION__, e.what ());
+            }
           }
 
           void RPCServerCommunicator::recvRequest (::boost::function<void(const ::asio::error_code&, ::google::protobuf::Message*)> handler)
@@ -62,10 +118,22 @@ namespace casock {
             LOGMSG (MEDIUM_LEVEL, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
             sendMessage (message, handler);
           }
+
+          void RPCServerCommunicator::callback (const casock::rpc::protobuf::api::RpcResponse& response)
+          {
+            LOGMSG (LOW_LEVEL, "RPCServerCommunicator::%s ()\n", __FUNCTION__);
+
+            try
+            {
+              sendResponse (response, ::boost::bind (&RPCServerCommunicator::onSentResponse, this, ::asio::placeholders::error));
+            }
+            catch (casock::base::CASClosedConnectionException& e)
+            {
+              LOGMSG (NO_DEBUG, "RPCServerCommunicator::%s () - catch (casock::base::CASClosedConnectionException&) [%s]\n", __FUNCTION__, e.what ());
+            }
+          }
         }
       }
     }
   }
 }
-
-

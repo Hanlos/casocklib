@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/asio/protobuf/server/RPCSocketServer.cc
+ * \file casock/rpc/protobuf/server/RPCCallHandlerFactory.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,25 +30,24 @@
  * $Revision$
  */
 
-#include "casock/rpc/asio/protobuf/server/RPCSocketServer.h"
-#include "casock/rpc/asio/protobuf/server/RPCSocketSession.h"
+#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_SERVER__RPC_CALL_HANDLER_FACTORY_H_
+#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_SERVER__RPC_CALL_HANDLER_FACTORY_H_
 
 namespace casock {
   namespace rpc {
-    namespace asio {
-      namespace protobuf {
-        namespace server {
-          RPCSocketServer::RPCSocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port, RPCCallQueue& rCallQueue)
-            : casock::proactor::asio::server::SocketServer (rAsyncProcessor, port), mrCallQueue (rCallQueue)
-          {
-          }
+    namespace protobuf {
+      namespace server {
+        class RPCCallHandler;
+        class RPCCallQueue;
 
-          casock::proactor::asio::server::SocketSession* RPCSocketServer::buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
-          {
-            return new RPCSocketSession (rAsyncProcessor, *this, mrCallQueue);
-          }
-        }
+        class RPCCallHandlerFactory
+        {
+          public:
+            virtual RPCCallHandler* buildRPCCallHandler (RPCCallQueue& rCallQueue) const = 0;
+        };
       }
     }
   }
 }
+
+#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_SERVER__RPC_CALL_HANDLER_FACTORY_H_

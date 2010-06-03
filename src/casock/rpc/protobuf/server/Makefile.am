@@ -1,4 +1,4 @@
-SRCS = RPCServerProxy.cc
+SRCS = RPCServerProxy.cc RPCCallHandler.cc RPCCallHandlerFactoryImpl.cc RPCCallHandlerImpl.cc RPCCall.cc
 
 LIBS = $(top_srcdir)/src/casock/rpc/protobuf/api/libcasrpcpbapi.la
 

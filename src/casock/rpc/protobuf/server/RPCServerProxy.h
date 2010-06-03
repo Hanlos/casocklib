@@ -33,31 +33,16 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
 
-namespace google {
-  namespace protobuf {
-    class Service;
-  }
-}
+#include <vector>
+#include "casock/util/types.h"
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace server {
-        class RPCCallResponseHandler;
-
-        template<typename _TpResponseHandler>
-          class RPCCallQueue;
-
-        template<typename _TpResponseHandler>
-          class RPCCallHandler;
-      }
-    }
-
-    namespace protobuf {
-      namespace server {
-        using casock::rpc::protobuf::server::RPCCallResponseHandler;
-        using casock::rpc::protobuf::server::RPCCallQueue;
-        using casock::rpc::protobuf::server::RPCCallHandler;
+        class RPCCallQueue;
+        class RPCCallHandler;
+        class RPCCallHandlerFactory;
 
         /*!
          * This is the RPC server proxy interface for a protobuf based RPC service.
@@ -93,7 +78,7 @@ namespace casock {
         class RPCServerProxy
         {
           protected:
-            RPCServerProxy (::google::protobuf::Service* pService);
+            RPCServerProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers = DEFAULT_NUM_CALL_HANDLERS);
             virtual ~RPCServerProxy ();
 
           protected:
@@ -101,11 +86,21 @@ namespace casock {
             virtual void stop () = 0;
 
           protected:
-            RPCCallQueue<RPCCallResponseHandler>*   mpCallQueue; /*!< Maintain a queue of requests received from all clients */
-            RPCCallHandler<RPCCallResponseHandler>* mpCallHandler; /*!< Acquire the requests from the queue, execute the operation and execute the callback */
-            ::google::protobuf::Service*            mpService; /*!< The RPC service defined by the user */
+            void addCallHandlers (const uint32& n);
+            void removeCallHandlers (const uint32& n);
 
-            bool m_running; /*!< Should be used to indicate if the service is active or not */
+          public:
+            void setNumCallHandlers (const uint32& n);
+
+          protected:
+            RPCCallQueue*                 mpCallQueue; /*!< Maintain a queue of requests received from all clients */
+            std::vector<RPCCallHandler*>  mCallHandlers; /*!< Aquire requests from queue, execute operation and execute callback */
+            const RPCCallHandlerFactory&  mrCallHandlerFactory;
+
+            //bool m_running; /*!< Should be used to indicate if the service is active or not */
+
+          public:
+            static uint32 DEFAULT_NUM_CALL_HANDLERS;
         };
       }
     }

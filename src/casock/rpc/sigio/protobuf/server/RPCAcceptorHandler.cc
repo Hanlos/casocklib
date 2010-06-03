@@ -41,7 +41,7 @@ namespace casock {
     namespace sigio {
       namespace protobuf {
         namespace server {
-          RPCAcceptorHandler::RPCAcceptorHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCCallQueue<RPCCallResponseHandler>& rCallQueue) : SockAcceptorHandler (rDispatcher, pFileDescriptor), mrDispatcher (rDispatcher), mrCallQueue (rCallQueue)
+          RPCAcceptorHandler::RPCAcceptorHandler (casock::sigio::base::Dispatcher& rDispatcher, const casock::sigio::base::FileDescriptor* const pFileDescriptor, RPCCallQueue& rCallQueue) : SockAcceptorHandler (rDispatcher, pFileDescriptor), mrDispatcher (rDispatcher), mrCallQueue (rCallQueue)
           {
             LOGMSG (HIGH_LEVEL, "RPCAcceptorHandler::RPCAcceptorHandler ()\n");
           }

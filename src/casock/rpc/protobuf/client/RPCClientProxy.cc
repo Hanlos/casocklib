@@ -42,8 +42,8 @@ using std::stringstream;
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
-#include "casock/rpc/protobuf/client/RPCCallHandlerImpl.h"
-#include "casock/rpc/protobuf/client/RPCCallHandlerFactoryImpl.h"
+#include "casock/rpc/protobuf/client/RPCCallHandler.h"
+#include "casock/rpc/protobuf/client/RPCCallHandlerFactory.h"
 #include "casock/rpc/protobuf/client/RPCRequestBuilder.h"
 
 namespace casock {
