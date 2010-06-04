@@ -36,7 +36,6 @@
 #include "casock/rpc/protobuf/server/RPCCallQueue.h"
 #include "casock/rpc/protobuf/server/RPCCallHandler.h"
 #include "casock/rpc/protobuf/server/RPCCallHandlerFactory.h"
-#include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
 
 namespace casock {
   namespace rpc {

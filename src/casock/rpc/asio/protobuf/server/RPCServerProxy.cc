@@ -32,13 +32,9 @@
 
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
 
-#include "casock/util/types.h"
-#include "casock/util/Logger.h"
-#include "casock/rpc/protobuf/server/RPCCallQueue.h"
-#include "casock/rpc/protobuf/server/RPCCallHandler.h"
-#include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
 #include "casock/rpc/asio/protobuf/server/RPCSocketServer.h"
 #include "casock/rpc/asio/protobuf/server/RPCSocketServerFactory.h"
+#include "casock/util/Logger.h"
 
 namespace casock {
   namespace rpc {
@@ -52,35 +48,27 @@ namespace casock {
           {
             LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
 
-            //mpSocketServer = new casock::rpc::asio::protobuf::server::RPCSocketServerImpl (rAsyncProcessor, port, *mpCallQueue);
             mpSocketServer = rSocketServerFactory.buildRPCSocketServer (*mpCallQueue);
           }
 
           RPCServerProxy::~RPCServerProxy ()
           {
-            //if (m_running)
-            //  stop ();
-
             delete mpSocketServer;
           }
 
           void RPCServerProxy::start ()
           {
             mpSocketServer->start ();
-
-            //m_running = true;
           }
 
           void RPCServerProxy::stop ()
           {
             mpSocketServer->close ();
-
-            //m_running = false;
           }
 
           void RPCServerProxy::stopReceivingCalls ()
           {
-            LOGMSG (LOW_LEVEL, "RPCServerProxy::%s ()\n", __FUNCTION__);
+            LOGMSG (LOW_LEVEL, "%s\n", __PRETTY_FUNCTION__);
             mpSocketServer->closeAcceptor ();
           }
         }
