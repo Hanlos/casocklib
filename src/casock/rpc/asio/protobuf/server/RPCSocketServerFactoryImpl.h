@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/asio/protobuf/server/RPCSocketSession.cc
+ * \file casock/rpc/asio/protobuf/server/RPCSocketServerFactoryImpl.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,38 +30,45 @@
  * $Revision$
  */
 
-#include "casock/rpc/protobuf/server/RPCCallQueue.h"
-#include "casock/rpc/asio/protobuf/server/RPCSocketSession.h"
-#include "casock/rpc/asio/protobuf/server/RPCServerCommunicator.h"
-#include "casock/util/Logger.h"
+#ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_FACTORY_IMPL_H_
+#define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_FACTORY_IMPL_H_
+
+#include "casock/util/types.h"
+#include "casock/rpc/asio/protobuf/server/RPCSocketServerFactory.h"
 
 namespace casock {
+  namespace proactor {
+    namespace asio {
+      namespace base {
+        class AsyncProcessor;
+      }
+    }
+  }
+
   namespace rpc {
     namespace asio {
       namespace protobuf {
         namespace server {
-          RPCSocketSession::RPCSocketSession (
-              casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
-              casock::proactor::asio::server::SocketServer& rSocketServer,
-              casock::rpc::protobuf::server::RPCCallQueue& rCallQueue)
-            : casock::proactor::asio::server::SocketSession (rAsyncProcessor, rSocketServer)
-          {
-            mpCommunicator = new RPCServerCommunicator (this, rCallQueue);
-          }
+          using casock::proactor::asio::base::AsyncProcessor;
 
-          RPCSocketSession::~RPCSocketSession ()
+          class RPCSocketServerFactoryImpl : public RPCSocketServerFactory
           {
-            delete mpCommunicator;
-          }
+            public:
+              RPCSocketServerFactoryImpl (
+                  AsyncProcessor& rAsyncProcessor,
+                  const uint32& port);
 
-          void RPCSocketSession::onConnect ()
-          {
-            LOGMSG (LOW_LEVEL, "RPCSocketSession::%s ()\n", __FUNCTION__);
+            public:
+              RPCSocketServer* buildRPCSocketServer (casock::rpc::protobuf::server::RPCCallQueue& rCallQueue) const;
 
-            mpCommunicator->startReceivingRequests ();
-          }
+            private:
+              AsyncProcessor& mrAsyncProcessor;
+              const uint32 m_port;
+          };
         }
       }
     }
   }
 }
+
+#endif // __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_FACTORY_IMPL_H_

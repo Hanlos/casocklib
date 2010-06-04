@@ -36,13 +36,13 @@
 #include <google/protobuf/descriptor.h>
 
 #include "casock/util/Logger.h"
+#include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
 #include "casock/rpc/asio/protobuf/client/RPCSocketClient.h"
 #include "casock/rpc/asio/protobuf/client/RPCSocketClientFactory.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientCommunicator.h"
-#include "casock/rpc/protobuf/api/rpc.pb.h"
 
 namespace casock {
   namespace rpc {

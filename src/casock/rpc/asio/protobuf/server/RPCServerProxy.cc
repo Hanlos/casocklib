@@ -34,10 +34,11 @@
 
 #include "casock/util/types.h"
 #include "casock/util/Logger.h"
-#include "casock/rpc/asio/protobuf/server/RPCSocketServer.h"
 #include "casock/rpc/protobuf/server/RPCCallQueue.h"
 #include "casock/rpc/protobuf/server/RPCCallHandler.h"
 #include "casock/rpc/protobuf/server/RPCCallResponseHandler.h"
+#include "casock/rpc/asio/protobuf/server/RPCSocketServer.h"
+#include "casock/rpc/asio/protobuf/server/RPCSocketServerFactory.h"
 
 namespace casock {
   namespace rpc {
@@ -45,14 +46,14 @@ namespace casock {
       namespace protobuf {
         namespace server {
           RPCServerProxy::RPCServerProxy (
-              RPCCallHandlerFactory& rCallHandlerFactory,
-              casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
-              const uint32& port)
+              const RPCSocketServerFactory& rSocketServerFactory,
+              const RPCCallHandlerFactory& rCallHandlerFactory)
             : casock::rpc::protobuf::server::RPCServerProxy (rCallHandlerFactory)
           {
-            LOGMSG (HIGH_LEVEL, "RPCServerProxy::RPCServerProxy (const uint32&) - port [%u]\n", port);
+            LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
 
-            mpSocketServer = new casock::rpc::asio::protobuf::server::RPCSocketServer (rAsyncProcessor, port, *mpCallQueue);
+            //mpSocketServer = new casock::rpc::asio::protobuf::server::RPCSocketServerImpl (rAsyncProcessor, port, *mpCallQueue);
+            mpSocketServer = rSocketServerFactory.buildRPCSocketServer (*mpCallQueue);
           }
 
           RPCServerProxy::~RPCServerProxy ()

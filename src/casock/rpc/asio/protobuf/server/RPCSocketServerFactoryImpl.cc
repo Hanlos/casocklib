@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCRequestBuilder.h
+ * \file casock/rpc/asio/protobuf/server/RPCSocketServerFactoryImpl.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,44 +30,30 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_
-
-#include "casock/util/types.h"
-
-namespace google {
-  namespace protobuf {
-    class MethodDescriptor;
-    class Message;
-  }
-}
+#include "casock/rpc/asio/protobuf/server/RPCSocketServerFactoryImpl.h"
+#include "casock/rpc/asio/protobuf/server/RPCSocketServerImpl.h"
+#include "casock/util/Logger.h"
 
 namespace casock {
   namespace rpc {
-    namespace protobuf {
-      namespace api {
-        class RpcRequest;
-      }
+    namespace asio {
+      namespace protobuf {
+        namespace server {
+          RPCSocketServerFactoryImpl::RPCSocketServerFactoryImpl (
+                  AsyncProcessor& rAsyncProcessor,
+                  const uint32& port)
+            : mrAsyncProcessor (rAsyncProcessor), m_port (port)
+          {
+            LOGMSG (LOW_LEVEL, "%s - port [%zu]\n", __PRETTY_FUNCTION__, port);
+          }
 
-      namespace client {
-        class RPCRequestBuilder
-        {
-          public:
-            RPCRequestBuilder ()
-              : mID (0)
-            { }
-
-          public:
-            casock::rpc::protobuf::api::RpcRequest* buildRpcRequest (
-                const google::protobuf::MethodDescriptor* method,
-                const google::protobuf::Message* request) const;
-
-          private:
-            mutable uint32 mID;
-        };
+          RPCSocketServer* RPCSocketServerFactoryImpl::buildRPCSocketServer (casock::rpc::protobuf::server::RPCCallQueue& rCallQueue) const
+          {
+            LOGMSG (LOW_LEVEL, "%s - m_port [%zu]\n", __PRETTY_FUNCTION__, m_port);
+            return new RPCSocketServerImpl (mrAsyncProcessor, m_port, rCallQueue);
+          }
+        }
       }
     }
   }
 }
-
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_

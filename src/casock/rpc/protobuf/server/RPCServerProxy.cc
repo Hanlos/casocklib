@@ -43,9 +43,9 @@ namespace casock {
     namespace protobuf {
       namespace server {
         RPCServerProxy::RPCServerProxy (const RPCCallHandlerFactory& rCallHandlerFactory)
-          : mrCallHandlerFactory (rCallHandlerFactory)
+          : mpCallQueue (new RPCCallQueue ()), mrCallHandlerFactory (rCallHandlerFactory)
         {
-          mpCallQueue = new RPCCallQueue ();
+          LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
         }
 
         RPCServerProxy::~RPCServerProxy ()

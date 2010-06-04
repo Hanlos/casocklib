@@ -36,19 +36,12 @@
 #include "casock/rpc/protobuf/server/RPCServerProxy.h"
 
 namespace casock {
-  namespace proactor {
-    namespace asio {
-      namespace base {
-        class AsyncProcessor;
-      }
-    }
-  }
-
   namespace rpc {
     namespace asio {
       namespace protobuf {
         namespace server {
           class RPCSocketServer;
+          class RPCSocketServerFactory;
           using casock::rpc::protobuf::server::RPCCallHandlerFactory;
 
           /*!
@@ -78,10 +71,7 @@ namespace casock {
           class RPCServerProxy : public casock::rpc::protobuf::server::RPCServerProxy
           {
             public:
-              RPCServerProxy (
-                  RPCCallHandlerFactory& rCallHandlerFactory,
-                  casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
-                  const unsigned int& port);
+              RPCServerProxy (const RPCSocketServerFactory& rSocketServerFactory, const RPCCallHandlerFactory& rCallHandlerFactory);
               virtual ~RPCServerProxy ();
 
             public:

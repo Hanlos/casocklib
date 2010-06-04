@@ -78,8 +78,8 @@ namespace casock {
              */
             virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, RPCCall* pRPCCall) = 0;
 
-					protected:
-						void registerRPCCall (const uint32& id, RPCCall* pRPCCall);
+          protected:
+            void registerRPCCall (const uint32& id, RPCCall* pRPCCall);
 
           public:
             /*!
@@ -91,19 +91,19 @@ namespace casock {
             void CallMethod (const ::google::protobuf::MethodDescriptor*, ::google::protobuf::RpcController*, const ::google::protobuf::Message*, ::google::protobuf::Message*, ::google::protobuf::Closure*);
 
           private:
-            RPCRequestBuilder* mpRequestBuilder;
+            const RPCRequestBuilder* const mpRequestBuilder;
 
           protected:
             /*!
              * Used to register the RPC requests, indexed by the RpcRequest ID.
              * Each RPC request should have a single ID (given by PCClientProxy::mID,
-						 * that is incremented before each call).
+             * that is incremented before each call).
              * The response is created by RPC server with the same ID of the request.
              * When it is received, the RPCCall is removed from the hash.
              */
-            RPCCallHash*	                mpCallHash;
-            RPCCallQueue*                 mpCallQueue;
-            const RPCCallHandlerFactory&  mrCallHandlerFactory;
+            RPCCallHash* const mpCallHash;
+            RPCCallQueue* const mpCallQueue;
+            const RPCCallHandlerFactory& mrCallHandlerFactory;
         };
       }
     }

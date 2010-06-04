@@ -55,7 +55,6 @@ namespace casock {
           class RPCSocketClient;
           class RPCSocketClientFactory;
           class RPCClientCommunicator;
-
           using casock::rpc::protobuf::client::RPCCallHandlerFactory;
 
           /*!

@@ -47,10 +47,7 @@ namespace casock {
          *
          * To implement a RPC server it's necessary to extend this class defining
          * a communication channel (a socket server, for example) and the methods
-         * start () and stop (). The attributre m_running should be used to indicate
-         * if the service is active or not. The proxy also receives a service
-         * as parameter. This service will be used by RPCCallHandler to execute
-         * the operation received in the request.
+         * start () and stop (). The attributre.
          *
          * When a request is received by the communication channel it is enqueued
          * into mpCallQueue, that is a queue of RPCCalls. The RPCCall is an object
@@ -87,8 +84,8 @@ namespace casock {
             virtual void stop () = 0;
 
           protected:
-            RPCCallQueue*                 mpCallQueue; /*!< Maintain a queue of requests received from all clients */
-            const RPCCallHandlerFactory&  mrCallHandlerFactory;
+            RPCCallQueue* const mpCallQueue; /*!< Maintain a queue of requests received from all clients */
+            const RPCCallHandlerFactory& mrCallHandlerFactory;
         };
       }
     }

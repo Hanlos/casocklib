@@ -39,9 +39,7 @@ namespace casock {
       namespace base {
         SocketChannel::SocketChannel (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
           : m_socket (rAsyncProcessor.service ())
-        {
-          LOGMSG (MAX_LEVEL, "SocketChannel::SocketChannel ()\n");
-        }
+        { }
       }
     }
   }

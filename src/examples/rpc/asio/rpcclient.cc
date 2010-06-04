@@ -74,7 +74,7 @@ int main ()
     casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
     casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*pAsyncProcessor, "localhost", "2000");
     casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
-    //proxy = new casock::rpc::asio::protobuf::client::RPCClientProxy (*pAsyncProcessor, "localhost", "2000");
+
     proxy = new casock::rpc::asio::protobuf::client::RPCClientProxy (clientSocketFactory, callHandlerFactory);
     proxy->setNumCallHandlers (1);
 

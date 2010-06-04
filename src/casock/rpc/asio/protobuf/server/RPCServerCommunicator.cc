@@ -37,6 +37,7 @@
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/server/RPCCall.h"
 #include "casock/rpc/protobuf/server/RPCCallQueue.h"
+#include "casock/util/Logger.h"
 
 namespace casock {
   namespace rpc {

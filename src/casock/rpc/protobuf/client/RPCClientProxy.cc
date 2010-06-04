@@ -54,13 +54,9 @@ namespace casock {
         //uint32 RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS = 1;
 
         RPCClientProxy::RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory)
-          : mrCallHandlerFactory (rCallHandlerFactory)
+          : mpRequestBuilder (new RPCRequestBuilder ()), mpCallHash (new RPCCallHash ()), mpCallQueue (new RPCCallQueue ()), mrCallHandlerFactory (rCallHandlerFactory)
         {
-          LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
-
-          mpCallHash = new RPCCallHash ();
-          mpCallQueue = new RPCCallQueue ();
-          mpRequestBuilder = new RPCRequestBuilder ();
+          LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
         }
 
         RPCClientProxy::~RPCClientProxy ()

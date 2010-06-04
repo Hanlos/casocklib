@@ -32,6 +32,7 @@
 
 #include "casock/rpc/asio/protobuf/client/RPCSocketClientImpl.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientCommunicatorImpl.h"
+#include "casock/util/Logger.h"
 
 namespace casock {
   namespace rpc {

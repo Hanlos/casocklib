@@ -43,7 +43,7 @@ namespace casock {
       namespace client {
         casock::rpc::protobuf::api::RpcRequest* RPCRequestBuilder::buildRpcRequest (
             const google::protobuf::MethodDescriptor* method,
-            const google::protobuf::Message* request)
+            const google::protobuf::Message* request) const
         {
           casock::rpc::protobuf::api::RpcRequest* pRequest = new casock::rpc::protobuf::api::RpcRequest ();
           pRequest->set_id (++mID);

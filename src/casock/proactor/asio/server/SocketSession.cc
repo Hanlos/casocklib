@@ -32,6 +32,7 @@
 
 #include "casock/proactor/asio/server/SocketSession.h"
 #include "casock/proactor/asio/server/SocketServer.h"
+#include "casock/util/Logger.h"
 
 namespace casock {
   namespace proactor {

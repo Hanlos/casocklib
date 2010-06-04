@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCRequestBuilder.h
+ * \file casock/rpc/asio/protobuf/server/RPCSocketServerImpl.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,44 +30,25 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_
-
-#include "casock/util/types.h"
-
-namespace google {
-  namespace protobuf {
-    class MethodDescriptor;
-    class Message;
-  }
-}
+#include "casock/rpc/asio/protobuf/server/RPCSocketServerImpl.h"
+#include "casock/rpc/asio/protobuf/server/RPCSocketSession.h"
 
 namespace casock {
   namespace rpc {
-    namespace protobuf {
-      namespace api {
-        class RpcRequest;
-      }
+    namespace asio {
+      namespace protobuf {
+        namespace server {
+          RPCSocketServerImpl::RPCSocketServerImpl (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port, RPCCallQueue& rCallQueue)
+            : casock::proactor::asio::server::SocketServer (rAsyncProcessor, port), mrCallQueue (rCallQueue)
+          {
+          }
 
-      namespace client {
-        class RPCRequestBuilder
-        {
-          public:
-            RPCRequestBuilder ()
-              : mID (0)
-            { }
-
-          public:
-            casock::rpc::protobuf::api::RpcRequest* buildRpcRequest (
-                const google::protobuf::MethodDescriptor* method,
-                const google::protobuf::Message* request) const;
-
-          private:
-            mutable uint32 mID;
-        };
+          casock::proactor::asio::server::SocketSession* RPCSocketServerImpl::buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
+          {
+            return new RPCSocketSession (rAsyncProcessor, *this, mrCallQueue);
+          }
+        }
       }
     }
   }
 }
-
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_

@@ -33,35 +33,37 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_H_
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_SERVER__RPC_SOCKET_SERVER_H_
 
-#include "casock/proactor/asio/server/SocketServer.h"
-
 namespace casock {
-  namespace rpc {
-    namespace protobuf {
+  namespace proactor {
+    namespace asio {
+      namespace base {
+        class AsyncProcessor;
+      }
+
       namespace server {
-        class RPCCallResponseHandler;
-        class RPCCallQueue;
+        class SocketSession;
       }
     }
+  }
 
+  namespace rpc {
     namespace asio {
       namespace protobuf {
         namespace server {
           class RPCSocketSession;
 
-          using casock::rpc::protobuf::server::RPCCallResponseHandler;
-          using casock::rpc::protobuf::server::RPCCallQueue;
-
-          class RPCSocketServer : public casock::proactor::asio::server::SocketServer
+          class RPCSocketServer
           {
             public:
-              RPCSocketServer (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port, RPCCallQueue& rCallQueue);
+              virtual ~RPCSocketServer () { };
 
             private:
-              casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor);
+              virtual casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor) = 0;
 
-            private:
-              RPCCallQueue& mrCallQueue;
+            public:
+              virtual void start () = 0;
+              virtual void close () = 0;
+              virtual void closeAcceptor () = 0;
           };
         }
       }
