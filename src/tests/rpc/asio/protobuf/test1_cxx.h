@@ -80,6 +80,7 @@ class test1_cxx : public CxxTest::TestSuite
         /*! server */
         casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactoryServer (&mServiceServer);
         casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (callHandlerFactoryServer, *mpAsyncProcessor, 2000);
+        serverProxy.setNumCallHandlers (1);
         mServiceServer.setProxy (&serverProxy);
         serverProxy.start ();
 
@@ -88,6 +89,7 @@ class test1_cxx : public CxxTest::TestSuite
         casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
         //casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
         casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (clientSocketFactory, callHandlerFactory);
+        clientProxy.setNumCallHandlers (1);
         tests::rpc::protobuf::api::TestService* pServiceClient = new tests::rpc::protobuf::api::TestService::Stub (&clientProxy);
 
         /*! sending message */
@@ -113,7 +115,7 @@ class test1_cxx : public CxxTest::TestSuite
       //  TS_FAIL (::std::string ("::std::exception [") + e.what () + "]");
       //}
       //
-      LOGMSG (LOW_LEVEL, "test1_cxx::test_basic () - end\n");
+      LOGMSG (LOW_LEVEL, "%s - end\n", __PRETTY_FUNCTION__);
     }
 };
 

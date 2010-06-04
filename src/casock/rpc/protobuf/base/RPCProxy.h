@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCCallHandlerMock.h
+ * \file casock/rpc/protobuf/base/RPCProxy.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,29 +30,42 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__TESTS_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_STUB_H_
-#define __CASOCKLIB__TESTS_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_STUB_H_
+#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_BASE__RPC_PROXY_H_
+#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_BASE__RPC_PROXY_H_
 
-#include "casock/rpc/protobuf/client/RPCClientProxy.h"
+#include <vector>
+#include "casock/util/types.h"
 
-namespace tests {
+namespace casock {
+  namespace util {
+    class Thread;
+  }
+
   namespace rpc {
     namespace protobuf {
-      namespace client {
-        class RPCClientProxyStub : public casock::rpc::protobuf::client::RPCClientProxy
+      namespace base {
+        class RPCProxy
         {
           public:
-            RPCClientProxyStub (const casock::rpc::protobuf::client::RPCCallHandlerFactory& factory)
-              : casock::rpc::protobuf::client::RPCClientProxy (factory)
-            { }
+            virtual ~RPCProxy ();
 
-          private:
-            void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
-            { }
+          public:
+            void addCallHandlers (const uint32& n);
+            void removeCallHandlers (const uint32& n);
+            void setNumCallHandlers (const uint32& n);
+
+          protected:
+            virtual casock::util::Thread* buildCallHandler () = 0;
+
+          protected:
+            std::vector<casock::util::Thread*>  mCallHandlers; /*!< Handlers responsible for aquire requests from queue, execute RPC operation and callback */
+
+          public:
+            static uint32 DEFAULT_NUM_CALL_HANDLERS;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__TESTS_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_STUB_H_
+#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_BASE__RPC_PROXY_H_

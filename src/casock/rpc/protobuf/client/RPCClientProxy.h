@@ -33,10 +33,8 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_H_
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_H_
 
-#include <vector>
-
 #include <google/protobuf/service.h>
-#include "casock/rpc/protobuf/client/RPCCallHash.h"
+#include "casock/rpc/protobuf/base/RPCProxy.h"
 
 namespace casock {
   namespace rpc {
@@ -47,29 +45,26 @@ namespace casock {
 
       namespace client {
         class RPCCall;
+        class RPCCallHash;
         class RPCCallQueue;
-        class RPCCallHandler;
         class RPCCallHandlerFactory;
         class RPCRequestBuilder;
 
-        using casock::util::LockableHash;
-        using casock::rpc::protobuf::client::RPCCall;
-        using casock::rpc::protobuf::client::RPCCallQueue;
-        using casock::rpc::protobuf::client::RPCCallHandler;
-        using casock::rpc::protobuf::client::RPCCallHandlerFactory;
-
-        class RPCClientProxy : public ::google::protobuf::RpcChannel
+        class RPCClientProxy : public casock::rpc::protobuf::base::RPCProxy, public ::google::protobuf::RpcChannel
         {
           protected:
-            RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers = DEFAULT_NUM_CALL_HANDLERS);
+            RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory);
             virtual ~RPCClientProxy ();
 
-          protected:
-            void addCallHandlers (const uint32& n);
-            void removeCallHandlers (const uint32& n);
+//          protected:
+//            void addCallHandlers (const uint32& n);
+//            void removeCallHandlers (const uint32& n);
+//
+//          public:
+//            void setNumCallHandlers (const uint32& n);
 
-          public:
-            void setNumCallHandlers (const uint32& n);
+          private:
+            casock::util::Thread* buildCallHandler ();
 
           private:
             /*!
@@ -81,10 +76,10 @@ namespace casock {
              * The Template Method Pattern is used because the mechanisms
              * to send messages will be defined by sub-classes.
              */
-            virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall) = 0;
+            virtual void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, RPCCall* pRPCCall) = 0;
 
 					protected:
-						void registerRPCCall (const uint32& id, casock::rpc::protobuf::client::RPCCall* pRPCCall);
+						void registerRPCCall (const uint32& id, RPCCall* pRPCCall);
 
           public:
             /*!
@@ -99,10 +94,6 @@ namespace casock {
             RPCRequestBuilder* mpRequestBuilder;
 
           protected:
-            RPCCallQueue*                   mpCallQueue;
-            ::std::vector<RPCCallHandler*>  mCallHandlers;
-            const RPCCallHandlerFactory&    mrCallHandlerFactory;
-
             /*!
              * Used to register the RPC requests, indexed by the RpcRequest ID.
              * Each RPC request should have a single ID (given by PCClientProxy::mID,
@@ -110,13 +101,9 @@ namespace casock {
              * The response is created by RPC server with the same ID of the request.
              * When it is received, the RPCCall is removed from the hash.
              */
-            RPCCallHash	mCallHash;
-
-//          private:
-//            static uint32 mID;
-
-          public:
-            static uint32 DEFAULT_NUM_CALL_HANDLERS;
+            RPCCallHash*	                mpCallHash;
+            RPCCallQueue*                 mpCallQueue;
+            const RPCCallHandlerFactory&  mrCallHandlerFactory;
         };
       }
     }

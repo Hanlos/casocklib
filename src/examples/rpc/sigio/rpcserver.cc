@@ -37,6 +37,7 @@ int main ()
   try
   {
     casock::rpc::sigio::protobuf::server::RPCServerProxy proxy (callHandlerFactory, *pDispatcher, 2000);
+    proxy.setNumCallHandlers (1);
     proxy.start ();
 
     pDispatcher->waitForever ();

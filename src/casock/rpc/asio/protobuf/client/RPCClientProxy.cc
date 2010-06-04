@@ -54,7 +54,7 @@ namespace casock {
           {
             LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
             mpSocketClient = rSocketClientFactory.buildRPCSocketClient ();
-            mpCommunicator = mpSocketClient->buildCommunicator (mCallHash, *mpCallQueue);
+            mpCommunicator = mpSocketClient->buildCommunicator (*mpCallHash, *mpCallQueue);
             mpCommunicator->startReceivingResponses ();
           }
 

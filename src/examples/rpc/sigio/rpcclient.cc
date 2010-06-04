@@ -45,6 +45,7 @@ int main ()
     casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
     casock::rpc::sigio::protobuf::client::RPCClientProxy proxy (*pDispatcher, "localhost", 2000, callHandlerFactory);
     casock::rpc::protobuf::client::RPCCallController controller;
+    proxy.setNumCallHandlers (1);
 
     HelloService* service = new HelloService::Stub (&proxy);
 

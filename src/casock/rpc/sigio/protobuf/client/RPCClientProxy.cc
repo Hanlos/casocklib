@@ -58,7 +58,7 @@ namespace casock {
 
             mpSocketClient = new SocketClient (rDispatcher, host, port);
             mpSocketClient->connect ();
-            mpReaderHandler = new RPCReaderHandler (rDispatcher, mpSocketClient, mCallHash, *mpCallQueue);
+            mpReaderHandler = new RPCReaderHandler (rDispatcher, mpSocketClient, *mpCallHash, *mpCallQueue);
           }
 
           void RPCClientProxy::sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pCall)

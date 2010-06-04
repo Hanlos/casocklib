@@ -85,7 +85,7 @@ class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
     void test_basic ()
     {
       tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
-      tests::rpc::protobuf::client::RPCClientProxyStub proxy (factory, 0);
+      tests::rpc::protobuf::client::RPCClientProxyStub proxy (factory);
       tests::rpc::protobuf::api::TestService* pService = new tests::rpc::protobuf::api::TestService::Stub (&proxy);
       tests::rpc::protobuf::api::TestRequest request;
 
@@ -107,7 +107,7 @@ class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
       std::string methodName = "TestCall";
 
       tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
-      tests::rpc::protobuf::client::RPCClientProxyStub proxy (factory, 0);
+      tests::rpc::protobuf::client::RPCClientProxyStub proxy (factory);
       tests::rpc::protobuf::api::TestService* pService = new tests::rpc::protobuf::api::TestService::Stub (&proxy);
       tests::rpc::protobuf::api::TestRequest request;
 

@@ -55,8 +55,8 @@ namespace tests {
         class RPCClientProxyTest : public casock::rpc::protobuf::client::RPCClientProxy
         {
           public:
-            RPCClientProxyTest (const casock::rpc::protobuf::client::RPCCallHandlerFactory& factory, const uint32& numCallHandlers)
-              : casock::rpc::protobuf::client::RPCClientProxy (factory, numCallHandlers)
+            RPCClientProxyTest (const casock::rpc::protobuf::client::RPCCallHandlerFactory& factory)
+              : casock::rpc::protobuf::client::RPCClientProxy (factory)
             { }
 
           private:
@@ -71,7 +71,7 @@ namespace tests {
             using casock::rpc::protobuf::client::RPCClientProxy::removeCallHandlers;
 
           public:
-            using casock::rpc::protobuf::client::RPCClientProxy::mCallHash;
+            using casock::rpc::protobuf::client::RPCClientProxy::mpCallHash;
             using casock::rpc::protobuf::client::RPCClientProxy::mpCallQueue;
             using casock::rpc::protobuf::client::RPCClientProxy::mCallHandlers;
 

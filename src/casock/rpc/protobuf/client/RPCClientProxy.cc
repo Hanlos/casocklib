@@ -41,6 +41,7 @@ using std::stringstream;
 #include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/api/rpc.pb.h"
 #include "casock/rpc/protobuf/client/RPCCall.h"
+#include "casock/rpc/protobuf/client/RPCCallHash.h"
 #include "casock/rpc/protobuf/client/RPCCallQueue.h"
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
 #include "casock/rpc/protobuf/client/RPCCallHandlerFactory.h"
@@ -50,18 +51,16 @@ namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace client {
-        //uint32 RPCClientProxy::mID = 0;
-        uint32 RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS = 1;
+        //uint32 RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS = 1;
 
-        RPCClientProxy::RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers)
+        RPCClientProxy::RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory)
           : mrCallHandlerFactory (rCallHandlerFactory)
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::RPCClientProxy ()\n");
 
+          mpCallHash = new RPCCallHash ();
           mpCallQueue = new RPCCallQueue ();
           mpRequestBuilder = new RPCRequestBuilder ();
-
-          setNumCallHandlers (numCallHandlers);
         }
 
         RPCClientProxy::~RPCClientProxy ()
@@ -73,74 +72,30 @@ namespace casock {
           LOGMSG (LOW_LEVEL, "%s - remove call handlers...\n", __PRETTY_FUNCTION__);
           removeCallHandlers (mCallHandlers.size ());
 
-          LOGMSG (LOW_LEVEL, "%s - delete mpCallQueue [%zp]...\n", __PRETTY_FUNCTION__, mpCallQueue);
           delete mpCallQueue;
+          delete mpCallHash;
 
           LOGMSG (LOW_LEVEL, "%s\n - end", __PRETTY_FUNCTION__);
         }
 
-        void RPCClientProxy::addCallHandlers (const uint32& n)
+        casock::util::Thread* RPCClientProxy::buildCallHandler ()
         {
-          LOGMSG (MEDIUM_LEVEL, "%s - n [%zu]\n", __PRETTY_FUNCTION__, n);
-
-          for (uint32 i = 0; i < n; i++)
-          {
-            LOGMSG (HIGH_LEVEL, "%s - i [%zu] - build call handler\n", __PRETTY_FUNCTION__, i);
-            RPCCallHandler* pCallHandler = mrCallHandlerFactory.buildRPCCallHandler (*mpCallQueue);
-
-            LOGMSG (HIGH_LEVEL, "%s - i [%zu] - start call handler\n", __PRETTY_FUNCTION__, i);
-            pCallHandler->start ();
-
-            LOGMSG (HIGH_LEVEL, "%s - i [%zu] - push call handler back\n", __PRETTY_FUNCTION__, i);
-            mCallHandlers.push_back (pCallHandler);
-          }
+          return mrCallHandlerFactory.buildRPCCallHandler (*mpCallQueue);
         }
 
-        void RPCClientProxy::removeCallHandlers (const uint32& n)
-        {
-          LOGMSG (LOW_LEVEL, "%s - n [%zu]\n", __PRETTY_FUNCTION__, n);
-
-          for (uint32 i = 0; i < n; i++)
-          {
-            RPCCallHandler* pCallHandler = mCallHandlers.back ();
-            mCallHandlers.pop_back ();
-            LOGMSG (LOW_LEVEL, "RPCClientProxy::%s () - cancel handler [%zp]\n", __FUNCTION__, pCallHandler);
-            pCallHandler->cancel ();
-            LOGMSG (LOW_LEVEL, "RPCClientProxy::%s () - handler canceled [%zp]\n", __FUNCTION__, pCallHandler);
-            delete pCallHandler;
-          }
-        }
-
-        void RPCClientProxy::setNumCallHandlers (const uint32& n)
-        {
-          if (mCallHandlers.size () < n)
-            addCallHandlers (n - mCallHandlers.size ());
-          else if (mCallHandlers.size () > n)
-            removeCallHandlers (mCallHandlers.size () - n);
-        }
-
-				void RPCClientProxy::registerRPCCall (const uint32& id, casock::rpc::protobuf::client::RPCCall* pRPCCall)
+				void RPCClientProxy::registerRPCCall (const uint32& id, RPCCall* pRPCCall)
 				{
-					mCallHash.push (id, pRPCCall);
+					mpCallHash->push (id, pRPCCall);
 				}
 
-        void RPCClientProxy::CallMethod(const google::protobuf::MethodDescriptor* method, google::protobuf::RpcController* controller, const google::protobuf::Message* request, google::protobuf::Message* response, google::protobuf::Closure* done)
+        void RPCClientProxy::CallMethod (
+            const google::protobuf::MethodDescriptor* method,
+            google::protobuf::RpcController* controller,
+            const google::protobuf::Message* request,
+            google::protobuf::Message* response,
+            google::protobuf::Closure* done)
         {
           LOGMSG (HIGH_LEVEL, "RPCClientProxy::%s ()\n", __FUNCTION__);
-
-          /*!
-           * TODO:
-           * \todo Implement a RpcRequest factory with its own unique ID
-           */
-          /*
-          casock::rpc::protobuf::api::RpcRequest rpcRequest;
-
-          rpcRequest.set_id (++RPCClientProxy::mID);
-          rpcRequest.set_operation (method->name ());
-          rpcRequest.set_request (request->SerializeAsString ());
-
-          sendRpcRequest (rpcRequest, new RPCCall (response, controller, done));
-          */
 
           casock::rpc::protobuf::api::RpcRequest* pRpcRequest = mpRequestBuilder->buildRpcRequest (method, request);
           sendRpcRequest (*pRpcRequest, new RPCCall (response, controller, done));

@@ -43,6 +43,7 @@ int main ()
   {
     casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
     proxy = new casock::rpc::asio::protobuf::server::RPCServerProxy (callHandlerFactory, *pAsyncProcessor, 2000);
+    proxy->setNumCallHandlers (1);
     proxy->start ();
 
     pAsyncProcessor->run ();

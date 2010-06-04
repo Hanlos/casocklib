@@ -33,15 +33,13 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_SERVER__RPC_SERVER_PROXY_H_
 
-#include <vector>
-#include "casock/util/types.h"
+#include "casock/rpc/protobuf/base/RPCProxy.h"
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace server {
         class RPCCallQueue;
-        class RPCCallHandler;
         class RPCCallHandlerFactory;
 
         /*!
@@ -75,32 +73,22 @@ namespace casock {
          * to be treated as an operation and is destroyed since the operation finishes.
          */
 
-        class RPCServerProxy
+        class RPCServerProxy : public casock::rpc::protobuf::base::RPCProxy
         {
           protected:
-            RPCServerProxy (const RPCCallHandlerFactory& rCallHandlerFactory, const uint32& numCallHandlers = DEFAULT_NUM_CALL_HANDLERS);
+            RPCServerProxy (const RPCCallHandlerFactory& rCallHandlerFactory);
             virtual ~RPCServerProxy ();
+
+          private:
+            casock::util::Thread* buildCallHandler ();
 
           protected:
             virtual void start () = 0;
             virtual void stop () = 0;
 
           protected:
-            void addCallHandlers (const uint32& n);
-            void removeCallHandlers (const uint32& n);
-
-          public:
-            void setNumCallHandlers (const uint32& n);
-
-          protected:
             RPCCallQueue*                 mpCallQueue; /*!< Maintain a queue of requests received from all clients */
-            std::vector<RPCCallHandler*>  mCallHandlers; /*!< Aquire requests from queue, execute operation and execute callback */
             const RPCCallHandlerFactory&  mrCallHandlerFactory;
-
-            //bool m_running; /*!< Should be used to indicate if the service is active or not */
-
-          public:
-            static uint32 DEFAULT_NUM_CALL_HANDLERS;
         };
       }
     }
