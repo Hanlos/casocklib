@@ -264,13 +264,14 @@ AC_CONFIG_FILES([Makefile
                  src/examples/rpc/protobuf/api/Makefile
                  src/examples/rpc/sigio/Makefile
                  src/tests/Makefile
-                 src/tests/proactor/Makefile
-                 src/tests/proactor/asio/Makefile
-                 src/tests/rpc/Makefile
-                 src/tests/rpc/asio/Makefile
-                 src/tests/rpc/asio/protobuf/Makefile
-                 src/tests/rpc/protobuf/Makefile
-                 src/tests/rpc/protobuf/api/Makefile
-                 src/tests/rpc/protobuf/base/Makefile
-                 src/tests/rpc/protobuf/client/Makefile])
+                 src/tests/casock/Makefile
+                 src/tests/casock/proactor/Makefile
+                 src/tests/casock/proactor/asio/Makefile
+                 src/tests/casock/rpc/Makefile
+                 src/tests/casock/rpc/asio/Makefile
+                 src/tests/casock/rpc/asio/protobuf/Makefile
+                 src/tests/casock/rpc/protobuf/Makefile
+                 src/tests/casock/rpc/protobuf/api/Makefile
+                 src/tests/casock/rpc/protobuf/base/Makefile
+                 src/tests/casock/rpc/protobuf/client/Makefile])
 AC_OUTPUT
