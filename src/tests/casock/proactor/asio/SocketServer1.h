@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/proactor/asio/SocketServer1.h
+ * \file tests/casock/proactor/asio/SocketServer1.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -35,28 +35,30 @@
 
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/server/SocketServer.h"
-#include "tests/proactor/asio/SocketSession1.h"
+#include "tests/casock/proactor/asio/SocketSession1.h"
 
 namespace tests {
-  namespace proactor {
-    namespace asio {
-      class SocketServer1 : public casock::proactor::asio::server::SocketServer
-      {
-        public:
-          SocketServer1 (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port)
-            : casock::proactor::asio::server::SocketServer (rAsyncProcessor, port)
-          {
-            LOGMSG (MAX_LEVEL, "SocketServer1::SocketServer1 () - port [%hu]\n", port);
-          }
+  namespace casock {
+    namespace proactor {
+      namespace asio {
+        class SocketServer1 : public ::casock::proactor::asio::server::SocketServer
+        {
+          public:
+            SocketServer1 (::casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor, const unsigned short& port)
+              : ::casock::proactor::asio::server::SocketServer (rAsyncProcessor, port)
+            {
+              LOGMSG (MAX_LEVEL, "SocketServer1::SocketServer1 () - port [%hu]\n", port);
+            }
 
-        private:
-          casock::proactor::asio::server::SocketSession* buildSession (casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
-          {
-            LOGMSG (MEDIUM_LEVEL, "SocketServer1::%s ()\n", __FUNCTION__);
+          private:
+            ::casock::proactor::asio::server::SocketSession* buildSession (::casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor)
+            {
+              LOGMSG (MEDIUM_LEVEL, "SocketServer1::%s ()\n", __FUNCTION__);
 
-            return new SocketSession1 (rAsyncProcessor, *this);
-          }
-      };
+              return new SocketSession1 (rAsyncProcessor, *this);
+            }
+        };
+      }
     }
   }
 }

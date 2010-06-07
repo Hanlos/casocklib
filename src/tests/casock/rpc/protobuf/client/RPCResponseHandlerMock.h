@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCResponseHandlerMock.h
+ * \file tests/casock/rpc/protobuf/client/RPCResponseHandlerMock.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -38,25 +38,27 @@
 #include "casock/rpc/protobuf/client/RPCResponseHandler.h"
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace client {
-        class RPCResponseHandlerMock : public casock::rpc::protobuf::client::RPCResponseHandler
-        {
-          public:
-            RPCResponseHandlerMock ()
-              : called (false)
-            { }
+  namespace casock {
+    namespace rpc {
+      namespace protobuf {
+        namespace client {
+          class RPCResponseHandlerMock : public ::casock::rpc::protobuf::client::RPCResponseHandler
+          {
+            public:
+              RPCResponseHandlerMock ()
+                : called (false)
+              { }
 
-          public:
-            void callback ()
-            {
-              called = true;
-            }
+            public:
+              void callback ()
+              {
+                called = true;
+              }
 
-          public:
-            bool called;
-        };
+            public:
+              bool called;
+          };
+        }
       }
     }
   }

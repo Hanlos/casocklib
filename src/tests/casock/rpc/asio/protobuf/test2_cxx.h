@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/test2_cxx.h
+ * \file tests/casock/rpc/asio/protobuf/test2_cxx.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -46,31 +46,31 @@
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
 #include "casock/rpc/asio/protobuf/server/RPCSocketServerFactoryImpl.h"
 
-#include "tests/rpc/asio/protobuf/Test2ServiceImpl.h"
-#include "tests/rpc/asio/protobuf/Test2Manager.h"
-#include "tests/rpc/asio/protobuf/Test2ClientThread.h"
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/asio/protobuf/Test2ServiceImpl.h"
+#include "tests/casock/rpc/asio/protobuf/Test2Manager.h"
+#include "tests/casock/rpc/asio/protobuf/Test2ClientThread.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
 #include "casock/util/Logger.h"
 
 class test2_cxx : public CxxTest::TestSuite
 {
   private:
-    tests::rpc::asio::protobuf::Test2Manager      mManager;
-    tests::rpc::asio::protobuf::Test2ServiceImpl  mServiceServer;
-    tests::rpc::asio::protobuf::Test2ClientThread mClientThread;
-    casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
+    tests::casock::rpc::asio::protobuf::Test2Manager      mManager;
+    tests::casock::rpc::asio::protobuf::Test2ServiceImpl  mServiceServer;
+    tests::casock::rpc::asio::protobuf::Test2ClientThread mClientThread;
+    ::casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
 
   public:
     void setUp ()
     {
       LOGGER->setDebugLevel (SILENT);
-      casock::proactor::asio::base::AsyncProcessor::initialize ();
-      mpAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
+      ::casock::proactor::asio::base::AsyncProcessor::initialize ();
+      mpAsyncProcessor = ::casock::proactor::asio::base::AsyncProcessor::getInstance ();
     }
 
     void tearDown ()
     {
-      casock::proactor::asio::base::AsyncProcessor::destroy ();
+      ::casock::proactor::asio::base::AsyncProcessor::destroy ();
       LOGGER->finalize ();
     }
 
@@ -80,19 +80,19 @@ class test2_cxx : public CxxTest::TestSuite
       size_t numCalls = 10;
 
       /*! server */
-      casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactoryServer (&mServiceServer);
-      casock::rpc::asio::protobuf::server::RPCSocketServerFactoryImpl socketServerFactory (*mpAsyncProcessor, 2000);
-      casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (socketServerFactory, callHandlerFactoryServer);
+      ::casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactoryServer (&mServiceServer);
+      ::casock::rpc::asio::protobuf::server::RPCSocketServerFactoryImpl socketServerFactory (*mpAsyncProcessor, 2000);
+      ::casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (socketServerFactory, callHandlerFactoryServer);
       serverProxy.setNumCallHandlers (1);
       mServiceServer.setProxy (&serverProxy);
       serverProxy.start ();
 
       /*! client */
-      casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*mpAsyncProcessor, "localhost", "2000");
-      casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
-      casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (clientSocketFactory, callHandlerFactory);
+      ::casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*mpAsyncProcessor, "localhost", "2000");
+      ::casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
+      ::casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (clientSocketFactory, callHandlerFactory);
       clientProxy.setNumCallHandlers (1);
-      tests::rpc::protobuf::api::TestService* pServiceClient = new tests::rpc::protobuf::api::TestService::Stub (&clientProxy);
+      tests::casock::rpc::protobuf::api::TestService* pServiceClient = new tests::casock::rpc::protobuf::api::TestService::Stub (&clientProxy);
 
       /*! running client thread */
       mClientThread.setNumCalls (numCalls);

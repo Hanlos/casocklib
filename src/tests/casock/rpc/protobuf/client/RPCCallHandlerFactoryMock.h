@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCCallHandlerFactoryMock.h
+ * \file tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryMock.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -39,20 +39,22 @@
 #include "casock/util/LockableList.h"
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace client {
-        class RPCCallHandlerMock;
+  namespace casock {
+    namespace rpc {
+      namespace protobuf {
+        namespace client {
+          class RPCCallHandlerMock;
 
-        class RPCCallHandlerFactoryMock : public casock::rpc::protobuf::client::RPCCallHandlerFactory
-        {
-          public:
-            casock::rpc::protobuf::client::RPCCallHandler* buildRPCCallHandler (casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const;
+          class RPCCallHandlerFactoryMock : public ::casock::rpc::protobuf::client::RPCCallHandlerFactory
+          {
+            public:
+              ::casock::rpc::protobuf::client::RPCCallHandler* buildRPCCallHandler (::casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const;
 
-          public:
-            //static std::list<RPCCallHandlerMock*>  handlers;
-            static casock::util::LockableList<RPCCallHandlerMock*>  handlers;
-        };
+            public:
+              //static std::list<RPCCallHandlerMock*>  handlers;
+              static ::casock::util::LockableList<RPCCallHandlerMock*>  handlers;
+          };
+        }
       }
     }
   }

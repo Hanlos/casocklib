@@ -10,7 +10,7 @@ LIB_UTIL      = $(top_srcdir)/src/casock/util/libcasutil.la
 LIB_RPCCLIENT = $(top_srcdir)/src/casock/rpc/asio/protobuf/client/libcasrpcaiopbclient.la
 LIB_RPCSERVER = $(top_srcdir)/src/casock/rpc/asio/protobuf/server/libcasrpcaiopbserver.la
 #LIB_PROTOBUF  = @LIB_PROTOBUF_PATH@/libprotobuf.a
-LIB_RPCTEST1  = $(top_srcdir)/src/tests/rpc/protobuf/api/libcasrpcpbtapi.la
+LIB_RPCTEST1  = $(top_srcdir)/src/tests/casock/rpc/protobuf/api/libcasrpcpbtapi.la
 
 AM_CPPFLAGS = -DUSE_UT_CXXTEST
 

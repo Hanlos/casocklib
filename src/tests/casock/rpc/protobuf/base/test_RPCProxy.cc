@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/base/test_RPCProxy.cc
+ * \file tests/casock/rpc/protobuf/base/test_RPCProxy.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -31,10 +31,10 @@
  */
 
 #include <gtest/gtest.h>
-#include "tests/rpc/protobuf/base/RPCProxyTest.h"
+#include "tests/casock/rpc/protobuf/base/RPCProxyTest.h"
 
 TEST(casock_rpc_protobuf_base_RPCProxy, Basic) {
-  tests::rpc::protobuf::base::RPCProxyTest proxy;
+  tests::casock::rpc::protobuf::base::RPCProxyTest proxy;
   EXPECT_TRUE(proxy.mCallHandlers.empty ());
 
   proxy.addCallHandlers (5);

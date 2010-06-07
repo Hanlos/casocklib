@@ -1,4 +1,4 @@
-package tests.rpc.protobuf.api;
+package tests.casock.rpc.protobuf.api;
 
 message TestRequest {
   required uint32 id = 1;

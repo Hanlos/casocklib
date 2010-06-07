@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/proactor/asio/SocketClient1.h
+ * \file tests/casock/proactor/asio/SocketClient1.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -43,79 +43,81 @@
 #include "casock/proactor/asio/client/SocketClient.h"
 
 namespace tests {
-  namespace proactor {
-    namespace asio {
-      class SocketClient1 : public casock::proactor::asio::client::SocketClient
-      {
-        public:
-          SocketClient1 (casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor, const std::string& host, const std::string& port, SocketClient* pParent = NULL)
-            : casock::proactor::asio::client::SocketClient (*pAsyncProcessor, host, port), mpAsyncProcessor (pAsyncProcessor), mCommunicator (this), mpParent (pParent)
-          {
-            mMyID       = ++SocketClient1::mID;
-            mMessageID  = 0;
-          }
-
-          virtual ~SocketClient1 ()
-          {
-            close ();
-
-            if (mpParent)
-              delete mpParent;
-          }
-
-        protected:
-          void onConnect ()
-          {
-            std::stringstream ss;
-            ss << "HELLO, my ID is " << std::setfill ('0') << std::setw (4) << mMyID << " and the message ID is " << std::setfill ('0') << std::setw (4) << ++mMessageID;
-            mCommunicator.write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&SocketClient1::onSentBuffer, this, ::asio::placeholders::error));
-            SocketClient1* pClient = new SocketClient1 (mpAsyncProcessor, "localhost", "2000", this);
-            pClient->asyncConnect ();
-            usleep (100000);
-          }
-
-          void onConnectionFailure ()
-          {
-            LOGMSG (LOW_LEVEL, "SocketClient1::%s () - mMyID [%04u]\n", __FUNCTION__, mMyID);
-            close ();
-            delete this;
-          }
-
-          void onSentBuffer (const ::asio::error_code& error)
-          {
-            if (! error)
+  namespace casock {
+    namespace proactor {
+      namespace asio {
+        class SocketClient1 : public ::casock::proactor::asio::client::SocketClient
+        {
+          public:
+            SocketClient1 (::casock::proactor::asio::base::AsyncProcessor* pAsyncProcessor, const std::string& host, const std::string& port, SocketClient* pParent = NULL)
+              : ::casock::proactor::asio::client::SocketClient (*pAsyncProcessor, host, port), mpAsyncProcessor (pAsyncProcessor), mCommunicator (this), mpParent (pParent)
             {
-              LOGMSG (LOW_LEVEL, "SocketClient1::%s () - mMyID [%04u], NO ERROR!\n", __FUNCTION__, mMyID);
-              mCommunicator.readsome (mBuffer.buff (), mBuffer.size (), ::boost::bind (&SocketClient1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+              mMyID       = ++SocketClient1::mID;
+              mMessageID  = 0;
             }
-            else
+
+            virtual ~SocketClient1 ()
             {
-              LOGMSG (LOW_LEVEL, "SocketClient1::%s () - mMyID [%04u], error [%s]\n", __FUNCTION__, mMyID, error.message ().c_str ());
+              close ();
+
+              if (mpParent)
+                delete mpParent;
+            }
+
+          protected:
+            void onConnect ()
+            {
+              std::stringstream ss;
+              ss << "HELLO, my ID is " << std::setfill ('0') << std::setw (4) << mMyID << " and the message ID is " << std::setfill ('0') << std::setw (4) << ++mMessageID;
+              mCommunicator.write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&SocketClient1::onSentBuffer, this, ::asio::placeholders::error));
+              SocketClient1* pClient = new SocketClient1 (mpAsyncProcessor, "localhost", "2000", this);
+              pClient->asyncConnect ();
+              usleep (100000);
+            }
+
+            void onConnectionFailure ()
+            {
+              LOGMSG (LOW_LEVEL, "SocketClient1::%s () - mMyID [%04u]\n", __FUNCTION__, mMyID);
               close ();
               delete this;
             }
-          }
 
-          void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
-          {
-            std::stringstream ss;
-            ss << "HELLO, my ID is " << std::setfill ('0') << std::setw (4) << mMyID << " and the message ID is " << std::setfill ('0') << std::setw (4) << ++mMessageID;
-            mCommunicator.write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&SocketClient1::onSentBuffer, this, ::asio::placeholders::error));
-          }
+            void onSentBuffer (const ::asio::error_code& error)
+            {
+              if (! error)
+              {
+                LOGMSG (LOW_LEVEL, "SocketClient1::%s () - mMyID [%04u], NO ERROR!\n", __FUNCTION__, mMyID);
+                mCommunicator.readsome (mBuffer.buff (), mBuffer.size (), ::boost::bind (&SocketClient1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+              }
+              else
+              {
+                LOGMSG (LOW_LEVEL, "SocketClient1::%s () - mMyID [%04u], error [%s]\n", __FUNCTION__, mMyID, error.message ().c_str ());
+                close ();
+                delete this;
+              }
+            }
 
-        private:
-          casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
-          casock::proactor::asio::base::Communicator    mCommunicator;
-          casock::util::Buffer                          mBuffer;
-          SocketClient*                                 mpParent;
+            void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
+            {
+              std::stringstream ss;
+              ss << "HELLO, my ID is " << std::setfill ('0') << std::setw (4) << mMyID << " and the message ID is " << std::setfill ('0') << std::setw (4) << ++mMessageID;
+              mCommunicator.write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&SocketClient1::onSentBuffer, this, ::asio::placeholders::error));
+            }
 
-          uint32 mMyID;
-          uint32 mMessageID;
+          private:
+            ::casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
+            ::casock::proactor::asio::base::Communicator    mCommunicator;
+            ::casock::util::Buffer                          mBuffer;
+            SocketClient*                                 mpParent;
 
-          static uint32 mID;
-      };
+            uint32 mMyID;
+            uint32 mMessageID;
 
-      uint32 SocketClient1::mID = 0;
+            static uint32 mID;
+        };
+
+        uint32 SocketClient1::mID = 0;
+      }
     }
   }
 }

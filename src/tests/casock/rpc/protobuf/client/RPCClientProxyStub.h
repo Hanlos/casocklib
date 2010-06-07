@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCCallHandlerMock.h
+ * \file tests/casock/rpc/protobuf/client/RPCCallHandlerMock.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -36,20 +36,22 @@
 #include "casock/rpc/protobuf/client/RPCClientProxy.h"
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace client {
-        class RPCClientProxyStub : public casock::rpc::protobuf::client::RPCClientProxy
-        {
-          public:
-            RPCClientProxyStub (const casock::rpc::protobuf::client::RPCCallHandlerFactory& factory)
-              : casock::rpc::protobuf::client::RPCClientProxy (factory)
-            { }
+  namespace casock {
+    namespace rpc {
+      namespace protobuf {
+        namespace client {
+          class RPCClientProxyStub : public ::casock::rpc::protobuf::client::RPCClientProxy
+          {
+            public:
+              RPCClientProxyStub (const ::casock::rpc::protobuf::client::RPCCallHandlerFactory& factory)
+                : ::casock::rpc::protobuf::client::RPCClientProxy (factory)
+              { }
 
-          private:
-            void sendRpcRequest (const casock::rpc::protobuf::api::RpcRequest& request, casock::rpc::protobuf::client::RPCCall* pRPCCall)
-            { }
-        };
+            private:
+              void sendRpcRequest (const ::casock::rpc::protobuf::api::RpcRequest& request, ::casock::rpc::protobuf::client::RPCCall* pRPCCall)
+              { }
+          };
+        }
       }
     }
   }

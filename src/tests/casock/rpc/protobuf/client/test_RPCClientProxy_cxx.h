@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/test_RPCClientProxy_cxx.h
+ * \file tests/casock/rpc/protobuf/client/test_RPCClientProxy_cxx.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -42,11 +42,11 @@
 #include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "casock/util/Logger.h"
 
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
-#include "tests/rpc/protobuf/client/RPCClientProxyTest.h"
-#include "tests/rpc/protobuf/client/RPCCallHandlerFactoryMock.h"
-#include "tests/rpc/protobuf/client/RPCCallHandlerFactoryStub.h"
-#include "tests/rpc/protobuf/client/RPCResponseHandlerMock.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/protobuf/client/RPCClientProxyTest.h"
+#include "tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryMock.h"
+#include "tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryStub.h"
+#include "tests/casock/rpc/protobuf/client/RPCResponseHandlerMock.h"
 
 class test_RPCClientProxy_cxx : public CxxTest::TestSuite
 {
@@ -57,8 +57,8 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
   public:
     void test_basic ()
     {
-      tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
-      tests::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
+      tests::casock::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
+      tests::casock::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
 
       TS_ASSERT (proxy.mpCallHash->empty ());
       TS_ASSERT (proxy.mpCallQueue != NULL);
@@ -68,10 +68,10 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
 
     void test_addremoveCallHandlers ()
     {
-      tests::rpc::protobuf::client::RPCCallHandlerFactoryMock factory;
+      tests::casock::rpc::protobuf::client::RPCCallHandlerFactoryMock factory;
 
       LOGMSG (LOW_LEVEL, "%s - construct proxy with 1 handler\n", __PRETTY_FUNCTION__);
-      tests::rpc::protobuf::client::RPCClientProxyTest* pProxy = new tests::rpc::protobuf::client::RPCClientProxyTest (factory);
+      tests::casock::rpc::protobuf::client::RPCClientProxyTest* pProxy = new tests::casock::rpc::protobuf::client::RPCClientProxyTest (factory);
       pProxy->setNumCallHandlers (1);
 
       TS_ASSERT_EQUALS ((size_t) 1, factory.handlers.size ());
@@ -94,8 +94,8 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
     void test_setNumCallHandlers ()
     {
 
-      tests::rpc::protobuf::client::RPCCallHandlerFactoryMock factory;
-      tests::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
+      tests::casock::rpc::protobuf::client::RPCCallHandlerFactoryMock factory;
+      tests::casock::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
 
       proxy.setNumCallHandlers (10);
       TS_ASSERT_EQUALS ((size_t) 10, factory.handlers.size ());
@@ -112,8 +112,8 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
 
     void test_registerRPCCall ()
     {
-      tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
-      tests::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
+      tests::casock::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
+      tests::casock::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
       
       casock::rpc::protobuf::client::RPCCall call (NULL, NULL, NULL);
       proxy.registerRPCCall (0, &call);
@@ -124,14 +124,14 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
 
     void test_CallMethod ()
     {
-      tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
-      tests::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
-      tests::rpc::protobuf::api::TestService* pService = new tests::rpc::protobuf::api::TestService::Stub (&proxy);
+      tests::casock::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
+      tests::casock::rpc::protobuf::client::RPCClientProxyTest proxy (factory);
+      tests::casock::rpc::protobuf::api::TestService* pService = new tests::casock::rpc::protobuf::api::TestService::Stub (&proxy);
 
-      tests::rpc::protobuf::api::TestRequest request;
-      tests::rpc::protobuf::api::TestResponse response;
+      tests::casock::rpc::protobuf::api::TestRequest request;
+      tests::casock::rpc::protobuf::api::TestResponse response;
       casock::rpc::protobuf::client::RPCCallController controller;
-      tests::rpc::protobuf::client::RPCResponseHandlerMock handler;
+      tests::casock::rpc::protobuf::client::RPCResponseHandlerMock handler;
 
       request.set_id (1);
       request.set_message (2);

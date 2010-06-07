@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCCallHandlerFactoryStub.h
+ * \file tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryStub.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -38,17 +38,19 @@
 #include "casock/rpc/protobuf/client/RPCCallHandlerFactory.h"
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace client {
-        class RPCCallHandlerFactoryStub : public casock::rpc::protobuf::client::RPCCallHandlerFactory
-        {
-          public:
-            casock::rpc::protobuf::client::RPCCallHandler* buildRPCCallHandler (casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const
-            {
-              return NULL;
-            }
-        };
+  namespace casock {
+    namespace rpc {
+      namespace protobuf {
+        namespace client {
+          class RPCCallHandlerFactoryStub : public ::casock::rpc::protobuf::client::RPCCallHandlerFactory
+          {
+            public:
+              ::casock::rpc::protobuf::client::RPCCallHandler* buildRPCCallHandler (::casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const
+              {
+                return NULL;
+              }
+          };
+        }
       }
     }
   }

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2ClientThread.h
+ * \file tests/casock/rpc/asio/protobuf/Test2ClientThread.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,50 +30,52 @@
  * $Revision$
  */
 
-#include "tests/rpc/asio/protobuf/Test2ClientThread.h"
+#include "tests/casock/rpc/asio/protobuf/Test2ClientThread.h"
 
 #include "casock/rpc/protobuf/client/RPCCallController.h"
-#include "tests/rpc/asio/protobuf/Test2Manager.h"
-#include "tests/rpc/asio/protobuf/Test2ResponseHandlerImpl.h"
-#include "tests/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.h"
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/asio/protobuf/Test2Manager.h"
+#include "tests/casock/rpc/asio/protobuf/Test2ResponseHandlerImpl.h"
+#include "tests/casock/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
 
 namespace tests {
-  namespace rpc {
-    namespace asio {
-      namespace protobuf {
-        Test2ClientThread::Test2ClientThread ()
-          : mNumCalls (0)
-        { }
+  namespace casock {
+    namespace rpc {
+      namespace asio {
+        namespace protobuf {
+          Test2ClientThread::Test2ClientThread ()
+            : mNumCalls (0)
+          { }
 
-        void Test2ClientThread::run ()
-        {
-          for (uint32 i = 0; i < mNumCalls; i++)
+          void Test2ClientThread::run ()
           {
+            for (uint32 i = 0; i < mNumCalls; i++)
+            {
+              uint32 id = Test2Manager::getID ();
+
+              tests::casock::rpc::protobuf::api::TestRequest* request = new tests::casock::rpc::protobuf::api::TestRequest ();
+              tests::casock::rpc::protobuf::api::TestResponse* response = new tests::casock::rpc::protobuf::api::TestResponse ();
+              ::casock::rpc::protobuf::client::RPCCallController* controller = new ::casock::rpc::protobuf::client::RPCCallController ();
+              tests::casock::rpc::asio::protobuf::Test2ResponseHandlerImpl* handler = new tests::casock::rpc::asio::protobuf::Test2ResponseHandlerImpl (controller, response, mpManager);
+
+              request->set_id (id);
+              request->set_message (id * id);
+              mpService->TestCall (controller, request, response, handler->closure ());
+
+              mpManager->addCallEntry (id, request, response, controller, handler);
+            }
+
             uint32 id = Test2Manager::getID ();
 
-            tests::rpc::protobuf::api::TestRequest* request = new tests::rpc::protobuf::api::TestRequest ();
-            tests::rpc::protobuf::api::TestResponse* response = new tests::rpc::protobuf::api::TestResponse ();
-            casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
-            tests::rpc::asio::protobuf::Test2ResponseHandlerImpl* handler = new tests::rpc::asio::protobuf::Test2ResponseHandlerImpl (controller, response, mpManager);
+            tests::casock::rpc::protobuf::api::TestRequest* request = new tests::casock::rpc::protobuf::api::TestRequest ();
+            tests::casock::rpc::protobuf::api::TestResponse* response = new tests::casock::rpc::protobuf::api::TestResponse ();
+            ::casock::rpc::protobuf::client::RPCCallController* controller = new ::casock::rpc::protobuf::client::RPCCallController ();
+            tests::casock::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl* handler = new tests::casock::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl (controller, response, mpManager, mpProxy);
 
             request->set_id (id);
             request->set_message (id * id);
-            mpService->TestCall (controller, request, response, handler->closure ());
-
-            mpManager->addCallEntry (id, request, response, controller, handler);
+            mpService->TestShutdown (controller, request, response, handler->closure ());
           }
-
-          uint32 id = Test2Manager::getID ();
-
-          tests::rpc::protobuf::api::TestRequest* request = new tests::rpc::protobuf::api::TestRequest ();
-          tests::rpc::protobuf::api::TestResponse* response = new tests::rpc::protobuf::api::TestResponse ();
-          casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
-          tests::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl* handler = new tests::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl (controller, response, mpManager, mpProxy);
-
-          request->set_id (id);
-          request->set_message (id * id);
-          mpService->TestShutdown (controller, request, response, handler->closure ());
         }
       }
     }

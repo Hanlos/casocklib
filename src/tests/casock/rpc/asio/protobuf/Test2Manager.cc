@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2Manager.cc
+ * \file tests/casock/rpc/asio/protobuf/Test2Manager.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,45 +30,47 @@
  * $Revision$
  */
 
-#include "tests/rpc/asio/protobuf/Test2Manager.h"
+#include "tests/casock/rpc/asio/protobuf/Test2Manager.h"
 
 namespace tests {
-  namespace rpc {
-    namespace asio {
-      namespace protobuf {
-        uint32 Test2Manager::mID = 0;
+  namespace casock {
+    namespace rpc {
+      namespace asio {
+        namespace protobuf {
+          uint32 Test2Manager::mID = 0;
 
-        Test2Manager::CallEntry::CallEntry (
-            const uint32& id,
-            tests::rpc::protobuf::api::TestRequest* request,
-            tests::rpc::protobuf::api::TestResponse* response,
-            casock::rpc::protobuf::client::RPCCallController* controller,
-            Test2ResponseHandlerImpl* handler)
-          : mID (id), mpRequest (request), mpResponse (response), mpController (controller), mpHandler (handler)
-        { }
+          Test2Manager::CallEntry::CallEntry (
+              const uint32& id,
+              tests::casock::rpc::protobuf::api::TestRequest* request,
+              tests::casock::rpc::protobuf::api::TestResponse* response,
+              ::casock::rpc::protobuf::client::RPCCallController* controller,
+              Test2ResponseHandlerImpl* handler)
+            : mID (id), mpRequest (request), mpResponse (response), mpController (controller), mpHandler (handler)
+          { }
 
-        void Test2Manager::addCallEntry (
-            const uint32& id,
-            tests::rpc::protobuf::api::TestRequest* request,
-            tests::rpc::protobuf::api::TestResponse* response,
-            casock::rpc::protobuf::client::RPCCallController* controller,
-            Test2ResponseHandlerImpl* handler)
-        {
-          casock::util::SafeLock lock (mCallEntryHash);
-          mCallEntryHash [id] = new CallEntry (id, request, response, controller, handler);
-        }
-
-        void Test2Manager::setResponseReceivedByID (const uint32& id)
-        {
-          casock::util::SafeLock lockHash (mCallEntryHash);
-
-          if (mCallEntryHash.find (id) != mCallEntryHash.end ())
+          void Test2Manager::addCallEntry (
+              const uint32& id,
+              tests::casock::rpc::protobuf::api::TestRequest* request,
+              tests::casock::rpc::protobuf::api::TestResponse* response,
+              ::casock::rpc::protobuf::client::RPCCallController* controller,
+              Test2ResponseHandlerImpl* handler)
           {
-            CallEntry* pEntry = mCallEntryHash [id];
-            mCallEntryHash.erase (id);
+            ::casock::util::SafeLock lock (mCallEntryHash);
+            mCallEntryHash [id] = new CallEntry (id, request, response, controller, handler);
+          }
 
-            casock::util::SafeLock lockRespHash (mCallEntryRespHash);
-            mCallEntryRespHash [id] = pEntry;
+          void Test2Manager::setResponseReceivedByID (const uint32& id)
+          {
+            ::casock::util::SafeLock lockHash (mCallEntryHash);
+
+            if (mCallEntryHash.find (id) != mCallEntryHash.end ())
+            {
+              CallEntry* pEntry = mCallEntryHash [id];
+              mCallEntryHash.erase (id);
+
+              ::casock::util::SafeLock lockRespHash (mCallEntryRespHash);
+              mCallEntryRespHash [id] = pEntry;
+            }
           }
         }
       }

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2ResponseHandlerImpl.h
+ * \file tests/casock/rpc/asio/protobuf/Test2ResponseHandlerImpl.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -46,33 +46,35 @@ namespace casock {
 }
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace api {
-        class TestResponse;
-      }
-    }
-
-    namespace asio {
+  namespace casock {
+    namespace rpc {
       namespace protobuf {
-        class Test2Manager;
+        namespace api {
+          class TestResponse;
+        }
+      }
 
-        class Test2ResponseHandlerImpl : public casock::rpc::protobuf::client::RPCResponseHandler
-        {
-          public:
-            Test2ResponseHandlerImpl (
-                casock::rpc::protobuf::client::RPCCallController* pController,
-                tests::rpc::protobuf::api::TestResponse* pResponse,
-                Test2Manager* pManager);
+      namespace asio {
+        namespace protobuf {
+          class Test2Manager;
 
-          public:
-            void callback ();
+          class Test2ResponseHandlerImpl : public ::casock::rpc::protobuf::client::RPCResponseHandler
+          {
+            public:
+              Test2ResponseHandlerImpl (
+                  ::casock::rpc::protobuf::client::RPCCallController* pController,
+                  tests::casock::rpc::protobuf::api::TestResponse* pResponse,
+                  Test2Manager* pManager);
 
-          private:
-            casock::rpc::protobuf::client::RPCCallController* mpController;
-            tests::rpc::protobuf::api::TestResponse* mpResponse;
-            Test2Manager* mpManager;
-        };
+            public:
+              void callback ();
+
+            private:
+              ::casock::rpc::protobuf::client::RPCCallController* mpController;
+              tests::casock::rpc::protobuf::api::TestResponse* mpResponse;
+              Test2Manager* mpManager;
+          };
+        }
       }
     }
   }

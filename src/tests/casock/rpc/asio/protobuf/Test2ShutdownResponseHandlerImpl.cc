@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.cc
+ * \file tests/casock/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,34 +30,36 @@
  * $Revision$
  */
 
-#include "tests/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.h"
+#include "tests/casock/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.h"
 
 #include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/client/RPCCallController.h"
 #include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
-#include "tests/rpc/asio/protobuf/Test2Manager.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/asio/protobuf/Test2Manager.h"
 
 namespace tests {
-  namespace rpc {
-    namespace asio {
-      namespace protobuf {
-        Test2ShutdownResponseHandlerImpl::Test2ShutdownResponseHandlerImpl (casock::rpc::protobuf::client::RPCCallController* pController, tests::rpc::protobuf::api::TestResponse* pResponse, Test2Manager* pManager, casock::rpc::asio::protobuf::client::RPCClientProxy* pProxy)
-          : mpController (pController), mpResponse (pResponse), mpManager (pManager), mpProxy (pProxy)
-        { }
+  namespace casock {
+    namespace rpc {
+      namespace asio {
+        namespace protobuf {
+          Test2ShutdownResponseHandlerImpl::Test2ShutdownResponseHandlerImpl (::casock::rpc::protobuf::client::RPCCallController* pController, tests::casock::rpc::protobuf::api::TestResponse* pResponse, Test2Manager* pManager, ::casock::rpc::asio::protobuf::client::RPCClientProxy* pProxy)
+            : mpController (pController), mpResponse (pResponse), mpManager (pManager), mpProxy (pProxy)
+          { }
 
-        void Test2ShutdownResponseHandlerImpl::callback ()
-        {
-          LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s ()\n", __FUNCTION__);
-
-          if (! mpController->Failed ())
+          void Test2ShutdownResponseHandlerImpl::callback ()
           {
-            LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
-            LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - close proxy\n", __FUNCTION__);
-            mpProxy->close ();
-          }
+            LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s ()\n", __FUNCTION__);
 
-          LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - end\n", __FUNCTION__);
+            if (! mpController->Failed ())
+            {
+              LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
+              LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - close proxy\n", __FUNCTION__);
+              mpProxy->close ();
+            }
+
+            LOGMSG (NO_DEBUG, "Test2ShutdownResponseHandlerImpl::%s () - end\n", __FUNCTION__);
+          }
         }
       }
     }

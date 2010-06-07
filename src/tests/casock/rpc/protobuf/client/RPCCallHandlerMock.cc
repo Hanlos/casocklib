@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCCallHandlerMock.cc
+ * \file tests/casock/rpc/protobuf/client/RPCCallHandlerMock.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,34 +30,36 @@
  * $Revision$
  */
 
-#include "tests/rpc/protobuf/client/RPCCallHandlerMock.h"
-#include "tests/rpc/protobuf/client/RPCCallHandlerFactoryMock.h"
+#include "tests/casock/rpc/protobuf/client/RPCCallHandlerMock.h"
+#include "tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryMock.h"
 //#include "casock/util/Logger.h"
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace client {
-        RPCCallHandlerMock::~RPCCallHandlerMock ()
-        {
-          RPCCallHandlerFactoryMock::handlers.remove (this);
-        }
+  namespace casock {
+    namespace rpc {
+      namespace protobuf {
+        namespace client {
+          RPCCallHandlerMock::~RPCCallHandlerMock ()
+          {
+            RPCCallHandlerFactoryMock::handlers.remove (this);
+          }
 
-        void RPCCallHandlerMock::run ()
-        {
-          //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
-          //RPCCallHandlerFactoryMock::handlers.push_back (this);
-        }
+          void RPCCallHandlerMock::run ()
+          {
+            //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
+            //RPCCallHandlerFactoryMock::handlers.push_back (this);
+          }
 
-        void RPCCallHandlerMock::start ()
-        {
-          //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
-          RPCCallHandlerFactoryMock::handlers.push_back (this);
-        }
+          void RPCCallHandlerMock::start ()
+          {
+            //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
+            RPCCallHandlerFactoryMock::handlers.push_back (this);
+          }
 
-        void RPCCallHandlerMock::cancel () const
-        {
-          //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
+          void RPCCallHandlerMock::cancel () const
+          {
+            //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
+          }
         }
       }
     }

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2ResponseHandlerImpl.cc
+ * \file tests/casock/rpc/asio/protobuf/Test2ResponseHandlerImpl.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,29 +30,31 @@
  * $Revision$
  */
 
-#include "tests/rpc/asio/protobuf/Test2ResponseHandlerImpl.h"
+#include "tests/casock/rpc/asio/protobuf/Test2ResponseHandlerImpl.h"
 
 #include "casock/util/Logger.h"
 #include "casock/rpc/protobuf/client/RPCCallController.h"
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
-#include "tests/rpc/asio/protobuf/Test2Manager.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/asio/protobuf/Test2Manager.h"
 
 namespace tests {
-  namespace rpc {
-    namespace asio {
-      namespace protobuf {
-        Test2ResponseHandlerImpl::Test2ResponseHandlerImpl (casock::rpc::protobuf::client::RPCCallController* pController, tests::rpc::protobuf::api::TestResponse* pResponse, Test2Manager* pManager)
-          : mpController (pController), mpResponse (pResponse), mpManager (pManager)
-        { }
+  namespace casock {
+    namespace rpc {
+      namespace asio {
+        namespace protobuf {
+          Test2ResponseHandlerImpl::Test2ResponseHandlerImpl (::casock::rpc::protobuf::client::RPCCallController* pController, tests::casock::rpc::protobuf::api::TestResponse* pResponse, Test2Manager* pManager)
+            : mpController (pController), mpResponse (pResponse), mpManager (pManager)
+          { }
 
-        void Test2ResponseHandlerImpl::callback ()
-        {
-          LOGMSG (NO_DEBUG, "Test2ResponseHandlerImpl::%s ()\n", __FUNCTION__);
-
-          if (! mpController->Failed ())
+          void Test2ResponseHandlerImpl::callback ()
           {
-            LOGMSG (NO_DEBUG, "Test2ResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
-            mpManager->setResponseReceivedByID (mpResponse->id ());
+            LOGMSG (NO_DEBUG, "Test2ResponseHandlerImpl::%s ()\n", __FUNCTION__);
+
+            if (! mpController->Failed ())
+            {
+              LOGMSG (NO_DEBUG, "Test2ResponseHandlerImpl::%s () - message [%u]\n", __FUNCTION__, mpResponse->message ());
+              mpManager->setResponseReceivedByID (mpResponse->id ());
+            }
           }
         }
       }

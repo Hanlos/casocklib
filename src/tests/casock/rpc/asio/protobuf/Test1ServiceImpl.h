@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test1ServiceImpl.h
+ * \file tests/casock/rpc/asio/protobuf/Test1ServiceImpl.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -34,39 +34,41 @@
 #define __CASOCKLIB__TESTS_RPC_ASIO_PROTOBUF__TEST1_SERVICE_IMPL_H_
 
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
 #include "casock/util/Logger.h"
 
 namespace tests {
-  namespace rpc {
-    namespace asio {
-      namespace protobuf {
-        class Test1ServiceImpl : public tests::rpc::protobuf::api::TestService
-        {
-          public:
-            void setProxy (casock::rpc::asio::protobuf::server::RPCServerProxy* pServerProxy)
-            {
-              mpServerProxy = pServerProxy;
-            }
+  namespace casock {
+    namespace rpc {
+      namespace asio {
+        namespace protobuf {
+          class Test1ServiceImpl : public tests::casock::rpc::protobuf::api::TestService
+          {
+            public:
+              void setProxy (::casock::rpc::asio::protobuf::server::RPCServerProxy* pServerProxy)
+              {
+                mpServerProxy = pServerProxy;
+              }
 
-          public:
-            void TestCall(::google::protobuf::RpcController* controller,
-                const tests::rpc::protobuf::api::TestRequest* request,
-                tests::rpc::protobuf::api::TestResponse* response,
-                ::google::protobuf::Closure* done)
-            {
-              LOGMSG (LOW_LEVEL, "Test1ServiceImpl::%s () - request->message () [%u]\n", __FUNCTION__, request->message ());
+            public:
+              void TestCall(::google::protobuf::RpcController* controller,
+                  const tests::casock::rpc::protobuf::api::TestRequest* request,
+                  tests::casock::rpc::protobuf::api::TestResponse* response,
+                  ::google::protobuf::Closure* done)
+              {
+                LOGMSG (LOW_LEVEL, "Test1ServiceImpl::%s () - request->message () [%u]\n", __FUNCTION__, request->message ());
 
-              response->set_id (request->id ());
-              response->set_message (request->message ());
-              done->Run ();
+                response->set_id (request->id ());
+                response->set_message (request->message ());
+                done->Run ();
 
-              mpServerProxy->stopReceivingCalls ();
-            }
+                mpServerProxy->stopReceivingCalls ();
+              }
 
-          private:
-            casock::rpc::asio::protobuf::server::RPCServerProxy* mpServerProxy;
-        };
+            private:
+              ::casock::rpc::asio::protobuf::server::RPCServerProxy* mpServerProxy;
+          };
+        }
       }
     }
   }

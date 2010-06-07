@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2ClientThread.h
+ * \file tests/casock/rpc/asio/protobuf/Test2ClientThread.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -48,37 +48,39 @@ namespace casock {
 }
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace api {
-        class TestService;
-      }
-    }
-
-    namespace asio {
+  namespace casock {
+    namespace rpc {
       namespace protobuf {
-        class Test2Manager;
+        namespace api {
+          class TestService;
+        }
+      }
 
-        class Test2ClientThread : public casock::util::Thread
-        {
-          public:
-            Test2ClientThread ();
+      namespace asio {
+        namespace protobuf {
+          class Test2Manager;
 
-          public:
-            void setNumCalls (const uint32& calls) { mNumCalls = calls; }
-            void setService (tests::rpc::protobuf::api::TestService* pService) { mpService = pService; }
-            void setManager (Test2Manager* pManager) { mpManager = pManager; }
-            void setProxy (casock::rpc::asio::protobuf::client::RPCClientProxy* pProxy) { mpProxy = pProxy; }
+          class Test2ClientThread : public ::casock::util::Thread
+          {
+            public:
+              Test2ClientThread ();
 
-          public:
-            void run ();
+            public:
+              void setNumCalls (const uint32& calls) { mNumCalls = calls; }
+              void setService (tests::casock::rpc::protobuf::api::TestService* pService) { mpService = pService; }
+              void setManager (Test2Manager* pManager) { mpManager = pManager; }
+              void setProxy (::casock::rpc::asio::protobuf::client::RPCClientProxy* pProxy) { mpProxy = pProxy; }
 
-          private:
-            uint32 mNumCalls;
-            tests::rpc::protobuf::api::TestService* mpService;
-            Test2Manager* mpManager;
-            casock::rpc::asio::protobuf::client::RPCClientProxy* mpProxy;
-        };
+            public:
+              void run ();
+
+            private:
+              uint32 mNumCalls;
+              tests::casock::rpc::protobuf::api::TestService* mpService;
+              Test2Manager* mpManager;
+              ::casock::rpc::asio::protobuf::client::RPCClientProxy* mpProxy;
+          };
+        }
       }
     }
   }

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/Test2Manager.h
+ * \file tests/casock/rpc/asio/protobuf/Test2Manager.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -48,61 +48,63 @@ namespace casock {
 }
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace api {
-        class TestRequest;
-        class TestResponse;
-      }
-    }
-
-    namespace asio {
+  namespace casock {
+    namespace rpc {
       namespace protobuf {
-        class Test2ResponseHandlerImpl;
+        namespace api {
+          class TestRequest;
+          class TestResponse;
+        }
+      }
 
-        class Test2Manager
-        {
-          private:
-            class CallEntry
-            {
-              public:
-                CallEntry (
-                    const uint32& id,
-                    tests::rpc::protobuf::api::TestRequest* request,
-                    tests::rpc::protobuf::api::TestResponse* response,
-                    casock::rpc::protobuf::client::RPCCallController* controller,
-                    Test2ResponseHandlerImpl* handler);
+      namespace asio {
+        namespace protobuf {
+          class Test2ResponseHandlerImpl;
 
-              private:
-                uint32 mID;
-                tests::rpc::protobuf::api::TestRequest* mpRequest;
-                tests::rpc::protobuf::api::TestResponse* mpResponse;
-                casock::rpc::protobuf::client::RPCCallController* mpController;
-                Test2ResponseHandlerImpl* mpHandler;
-            };
+          class Test2Manager
+          {
+            private:
+              class CallEntry
+              {
+                public:
+                  CallEntry (
+                      const uint32& id,
+                      tests::casock::rpc::protobuf::api::TestRequest* request,
+                      tests::casock::rpc::protobuf::api::TestResponse* response,
+                      ::casock::rpc::protobuf::client::RPCCallController* controller,
+                      Test2ResponseHandlerImpl* handler);
 
-          public:
-            static uint32 getID () { return ++mID; }
+                private:
+                  uint32 mID;
+                  tests::casock::rpc::protobuf::api::TestRequest* mpRequest;
+                  tests::casock::rpc::protobuf::api::TestResponse* mpResponse;
+                  ::casock::rpc::protobuf::client::RPCCallController* mpController;
+                  Test2ResponseHandlerImpl* mpHandler;
+              };
 
-          public:
-            void addCallEntry (
-                const uint32& id,
-                tests::rpc::protobuf::api::TestRequest* request,
-                tests::rpc::protobuf::api::TestResponse* response,
-                casock::rpc::protobuf::client::RPCCallController* controller,
-                Test2ResponseHandlerImpl* handler);
+            public:
+              static uint32 getID () { return ++mID; }
 
-            void setResponseReceivedByID (const uint32& id);
+            public:
+              void addCallEntry (
+                  const uint32& id,
+                  tests::casock::rpc::protobuf::api::TestRequest* request,
+                  tests::casock::rpc::protobuf::api::TestResponse* response,
+                  ::casock::rpc::protobuf::client::RPCCallController* controller,
+                  Test2ResponseHandlerImpl* handler);
+
+              void setResponseReceivedByID (const uint32& id);
 
 
-            const casock::util::LockableHash<uint32, CallEntry*>& getCallEntryHash () const { return mCallEntryHash; }
-            const casock::util::LockableHash<uint32, CallEntry*>& getCallEntryRespHash () const { return mCallEntryRespHash; }
+              const ::casock::util::LockableHash<uint32, CallEntry*>& getCallEntryHash () const { return mCallEntryHash; }
+              const ::casock::util::LockableHash<uint32, CallEntry*>& getCallEntryRespHash () const { return mCallEntryRespHash; }
 
-          private:
-            static uint32 mID;
-            casock::util::LockableHash<uint32, CallEntry*> mCallEntryHash;
-            casock::util::LockableHash<uint32, CallEntry*> mCallEntryRespHash;
-        };
+            private:
+              static uint32 mID;
+              ::casock::util::LockableHash<uint32, CallEntry*> mCallEntryHash;
+              ::casock::util::LockableHash<uint32, CallEntry*> mCallEntryRespHash;
+          };
+        }
       }
     }
   }

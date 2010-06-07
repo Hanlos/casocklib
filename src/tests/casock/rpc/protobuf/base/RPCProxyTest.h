@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/base/RPCProxyTest.h
+ * \file tests/casock/rpc/protobuf/base/RPCProxyTest.h
  * \brief Defines test-specific subclass for casock::rpc::protobuf::base::RPCProxy
  * \author Leandro Costa
  * \date 2010
@@ -37,37 +37,39 @@
 #include "casock/util/Thread.h"
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace base {
-        /*!
-         * \class RPCProxyTest
-         * \brief A test-specific subclass for casock::rpc::protobuf::base::RPCProxy
-         * \author Leandro Costa
-         * \date 2010
-         *
-         * A class created just to define the \b buildCallHandler method of its superclass.
-         * The test-specific subclass is a pattern found in http://xunitpatterns.com.
-         */
+  namespace casock {
+    namespace rpc {
+      namespace protobuf {
+        namespace base {
+          /*!
+           * \class RPCProxyTest
+           * \brief A test-specific subclass for casock::rpc::protobuf::base::RPCProxy
+           * \author Leandro Costa
+           * \date 2010
+           *
+           * A class created just to define the \b buildCallHandler method of its superclass.
+           * The test-specific subclass is a pattern found in http://xunitpatterns.com.
+           */
 
-        class RPCProxyTest : public casock::rpc::protobuf::base::RPCProxy
-        {
-          private:
-            class CallHandlerStub : public casock::util::Thread
+          class RPCProxyTest : public ::casock::rpc::protobuf::base::RPCProxy
+          {
+            private:
+              class CallHandlerStub : public ::casock::util::Thread
             {
               public:
                 void run () { }
             };
 
-          private:
-            casock::util::Thread* buildCallHandler ()
-            {
-              return new CallHandlerStub ();
-            }
+            private:
+              ::casock::util::Thread* buildCallHandler ()
+              {
+                return new CallHandlerStub ();
+              }
 
-          public:
-            using casock::rpc::protobuf::base::RPCProxy::mCallHandlers;
-        };
+            public:
+              using ::casock::rpc::protobuf::base::RPCProxy::mCallHandlers;
+          };
+        }
       }
     }
   }

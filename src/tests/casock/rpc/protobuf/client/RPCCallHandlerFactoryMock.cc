@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCCallHandlerFactoryMock.cc
+ * \file tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryMock.cc
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,21 +30,23 @@
  * $Revision$
  */
 
-#include "tests/rpc/protobuf/client/RPCCallHandlerFactoryMock.h"
-#include "tests/rpc/protobuf/client/RPCCallHandlerMock.h"
+#include "tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryMock.h"
+#include "tests/casock/rpc/protobuf/client/RPCCallHandlerMock.h"
 //#include "casock/util/Logger.h"
 
 namespace tests {
-  namespace rpc {
-    namespace protobuf {
-      namespace client {
-        //std::list<RPCCallHandlerMock*> RPCCallHandlerFactoryMock::handlers;
-        casock::util::LockableList<RPCCallHandlerMock*> RPCCallHandlerFactoryMock::handlers;
+  namespace casock {
+    namespace rpc {
+      namespace protobuf {
+        namespace client {
+          //std::list<RPCCallHandlerMock*> RPCCallHandlerFactoryMock::handlers;
+          ::casock::util::LockableList<RPCCallHandlerMock*> RPCCallHandlerFactoryMock::handlers;
 
-        casock::rpc::protobuf::client::RPCCallHandler* RPCCallHandlerFactoryMock::buildRPCCallHandler (casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const
-        {
-          //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
-          return new RPCCallHandlerMock ();
+          ::casock::rpc::protobuf::client::RPCCallHandler* RPCCallHandlerFactoryMock::buildRPCCallHandler (::casock::rpc::protobuf::client::RPCCallQueue& rCallQueue) const
+          {
+            //LOGMSG (NO_DEBUG, "%s\n", __PRETTY_FUNCTION__);
+            return new RPCCallHandlerMock ();
+          }
         }
       }
     }

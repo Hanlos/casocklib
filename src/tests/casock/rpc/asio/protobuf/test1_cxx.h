@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/asio/protobuf/test1_cxx.h
+ * \file tests/casock/rpc/asio/protobuf/test1_cxx.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -46,30 +46,30 @@
 #include "casock/rpc/asio/protobuf/server/RPCServerProxy.h"
 #include "casock/rpc/asio/protobuf/server/RPCSocketServerFactoryImpl.h"
 
-#include "tests/rpc/asio/protobuf/Test1ServiceImpl.h"
-#include "tests/rpc/asio/protobuf/Test1ResponseHandlerImpl.h"
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/asio/protobuf/Test1ServiceImpl.h"
+#include "tests/casock/rpc/asio/protobuf/Test1ResponseHandlerImpl.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
 #include "casock/util/Logger.h"
 
 class test1_cxx : public CxxTest::TestSuite
 {
   private:
-    tests::rpc::asio::protobuf::Test1ServiceImpl mServiceServer;
-    casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
+    tests::casock::rpc::asio::protobuf::Test1ServiceImpl mServiceServer;
+    ::casock::proactor::asio::base::AsyncProcessor* mpAsyncProcessor;
 
   public:
     void setUp ()
     {
       LOGMSG (LOW_LEVEL, "test1_cxx::setUp ()\n");
       LOGGER->setDebugLevel (SILENT);
-      casock::proactor::asio::base::AsyncProcessor::initialize ();
-      mpAsyncProcessor = casock::proactor::asio::base::AsyncProcessor::getInstance ();
+      ::casock::proactor::asio::base::AsyncProcessor::initialize ();
+      mpAsyncProcessor = ::casock::proactor::asio::base::AsyncProcessor::getInstance ();
     }
 
     void tearDown ()
     {
       LOGMSG (LOW_LEVEL, "test1_cxx::tearDown ()\n");
-      casock::proactor::asio::base::AsyncProcessor::destroy ();
+      ::casock::proactor::asio::base::AsyncProcessor::destroy ();
       LOGGER->finalize ();
     }
 
@@ -79,29 +79,29 @@ class test1_cxx : public CxxTest::TestSuite
       //try
       //{
         /*! server */
-        casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactoryServer (&mServiceServer);
-        casock::rpc::asio::protobuf::server::RPCSocketServerFactoryImpl socketServerFactory (*mpAsyncProcessor, 2000);
-        casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (socketServerFactory, callHandlerFactoryServer);
+        ::casock::rpc::protobuf::server::RPCCallHandlerFactoryImpl callHandlerFactoryServer (&mServiceServer);
+        ::casock::rpc::asio::protobuf::server::RPCSocketServerFactoryImpl socketServerFactory (*mpAsyncProcessor, 2000);
+        ::casock::rpc::asio::protobuf::server::RPCServerProxy serverProxy (socketServerFactory, callHandlerFactoryServer);
         serverProxy.setNumCallHandlers (1);
         mServiceServer.setProxy (&serverProxy);
         serverProxy.start ();
 
         /*! client */
-        casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*mpAsyncProcessor, "localhost", "2000");
-        casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
+        ::casock::rpc::asio::protobuf::client::RPCSocketClientFactoryImpl clientSocketFactory (*mpAsyncProcessor, "localhost", "2000");
+        ::casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
         //casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (*mpAsyncProcessor, "localhost", "2000");
-        casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (clientSocketFactory, callHandlerFactory);
+        ::casock::rpc::asio::protobuf::client::RPCClientProxy clientProxy (clientSocketFactory, callHandlerFactory);
         clientProxy.setNumCallHandlers (1);
-        tests::rpc::protobuf::api::TestService* pServiceClient = new tests::rpc::protobuf::api::TestService::Stub (&clientProxy);
+        tests::casock::rpc::protobuf::api::TestService* pServiceClient = new tests::casock::rpc::protobuf::api::TestService::Stub (&clientProxy);
 
         /*! sending message */
-        tests::rpc::protobuf::api::TestRequest* request = new tests::rpc::protobuf::api::TestRequest ();
-        tests::rpc::protobuf::api::TestResponse* response = new tests::rpc::protobuf::api::TestResponse ();
-        casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+        tests::casock::rpc::protobuf::api::TestRequest* request = new tests::casock::rpc::protobuf::api::TestRequest ();
+        tests::casock::rpc::protobuf::api::TestResponse* response = new tests::casock::rpc::protobuf::api::TestResponse ();
+        ::casock::rpc::protobuf::client::RPCCallController* controller = new ::casock::rpc::protobuf::client::RPCCallController ();
 
         request->set_id (1);
         request->set_message (2);
-        tests::rpc::asio::protobuf::Test1ResponseHandlerImpl handler (controller, response);
+        tests::casock::rpc::asio::protobuf::Test1ResponseHandlerImpl handler (controller, response);
         handler.setProxy (&clientProxy);
         pServiceClient->TestCall (controller, request, response, handler.closure ());
 

@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/test_RPCRequestBuilder_cxx.h
+ * \file tests/casock/rpc/protobuf/client/test_RPCRequestBuilder_cxx.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -42,21 +42,21 @@
 #include "casock/rpc/protobuf/client/RPCRequestBuilder.h"
 #include "casock/util/Thread.h"
 
-#include "tests/rpc/protobuf/api/rpc_test.pb.h"
-#include "tests/rpc/protobuf/client/RPCCallHandlerFactoryStub.h"
-#include "tests/rpc/protobuf/client/RPCClientProxyStub.h"
+#include "tests/casock/rpc/protobuf/api/rpc_test.pb.h"
+#include "tests/casock/rpc/protobuf/client/RPCCallHandlerFactoryStub.h"
+#include "tests/casock/rpc/protobuf/client/RPCClientProxyStub.h"
 
 
 class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
 {
-  class RPCRequestBuilderTesterThread : public casock::util::Thread
+  class RPCRequestBuilderTesterThread : public ::casock::util::Thread
   {
     public:
       RPCRequestBuilderTesterThread (
-          tests::rpc::protobuf::api::TestService& service,
-          tests::rpc::protobuf::api::TestRequest& request,
-          casock::rpc::protobuf::client::RPCRequestBuilder& builder,
-          std::vector<casock::rpc::protobuf::api::RpcRequest*>& rpcRequests,
+          tests::casock::rpc::protobuf::api::TestService& service,
+          tests::casock::rpc::protobuf::api::TestRequest& request,
+          ::casock::rpc::protobuf::client::RPCRequestBuilder& builder,
+          std::vector< ::casock::rpc::protobuf::api::RpcRequest*>& rpcRequests,
           uint32 numRuns)
         : m_service (service), m_request (request), m_builder (builder), m_rpcRequests (rpcRequests), m_numRuns (numRuns)
       { };
@@ -70,10 +70,10 @@ class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
       }
 
     public:
-      tests::rpc::protobuf::api::TestService& m_service;
-      tests::rpc::protobuf::api::TestRequest& m_request;
-      casock::rpc::protobuf::client::RPCRequestBuilder& m_builder;
-      std::vector<casock::rpc::protobuf::api::RpcRequest*>& m_rpcRequests;
+      tests::casock::rpc::protobuf::api::TestService& m_service;
+      tests::casock::rpc::protobuf::api::TestRequest& m_request;
+      ::casock::rpc::protobuf::client::RPCRequestBuilder& m_builder;
+      std::vector< ::casock::rpc::protobuf::api::RpcRequest*>& m_rpcRequests;
       uint32 m_numRuns;
   };
 
@@ -84,16 +84,16 @@ class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
   public:
     void test_basic ()
     {
-      tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
-      tests::rpc::protobuf::client::RPCClientProxyStub proxy (factory);
-      tests::rpc::protobuf::api::TestService* pService = new tests::rpc::protobuf::api::TestService::Stub (&proxy);
-      tests::rpc::protobuf::api::TestRequest request;
+      tests::casock::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
+      tests::casock::rpc::protobuf::client::RPCClientProxyStub proxy (factory);
+      tests::casock::rpc::protobuf::api::TestService* pService = new tests::casock::rpc::protobuf::api::TestService::Stub (&proxy);
+      tests::casock::rpc::protobuf::api::TestRequest request;
 
       request.set_id (1);
       request.set_message (1);
 
-      casock::rpc::protobuf::client::RPCRequestBuilder builder;
-      casock::rpc::protobuf::api::RpcRequest* pRpcRequest = builder.buildRpcRequest (pService->GetDescriptor ()->FindMethodByName ("TestCall"), &request);
+      ::casock::rpc::protobuf::client::RPCRequestBuilder builder;
+      ::casock::rpc::protobuf::api::RpcRequest* pRpcRequest = builder.buildRpcRequest (pService->GetDescriptor ()->FindMethodByName ("TestCall"), &request);
 
       TS_ASSERT_EQUALS ((uint32) 1, pRpcRequest->id ());
       TS_ASSERT_EQUALS ("TestCall", pRpcRequest->operation ());
@@ -106,20 +106,20 @@ class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
       uint32 numRequestsByThread = 1000;
       std::string methodName = "TestCall";
 
-      tests::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
-      tests::rpc::protobuf::client::RPCClientProxyStub proxy (factory);
-      tests::rpc::protobuf::api::TestService* pService = new tests::rpc::protobuf::api::TestService::Stub (&proxy);
-      tests::rpc::protobuf::api::TestRequest request;
+      tests::casock::rpc::protobuf::client::RPCCallHandlerFactoryStub factory;
+      tests::casock::rpc::protobuf::client::RPCClientProxyStub proxy (factory);
+      tests::casock::rpc::protobuf::api::TestService* pService = new tests::casock::rpc::protobuf::api::TestService::Stub (&proxy);
+      tests::casock::rpc::protobuf::api::TestRequest request;
 
       request.set_id (1);
       request.set_message (1);
 
-      casock::rpc::protobuf::client::RPCRequestBuilder builder;
-      std::map<uint32, std::vector<casock::rpc::protobuf::api::RpcRequest*> > rpcRequestsMap;
+      ::casock::rpc::protobuf::client::RPCRequestBuilder builder;
+      std::map<uint32, std::vector< ::casock::rpc::protobuf::api::RpcRequest*> > rpcRequestsMap;
 
       for (uint32 i = 0; i < numThreads; i++)
       {
-        rpcRequestsMap [i] = std::vector<casock::rpc::protobuf::api::RpcRequest*> ();
+        rpcRequestsMap [i] = std::vector< ::casock::rpc::protobuf::api::RpcRequest*> ();
         RPCRequestBuilderTesterThread* pTester = new RPCRequestBuilderTesterThread (*pService, request, builder, rpcRequestsMap [i], numRequestsByThread);
         pTester->run ();
       }
@@ -134,7 +134,7 @@ class test_RPCRequestBuilder_cxx : public CxxTest::TestSuite
       {
         TS_ASSERT_EQUALS ((size_t) numRequestsByThread, rpcRequestsMap [i].size ());
 
-        std::vector<casock::rpc::protobuf::api::RpcRequest*>& rpcRequests = rpcRequestsMap [i];
+        std::vector< ::casock::rpc::protobuf::api::RpcRequest*>& rpcRequests = rpcRequestsMap [i];
 
         for (uint32 j = 0; j < numRequestsByThread; j++)
         {

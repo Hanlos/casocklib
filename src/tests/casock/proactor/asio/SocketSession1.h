@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/proactor/asio/SocketSession1.h
+ * \file tests/casock/proactor/asio/SocketSession1.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -41,59 +41,61 @@
 #include "casock/proactor/asio/server/SocketSession.h"
 
 namespace tests {
-  namespace proactor {
-    namespace asio {
-      class SocketSession1 : public casock::proactor::asio::server::SocketSession
-      {
-        public:
-          SocketSession1 (
-              casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
-              casock::proactor::asio::server::SocketServer& rSocketServer)
-            : casock::proactor::asio::server::SocketSession (rAsyncProcessor, rSocketServer)
-          {
-            LOGMSG (MAX_LEVEL, "SocketSession1::SocketSession1 ()\n");
-            mMyID = ++SocketSession1::mID;
-          }
-
-        private:
-          void onConnect ()
-          {
-            LOGMSG (MEDIUM_LEVEL, "SocketSession1::%s ()\n", __FUNCTION__);
-            readsome (buffer.buff (), buffer.size (), ::boost::bind (&SocketSession1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
-          }
-
-          void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
-          {
-            LOGMSG (LOW_LEVEL, "SocketSession1::%s () - mMyID [%04u], bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, mMyID, bytes_transferred, buffer.data ());
-            std::stringstream ss;
-            ss << "message received [" << buffer.data () << "]";
-            buffer.clear ();
-            write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&SocketSession1::onWriteBuffer, this, ::asio::placeholders::error));
-          }
-
-          void onWriteBuffer (const ::asio::error_code& error)
-          {
-            if (! error)
+  namespace casock {
+    namespace proactor {
+      namespace asio {
+        class SocketSession1 : public ::casock::proactor::asio::server::SocketSession
+        {
+          public:
+            SocketSession1 (
+                ::casock::proactor::asio::base::AsyncProcessor& rAsyncProcessor,
+                ::casock::proactor::asio::server::SocketServer& rSocketServer)
+              : ::casock::proactor::asio::server::SocketSession (rAsyncProcessor, rSocketServer)
             {
-              LOGMSG (MEDIUM_LEVEL, "SocketSession1::%s () - NO ERROR!\n", __FUNCTION__);
+              LOGMSG (MAX_LEVEL, "SocketSession1::SocketSession1 ()\n");
+              mMyID = ++SocketSession1::mID;
+            }
+
+          private:
+            void onConnect ()
+            {
+              LOGMSG (MEDIUM_LEVEL, "SocketSession1::%s ()\n", __FUNCTION__);
               readsome (buffer.buff (), buffer.size (), ::boost::bind (&SocketSession1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
             }
-            else
+
+            void onReadBuffer (const ::asio::error_code& error, const size_t& bytes_transferred)
             {
-              LOGMSG (LOW_LEVEL, "SocketSession1::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
-              close ();
+              LOGMSG (LOW_LEVEL, "SocketSession1::%s () - mMyID [%04u], bytes_transferred [%zu], buffer [%s]\n", __FUNCTION__, mMyID, bytes_transferred, buffer.data ());
+              std::stringstream ss;
+              ss << "message received [" << buffer.data () << "]";
+              buffer.clear ();
+              write (ss.str ().c_str (), ss.str ().size (), ::boost::bind (&SocketSession1::onWriteBuffer, this, ::asio::placeholders::error));
             }
-          }
 
-        private:
-          casock::util::Buffer buffer;
+            void onWriteBuffer (const ::asio::error_code& error)
+            {
+              if (! error)
+              {
+                LOGMSG (MEDIUM_LEVEL, "SocketSession1::%s () - NO ERROR!\n", __FUNCTION__);
+                readsome (buffer.buff (), buffer.size (), ::boost::bind (&SocketSession1::onReadBuffer, this, ::asio::placeholders::error, ::asio::placeholders::bytes_transferred));
+              }
+              else
+              {
+                LOGMSG (LOW_LEVEL, "SocketSession1::%s () - error [%s]\n", __FUNCTION__, error.message ().c_str ());
+                close ();
+              }
+            }
 
-          uint32 mMyID;
+          private:
+            ::casock::util::Buffer buffer;
 
-          static uint32 mID;
-      };
+            uint32 mMyID;
 
-      uint32 SocketSession1::mID = 0;
+            static uint32 mID;
+        };
+
+        uint32 SocketSession1::mID = 0;
+      }
     }
   }
 }

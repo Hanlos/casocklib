@@ -1,8 +1,8 @@
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
-#include "tests/proactor/asio/SocketServer1.h"
+#include "tests/casock/proactor/asio/SocketServer1.h"
 
-using casock::proactor::asio::base::AsyncProcessor;
+using ::casock::proactor::asio::base::AsyncProcessor;
 
 int main ()
 {
@@ -15,7 +15,7 @@ int main ()
   try
   {
     LOGMSG (LOW_LEVEL, "%s () - creating server...\n", __FUNCTION__);
-    tests::proactor::asio::SocketServer1 server (*pAsyncProcessor, 2000);
+    tests::casock::proactor::asio::SocketServer1 server (*pAsyncProcessor, 2000);
 
     LOGMSG (LOW_LEVEL, "%s () - starting server...\n", __FUNCTION__);
     server.start ();
