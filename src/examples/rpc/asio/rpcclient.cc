@@ -64,7 +64,7 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
 
 int main ()
 {
-  LOGGER->setDebugLevel (LOW_LEVEL);
+  LOGGER->setDebugLevel (SILENT);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
   casock::proactor::asio::base::AsyncProcessor::initialize ();

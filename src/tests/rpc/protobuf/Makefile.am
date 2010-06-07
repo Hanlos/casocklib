@@ -1,1 +1,1 @@
-SUBDIRS = api client
+SUBDIRS = api base client

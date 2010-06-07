@@ -54,6 +54,22 @@ DIR_BOOST=/usr/local/boost_1_42_0
 DIR_BOOST_LIB_DEFAULT=$DIR_BOOST/lib
 DIR_BOOST_INC_DEFAULT=$DIR_BOOST/include
 
+DIR_GFLAGS=/usr/local/gflags-1.3
+DIR_GFLAGS_LIB_DEFAULT=$DIR_GFLAGS/lib
+DIR_GFLAGS_INC_DEFAULT=$DIR_GFLAGS/include
+
+DIR_GLOG=/usr/local/glog-0.3.0
+DIR_GLOG_LIB_DEFAULT=$DIR_GLOG/lib
+DIR_GLOG_INC_DEFAULT=$DIR_GLOG/include
+
+DIR_GTEST=/usr/local/gtest-1.5.0
+DIR_GTEST_LIB_DEFAULT=$DIR_GTEST/lib
+DIR_GTEST_INC_DEFAULT=$DIR_GTEST/include
+
+DIR_GMOCK=/usr/local/gmock-1.5.0
+DIR_GMOCK_LIB_DEFAULT=$DIR_GMOCK/lib
+DIR_GMOCK_INC_DEFAULT=$DIR_GMOCK/include
+
 
 # Tools
 
@@ -80,9 +96,9 @@ CFLAGS=
 CXXFLAGS=
 
 
-dnl **********************************************************************
+dnl **************************************************************************
 dnl Check for the presence of cxxtest headers
-dnl **********************************************************************
+dnl **************************************************************************
 
 AC_ARG_WITH(cxxtest-includes,
             AC_HELP_STRING([--with-cxxtest-includes=DIR],
@@ -90,9 +106,9 @@ AC_ARG_WITH(cxxtest-includes,
                            [CPPFLAGS="$CPPFLAGS -I$withval"],
                            [CPPFLAGS="$CPPFLAGS -I${DIR_CXXTEST_INC_DEFAULT}"])
 
-dnl **********************************************************************
+dnl **************************************************************************
 dnl Check for presence of Google Protocol Buffers libraries and headers
-dnl **********************************************************************
+dnl **************************************************************************
 
 AC_ARG_WITH(protobuf-includes,
             AC_HELP_STRING([--with-protobuf-includes=DIR],
@@ -106,10 +122,12 @@ AC_ARG_WITH(protobuf-libs,
                            [LIB_PROTOBUF_PATH="$withval"],
                            [LIB_PROTOBUF_PATH="${DIR_PROTOBUF_LIB_DEFAULT}"])
 
+LIBS="$LIBS -L${LIB_PROTOBUF_PATH} -lprotobuf"
 
-dnl **********************************************************************
+
+dnl **************************************************************************
 dnl Check for presence of Boost libraries and headers
-dnl **********************************************************************
+dnl **************************************************************************
 
 AC_ARG_WITH(boost-includes,
             AC_HELP_STRING([--with-boost-includes=DIR],
@@ -123,8 +141,86 @@ AC_ARG_WITH(boost-libs,
                            [LIB_BOOST_PATH="$withval"],
                            [LIB_BOOST_PATH="${DIR_BOOST_LIB_DEFAULT}"])
 
+
+dnl **************************************************************************
+dnl Check for presence of google-gflags libraries and headers
+dnl **************************************************************************
+
+AC_ARG_WITH(gflags-includes,
+            AC_HELP_STRING([--with-gflags-includes=DIR],
+                           [Specify location of google-gflags headers]),
+                           [INCLUDES="$INCLUDES -I$withval"],
+                            [INCLUDES="$INCLUDES -I${DIR_GFLAGS_INC_DEFAULT}"])
+
+AC_ARG_WITH(gflags-libs,
+            AC_HELP_STRING([--with-gflags-libs=DIR],
+                           [Specify location of google-gflags libs]),
+                           [LIB_GFLAGS_PATH="$withval"],
+                           [LIB_GFLAGS_PATH="${DIR_GFLAGS_LIB_DEFAULT}"])
+
+LIBS="$LIBS -L${LIB_GFLAGS_PATH} -lgflags"
+
+
+dnl **************************************************************************
+dnl Check for presence of google-glog libraries and headers
+dnl **************************************************************************
+
+AC_ARG_WITH(glog-includes,
+            AC_HELP_STRING([--with-glog-includes=DIR],
+                           [Specify location of google-glog headers]),
+                           [INCLUDES="$INCLUDES -I$withval"],
+                            [INCLUDES="$INCLUDES -I${DIR_GLOG_INC_DEFAULT}"])
+
+AC_ARG_WITH(glog-libs,
+            AC_HELP_STRING([--with-glog-libs=DIR],
+                           [Specify location of google-glog libs]),
+                           [LIB_GLOG_PATH="$withval"],
+                           [LIB_GLOG_PATH="${DIR_GLOG_LIB_DEFAULT}"])
+
+LIBS="$LIBS -L${LIB_GLOG_PATH} -lglog"
+
+
+dnl **************************************************************************
+dnl Check for presence of Google C++ Testing Framework libraries and headers
+dnl **************************************************************************
+
+AC_ARG_WITH(gtest-includes,
+            AC_HELP_STRING([--with-gtest-includes=DIR],
+                           [Specify location of Boost headers]),
+                           [INCLUDES="$INCLUDES -I$withval"],
+                            [INCLUDES="$INCLUDES -I${DIR_GTEST_INC_DEFAULT}"])
+
+AC_ARG_WITH(gtest-libs,
+            AC_HELP_STRING([--with-gtest-libs=DIR],
+                           [Specify location of Boost libs]),
+                           [LIB_GTEST_PATH="$withval"],
+                           [LIB_GTEST_PATH="${DIR_GTEST_LIB_DEFAULT}"])
+
+LIBS="$LIBS -L${LIB_GTEST_PATH} -lgtest"
+
+dnl **************************************************************************
+dnl Check for presence of Google C++ Mocking Framework libraries and headers
+dnl **************************************************************************
+
+AC_ARG_WITH(gmock-includes,
+            AC_HELP_STRING([--with-gmock-includes=DIR],
+                           [Specify location of Boost headers]),
+                           [INCLUDES="$INCLUDES -I$withval"],
+                            [INCLUDES="$INCLUDES -I${DIR_GMOCK_INC_DEFAULT}"])
+
+AC_ARG_WITH(gmock-libs,
+            AC_HELP_STRING([--with-gmock-libs=DIR],
+                           [Specify location of Boost libs]),
+                           [LIB_GMOCK_PATH="$withval"],
+                           [LIB_GMOCK_PATH="${DIR_GMOCK_LIB_DEFAULT}"])
+
+
 AC_SUBST(LIB_PROTOBUF_PATH)
 AC_SUBST(LIB_BOOST_PATH)
+AC_SUBST(LIB_GFLAGS_PATH)
+AC_SUBST(LIB_GLOG_PATH)
+AC_SUBST(LIB_GTEST_PATH)
+AC_SUBST(LIB_GMOCK_PATH)
 AC_SUBST(INCLUDES)
 AC_SUBST(CXXTFLAGS)
 
@@ -175,5 +271,6 @@ AC_CONFIG_FILES([Makefile
                  src/tests/rpc/asio/protobuf/Makefile
                  src/tests/rpc/protobuf/Makefile
                  src/tests/rpc/protobuf/api/Makefile
+                 src/tests/rpc/protobuf/base/Makefile
                  src/tests/rpc/protobuf/client/Makefile])
 AC_OUTPUT

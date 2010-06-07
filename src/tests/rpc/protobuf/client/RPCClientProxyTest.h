@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file tests/rpc/protobuf/client/RPCCallHandlerMock.h
+ * \file tests/rpc/protobuf/client/RPCClientProxyTest.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010

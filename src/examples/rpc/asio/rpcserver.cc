@@ -1,3 +1,6 @@
+#include <glog/logging.h>
+#include <gflags/gflags.h>
+
 #include "casock/util/Logger.h"
 #include "casock/proactor/asio/base/AsyncProcessor.h"
 #include "casock/rpc/protobuf/server/RPCCallHandlerFactoryImpl.h"
@@ -30,9 +33,14 @@ class HelloServiceImpl : public  HelloService
     }
 };
 
-int main ()
+int main (int argc, char* argv[])
 {
-  LOGGER->setDebugLevel (MAX_LEVEL);
+	google::InitGoogleLogging(argv[0]);
+  google::ParseCommandLineFlags (&argc, &argv, true);
+
+	DLOG(INFO) << __PRETTY_FUNCTION__;
+
+  LOGGER->setDebugLevel (SILENT);
   LOGMSG (LOW_LEVEL, "%s () - start\n", __FUNCTION__);
 
   casock::proactor::asio::base::AsyncProcessor::initialize ();
