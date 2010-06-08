@@ -8,14 +8,9 @@
   Unit, system and performance tests
 
 * Refactoring!!!
-  - We don't need casock::rpc::protobuf::api::RpcService anymore. This class was created to encapsulate RPCChannel in the client side of Google Protocols RPC, but now we are calling RPCChannel directly;
   - RPCServerCommunicator should be removed from RPCSocketServer:
     RPCSocketSession shoud register itself in RPCClientProxy, and RPCClientProxy should create an RPCServerCommunicator for each RPCSocketSession.
   - Use googletest, googlemock and google-glog.
-
-DONE:
-  - RPCClientCommunicator should be removed from RPCSocketClient:
-    RPCClientProxy should create an RPCSocketClient, synchronously connect to the server, and create an RPCClientCommunicator for it.
 
 * Documentation!!!
 	- We need Doxygen comments;
@@ -24,11 +19,27 @@ DONE:
 === casock::rpc::protobuf::asio ===
 
 * Implement timeouts for calls, it should be possible for the user to decide what timeout to use;
-* Implement a configurable number of threads for client and server;
+  - Add a method to set timeout in RPCClientProxy;
+  - Add a method to set timeout in RPCCallController;
+  - Add a method to build an RPCCallController from RPCClientProxy and deny direct costruction of RPCCallController;
+  - Create an RPCCall handler responsible for checking the timeout condition of each RPCCall. If a timeout happens, this handler should:
+    . Remove the RPCCall from the hash;
+    . Set the timeout condition in RPCCall::controller ();
+    . Put the RPCCall in the RPCCallQueue.
+  - Add feature to RPCClientCommunicator to discard RPCCall response when it is not in the hash anymore.
+
 * Make tests using more than 1 proxy (in client and server);
 * Implement different failure types (timeout is an example);
 * Implement a callback to AsynchProcessor::run (). It should be possible for the user to know if and when the processor started to run;
 * Make tests simulating failures and crashes;
 * Implement a way to reject new calls and/or connections when the server queue is too long;
-* It should be possible to configure a maximum number of concurrent connections, requst queue size, and request calls per second;
+* It should be possible to configure a maximum number of concurrent connections, request queue size, and request calls per second;
 * Implement failure handling: if the server crashes, the client handles the calls. If the client craches, the server discards the calls.
+
+===
+
+DONE:
+  - RPCClientCommunicator should be removed from RPCSocketClient:
+    RPCClientProxy should create an RPCSocketClient, synchronously connect to the server, and create an RPCClientCommunicator for it.
+* Implement a configurable number of threads for client and server;
+  - We don't need casock::rpc::protobuf::api::RpcService anymore. This class was created to encapsulate RPCChannel in the client side of Google Protocols RPC, but now we are calling RPCChannel directly;
