@@ -35,6 +35,7 @@
 
 #include <google/protobuf/service.h>
 #include "casock/rpc/protobuf/base/RPCProxy.h"
+#include "casock/util/TimeoutConfigurable.h"
 
 namespace casock {
   namespace rpc {
@@ -49,19 +50,13 @@ namespace casock {
         class RPCCallQueue;
         class RPCCallHandlerFactory;
         class RPCRequestBuilder;
+        class RPCCallController;
 
-        class RPCClientProxy : public casock::rpc::protobuf::base::RPCProxy, public ::google::protobuf::RpcChannel
+        class RPCClientProxy : public casock::rpc::protobuf::base::RPCProxy, public ::google::protobuf::RpcChannel, public casock::util::TimeoutConfigurable
         {
           protected:
             RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory);
             virtual ~RPCClientProxy ();
-
-//          protected:
-//            void addCallHandlers (const uint32& n);
-//            void removeCallHandlers (const uint32& n);
-//
-//          public:
-//            void setNumCallHandlers (const uint32& n);
 
           private:
             casock::util::Thread* buildCallHandler ();
@@ -80,6 +75,15 @@ namespace casock {
 
           protected:
             void registerRPCCall (const uint32& id, RPCCall* pRPCCall);
+
+          public:
+            RPCCallController* buildRPCCallController () const;
+
+          //public:
+            //void setTimeoutInSeconds (const time_t& seconds);
+            //void setTimeoutInUSeconds (const suseconds_t& useconds);
+            //const time_t timeoutInSeconds () const;
+            //const suseconds_t timeoutInUSeconds () const;
 
           public:
             /*!
@@ -104,6 +108,9 @@ namespace casock {
             RPCCallHash* const mpCallHash;
             RPCCallQueue* const mpCallQueue;
             const RPCCallHandlerFactory& mrCallHandlerFactory;
+
+          //private:
+            //struct timeval m_timeout;
         };
       }
     }

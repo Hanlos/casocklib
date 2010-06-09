@@ -46,6 +46,7 @@ using std::stringstream;
 #include "casock/rpc/protobuf/client/RPCCallHandler.h"
 #include "casock/rpc/protobuf/client/RPCCallHandlerFactory.h"
 #include "casock/rpc/protobuf/client/RPCRequestBuilder.h"
+#include "casock/rpc/protobuf/client/RPCCallController.h"
 
 namespace casock {
   namespace rpc {
@@ -54,9 +55,11 @@ namespace casock {
         //uint32 RPCClientProxy::DEFAULT_NUM_CALL_HANDLERS = 1;
 
         RPCClientProxy::RPCClientProxy (const RPCCallHandlerFactory& rCallHandlerFactory)
-          : mpRequestBuilder (new RPCRequestBuilder ()), mpCallHash (new RPCCallHash ()), mpCallQueue (new RPCCallQueue ()), mrCallHandlerFactory (rCallHandlerFactory)
+          : mpRequestBuilder (new RPCRequestBuilder ()), mpCallHash (new RPCCallHash ()), mpCallQueue (new RPCCallQueue ()), mrCallHandlerFactory (rCallHandlerFactory)//, m_timeout ()
         {
           LOGMSG (HIGH_LEVEL, "%s\n", __PRETTY_FUNCTION__);
+          //m_timeout.tv_sec = 0;
+          //m_timeout.tv_usec = 0;
         }
 
         RPCClientProxy::~RPCClientProxy ()
@@ -83,6 +86,38 @@ namespace casock {
 				{
 					mpCallHash->push (id, pRPCCall);
 				}
+
+        RPCCallController* RPCClientProxy::buildRPCCallController () const
+        {
+          RPCCallController* pController = new RPCCallController ();
+          pController->setTimeout (this->timeout ());
+
+          return pController;
+        }
+
+        /*
+        void RPCClientProxy::setTimeoutInSeconds (const time_t& seconds)
+        {
+          m_timeout.tv_sec = seconds;
+          m_timeout.tv_usec = 0;
+        };
+
+        void RPCClientProxy::setTimeoutInUSeconds (const suseconds_t& useconds)
+        {
+          m_timeout.tv_sec = useconds / 1000000;
+          m_timeout.tv_usec = useconds % 1000000;
+        };
+
+        const time_t RPCClientProxy::timeoutInSeconds () const
+        {
+          return m_timeout.tv_sec;
+        }
+
+        const suseconds_t RPCClientProxy::timeoutInUSeconds () const
+        {
+          return m_timeout.tv_usec + 1000000 * m_timeout.tv_sec;
+        }
+        */
 
         void RPCClientProxy::CallMethod (
             const google::protobuf::MethodDescriptor* method,

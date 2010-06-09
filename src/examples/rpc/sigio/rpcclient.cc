@@ -44,7 +44,7 @@ int main ()
   {
     casock::rpc::protobuf::client::RPCCallHandlerFactoryImpl callHandlerFactory;
     casock::rpc::sigio::protobuf::client::RPCClientProxy proxy (*pDispatcher, "localhost", 2000, callHandlerFactory);
-    casock::rpc::protobuf::client::RPCCallController controller;
+    casock::rpc::protobuf::client::RPCCallController* controller = proxy.buildRPCCallController ();
     proxy.setNumCallHandlers (1);
 
     HelloService* service = new HelloService::Stub (&proxy);
@@ -55,14 +55,15 @@ int main ()
     request.set_id (1);
     request.set_message ("Hello!");
 
-    HelloHandler handler (&controller, &response);
+    HelloHandler handler (controller, &response);
     //service->HelloCall (&controller, &request, &response, google::protobuf::NewCallback (&Done, &response));
-    service->HelloCall (&controller, &request, &response, handler.closure ());
+    service->HelloCall (controller, &request, &response, handler.closure ());
 
     //Dispatcher::getInstance ()->wait (1);
     pDispatcher->waitForever ();
 
     delete service;
+    delete controller;
   }
   catch (casock::base::CASClosedConnectionException& e)
   {

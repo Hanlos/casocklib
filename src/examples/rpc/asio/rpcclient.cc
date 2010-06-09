@@ -45,7 +45,7 @@ class HelloHandler : public casock::rpc::protobuf::client::RPCResponseHandler
         request.set_id (3);
         request.set_message ("shutdown");
         HelloResponse* response = new HelloResponse ();
-        casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
+        casock::rpc::protobuf::client::RPCCallController* controller = proxy->buildRPCCallController ();
 
         service->HelloCall (controller, &request, response, ::google::protobuf::NewCallback (&Done, controller, response));
 
@@ -82,8 +82,8 @@ int main ()
 
     HelloResponse* response = new HelloResponse ();
     HelloResponse* response2 = new HelloResponse ();
-    casock::rpc::protobuf::client::RPCCallController* controller = new casock::rpc::protobuf::client::RPCCallController ();
-    casock::rpc::protobuf::client::RPCCallController* controller2 = new casock::rpc::protobuf::client::RPCCallController ();
+    casock::rpc::protobuf::client::RPCCallController* controller = proxy->buildRPCCallController ();
+    casock::rpc::protobuf::client::RPCCallController* controller2 = proxy->buildRPCCallController ();
 
     request.set_id (1);
     request.set_message ("Hello!");

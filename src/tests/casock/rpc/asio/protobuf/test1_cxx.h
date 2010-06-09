@@ -97,7 +97,7 @@ class test1_cxx : public CxxTest::TestSuite
         /*! sending message */
         tests::casock::rpc::protobuf::api::TestRequest* request = new tests::casock::rpc::protobuf::api::TestRequest ();
         tests::casock::rpc::protobuf::api::TestResponse* response = new tests::casock::rpc::protobuf::api::TestResponse ();
-        ::casock::rpc::protobuf::client::RPCCallController* controller = new ::casock::rpc::protobuf::client::RPCCallController ();
+        ::casock::rpc::protobuf::client::RPCCallController* controller = clientProxy.buildRPCCallController ();
 
         request->set_id (1);
         request->set_message (2);

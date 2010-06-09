@@ -64,6 +64,7 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
       TS_ASSERT (proxy.mpCallQueue != NULL);
       TS_ASSERT (proxy.mpCallQueue->empty ());
       TS_ASSERT (proxy.mCallHandlers.empty ());
+      TS_ASSERT_EQUALS (0, proxy.timeoutInSeconds ());
     }
 
     void test_addremoveCallHandlers ()

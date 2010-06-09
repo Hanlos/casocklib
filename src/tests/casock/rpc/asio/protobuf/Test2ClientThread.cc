@@ -33,6 +33,7 @@
 #include "tests/casock/rpc/asio/protobuf/Test2ClientThread.h"
 
 #include "casock/rpc/protobuf/client/RPCCallController.h"
+#include "casock/rpc/asio/protobuf/client/RPCClientProxy.h"
 #include "tests/casock/rpc/asio/protobuf/Test2Manager.h"
 #include "tests/casock/rpc/asio/protobuf/Test2ResponseHandlerImpl.h"
 #include "tests/casock/rpc/asio/protobuf/Test2ShutdownResponseHandlerImpl.h"
@@ -55,7 +56,7 @@ namespace tests {
 
               tests::casock::rpc::protobuf::api::TestRequest* request = new tests::casock::rpc::protobuf::api::TestRequest ();
               tests::casock::rpc::protobuf::api::TestResponse* response = new tests::casock::rpc::protobuf::api::TestResponse ();
-              ::casock::rpc::protobuf::client::RPCCallController* controller = new ::casock::rpc::protobuf::client::RPCCallController ();
+              ::casock::rpc::protobuf::client::RPCCallController* controller = mpProxy->buildRPCCallController ();
               tests::casock::rpc::asio::protobuf::Test2ResponseHandlerImpl* handler = new tests::casock::rpc::asio::protobuf::Test2ResponseHandlerImpl (controller, response, mpManager);
 
               request->set_id (id);
@@ -69,7 +70,7 @@ namespace tests {
 
             tests::casock::rpc::protobuf::api::TestRequest* request = new tests::casock::rpc::protobuf::api::TestRequest ();
             tests::casock::rpc::protobuf::api::TestResponse* response = new tests::casock::rpc::protobuf::api::TestResponse ();
-            ::casock::rpc::protobuf::client::RPCCallController* controller = new ::casock::rpc::protobuf::client::RPCCallController ();
+            ::casock::rpc::protobuf::client::RPCCallController* controller = mpProxy->buildRPCCallController ();
             tests::casock::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl* handler = new tests::casock::rpc::asio::protobuf::Test2ShutdownResponseHandlerImpl (controller, response, mpManager, mpProxy);
 
             request->set_id (id);
