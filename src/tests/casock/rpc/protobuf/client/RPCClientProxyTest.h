@@ -33,6 +33,8 @@
 #ifndef __CASOCKLIB__TESTS_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_TEST_H_
 #define __CASOCKLIB__TESTS_RPC_PROTOBUF_CLIENT__RPC_CLIENT_PROXY_TEST_H_
 
+#include <list>
+
 #include "casock/rpc/protobuf/client/RPCClientProxy.h"
 
 namespace casock {

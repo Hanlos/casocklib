@@ -131,13 +131,13 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
 
       tests::casock::rpc::protobuf::api::TestRequest request;
       tests::casock::rpc::protobuf::api::TestResponse response;
-      casock::rpc::protobuf::client::RPCCallController controller;
+      casock::rpc::protobuf::client::RPCCallController* controller = proxy.buildRPCCallController ();
       tests::casock::rpc::protobuf::client::RPCResponseHandlerMock handler;
 
       request.set_id (1);
       request.set_message (2);
 
-      pService->TestCall (&controller, &request, &response, handler.closure ());
+      pService->TestCall (controller, &request, &response, handler.closure ());
 
       TS_ASSERT_EQUALS ((size_t) 1, proxy.requests.size ());
 
@@ -146,10 +146,12 @@ class test_RPCClientProxy_cxx : public CxxTest::TestSuite
       TS_ASSERT_EQUALS (request.SerializeAsString (), proxy.requests.front ().first.request ());
 
       TS_ASSERT_EQUALS (&response, proxy.requests.front ().second->response ());
-      TS_ASSERT_EQUALS (&controller, proxy.requests.front ().second->controller ());
+      TS_ASSERT_EQUALS (controller, proxy.requests.front ().second->controller ());
 
       proxy.requests.front ().second->closure ()->Run ();
       TS_ASSERT_EQUALS (true, handler.called);
+
+      delete controller;
     }
 };
 
