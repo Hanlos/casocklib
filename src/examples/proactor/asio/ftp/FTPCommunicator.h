@@ -33,6 +33,8 @@
 #ifndef __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP__FTP_COMMUNICATOR_H_
 #define __CASOCKLIB__EXAMPLES_PROACTOR_ASIO_FTP__FTP_COMMUNICATOR_H_
 
+#include <boost/function.hpp>
+
 #include "casock/proactor/asio/base/Communicator.h"
 #include "examples/ftp/FTPFile.h"
 

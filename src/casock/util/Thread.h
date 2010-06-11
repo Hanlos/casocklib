@@ -54,8 +54,8 @@ namespace casock {
         static void setSleepSecs (const uint32 &sleep_secs);
 
       private:
-        virtual void run ();
         void setTID (const uint64 &tid);
+        virtual void run () = 0;
 
       protected:
         void sleep (const uint32 &sleep_secs = 0) const;

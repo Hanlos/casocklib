@@ -34,6 +34,7 @@
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CHANNEL_H_
 
 #include <asio.hpp>
+#include <boost/function.hpp>
 
 namespace casock {
   namespace rpc {

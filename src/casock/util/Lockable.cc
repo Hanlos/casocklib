@@ -111,6 +111,25 @@ namespace casock {
       return ret;
     }
 
+    int Lockable::cond_wait (const struct timeval& timeout) const
+    {
+      LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);
+
+      int ret = 0;
+
+      struct timeval tv_now;
+      struct timespec ts_timeout;
+
+      gettimeofday (&tv_now, NULL);
+
+      ts_timeout.tv_sec = (tv_now.tv_sec + timeout.tv_sec) + (tv_now.tv_usec + timeout.tv_usec) / 1000000;
+      ts_timeout.tv_nsec = ((tv_now.tv_usec + timeout.tv_usec) % 1000000) * 1000;
+
+      ret = pthread_cond_timedwait (&m_cond, &m_mutex, &ts_timeout);
+
+      return ret;
+    }
+
     void Lockable::cond_broadcast () const
     {
       LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);

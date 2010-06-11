@@ -90,8 +90,9 @@ AC_PATH_PROG([PROTOC], [protoc], [protoc], [$DIR_PROTOBUF/bin])
 
 INCLUDES='-I$(top_srcdir)/src'
 #CPPFLAGS='-g -Wall -O -Wno-write-strings -Weffc++ -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
-CPPFLAGS='-g -Wall -O -Wno-write-strings -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
+#CPPFLAGS='-g -Wall -O -Wno-write-strings -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
 #CPPFLAGS='-g -O -Wno-write-strings -D_REENTRANT -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC'
+CPPFLAGS='-g -Wall -O -Wno-write-strings -D_REENTRANT'
 CFLAGS=
 CXXFLAGS=
 
@@ -214,6 +215,8 @@ AC_ARG_WITH(gmock-libs,
                            [LIB_GMOCK_PATH="$withval"],
                            [LIB_GMOCK_PATH="${DIR_GMOCK_LIB_DEFAULT}"])
 
+LIBS="$LIBS -L${LIB_GMOCK_PATH} -lgmock"
+
 
 AC_SUBST(LIB_PROTOBUF_PATH)
 AC_SUBST(LIB_BOOST_PATH)
@@ -273,5 +276,7 @@ AC_CONFIG_FILES([Makefile
                  src/tests/casock/rpc/protobuf/Makefile
                  src/tests/casock/rpc/protobuf/api/Makefile
                  src/tests/casock/rpc/protobuf/base/Makefile
-                 src/tests/casock/rpc/protobuf/client/Makefile])
+                 src/tests/casock/rpc/protobuf/client/Makefile
+                 src/tests/casock/util/Makefile
+                 src/tests/casock/util/util/Makefile])
 AC_OUTPUT

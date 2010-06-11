@@ -85,10 +85,12 @@ namespace casock {
       return NULL;
     }
 
+    /*
     void Thread::run ()
     {
       LOGMSG (NO_DEBUG, "Thread::%s - p [%p]\n", __FUNCTION__, this);
     }
+    */
 
     void Thread::setTID (const uint64 &tid)
     {

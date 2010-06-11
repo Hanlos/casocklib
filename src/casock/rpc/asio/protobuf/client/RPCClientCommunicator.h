@@ -34,6 +34,7 @@
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_CLIENT__RPC_CLIENT_COMMUNICATOR_H_
 
 #include <asio.hpp>
+#include <boost/function.hpp>
 
 namespace google {
   namespace protobuf {

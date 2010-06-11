@@ -1,1 +1,1 @@
-SUBDIRS = proactor rpc
+SUBDIRS = util proactor rpc

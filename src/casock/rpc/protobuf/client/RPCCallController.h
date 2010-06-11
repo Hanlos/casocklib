@@ -62,9 +62,6 @@ namespace casock {
               reason = "";
               canceled = false;
               cancelListeners.clear ();
-
-              //m_timeout.tv_sec = 0;
-              //m_timeout.tv_usec = 0;
             }
 
             bool Failed() const // from google::protobuf::RpcController
@@ -103,34 +100,6 @@ namespace casock {
             {
               cancelListeners.push_back (callback);
             }
-
-          //public:
-            //Timeout& timeout () { return mTimeout; }
-
-            /*
-          public:
-            void setTimeoutInSeconds (const time_t& seconds)
-            {
-              m_timeout.tv_sec = seconds;
-              m_timeout.tv_usec = 0;
-            };
-
-            void setTimeoutInUSeconds (const suseconds_t& useconds)
-            {
-              m_timeout.tv_sec = useconds / 1000000;
-              m_timeout.tv_usec = useconds % 1000000;
-            };
-
-            const time_t timeoutInSeconds () const
-            {
-              return m_timeout.tv_sec;
-            }
-
-            const suseconds_t timeoutInUSeconds () const
-            {
-              return m_timeout.tv_usec + 1000000 * m_timeout.tv_sec;
-            }
-            */
 
           private:
             bool failed;

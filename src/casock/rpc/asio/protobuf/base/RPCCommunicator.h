@@ -34,6 +34,7 @@
 #define __CASOCKLIB__CASOCK_RPC_ASIO_PROTOBUF_BASE__RPC_COMMUNICATOR_H_
 
 #include <sstream>
+#include <boost/function.hpp>
 
 #include "casock/proactor/asio/base/Communicator.h"
 

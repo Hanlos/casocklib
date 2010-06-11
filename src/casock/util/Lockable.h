@@ -34,6 +34,7 @@
 #define __CASOCKLIB__CASOCK_UTIL__LOCKABLE_H_
 
 #include <pthread.h>
+#include <sys/time.h>
 
 #include "casock/util/types.h"
 
@@ -51,6 +52,7 @@ namespace casock {
         bool tryLock () const;
 
         int cond_wait (const uint32& timeout = 0) const;
+        int cond_wait (const struct timeval& timeout) const;
         void cond_broadcast () const;
         void cond_signal () const;
 
