@@ -33,8 +33,15 @@
 #ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_TIMEOUT_HANDLER_H_
 #define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_CALL_TIMEOUT_HANDLER_H_
 
+#include <queue>
+#include <map>
+
+#include <glog/logging.h>
+
 #include "casock/util/Thread.h"
 #include "casock/util/Lockable.h"
+#include "casock/util/SafeLock.h"
+#include "casock/rpc/protobuf/client/RPCCall.h"
 
 namespace casock {
   namespace rpc {
@@ -45,55 +52,76 @@ namespace casock {
 
         class RPCCallTimeoutHandler : public casock::util::Thread, private casock::util::Lockable
         {
-          public:
-            RPCCallTimeoutHandler (RPCCallHash& rCallHash, RPCCallQueue& rCallQueue)
-              //: id (0), timeout (), mrCallHash (rCallHash), mrCallQueue (rCallQueue)
-              : mrCallHash (rCallHash), mrCallQueue (rCallQueue)
-            { }
-
-          public:
-            void run ()
+          private:
+            class entry : private std::pair<uint32, struct timespec>
             {
-              /*
-              lock ();
-
-              while (true)
-              {
-                if (id == 0)
-                  cond_wait ();
-                else
-                  cond_wait (timeout.tv_sec);
-
-                if (! mrCallHash.find (id)) // or timeout already expired)
+              public:
+                entry (const uint32& id, const struct timeval& timeout)
                 {
-                  if (mrCallHash.find (id))
-                  {
-                    RPCCall* pCall = mrCallHash.pop (id);
-                  }
+                  first = id;
+
+                  struct timeval tv_now;
+                  gettimeofday (&tv_now, NULL);
+
+                  second.tv_sec = (tv_now.tv_sec + timeout.tv_sec) + (tv_now.tv_usec + timeout.tv_usec) / 1000000;
+                  second.tv_nsec = ((tv_now.tv_usec + timeout.tv_usec) % 1000000) * 1000;
                 }
-              }
-              */
-            }
 
-          public:
-            void registerTimeout (const uint32& id, const struct timeval& timeout)
-            {
-            /*
-              lock ();
+              public:
+                const bool operator>(const entry& other) const
+                {
+                  return (
+                      (second.tv_sec > other.second.tv_sec) ||
+                      (second.tv_sec == other.second.tv_sec && second.tv_nsec > other.second.tv_nsec));
+                }
 
-              this->id = id;
-              this->timeout = timeout;
+                const bool operator==(const entry& other) const
+                {
+                  return (first != other.first);
+                }
 
-              cond_signal ();
-              unlock ();
-              */
+                const bool operator!=(const entry& other) const
+                {
+                  return !(*this == other);
+                }
+
+              public:
+                const bool isTimedOut () const
+                {
+                  bool bRet = false;
+
+                  struct timeval tv_now;
+                  gettimeofday (&tv_now, NULL);
+
+                  bRet = (
+                      (tv_now.tv_sec > timeout ().tv_sec) ||
+                      (tv_now.tv_sec == timeout ().tv_sec && tv_now.tv_usec * 1000 >= timeout ().tv_nsec));
+
+                  return bRet;
+                }
+
+              public:
+                const uint32& id () const { return first; }
+                const struct timespec& timeout () const { return second; }
             };
 
+          public:
+            RPCCallTimeoutHandler (RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
+
+          public:
+            void run ();
+
           private:
-            //uint32 id;
-            //struct timeval timeout;
+            void verifyEntries ();
+            void handleTimedOutEntry (const entry& e);
+
+          public:
+            void registerTimeout (const uint32& id, const struct timeval& timeout);
+
+          private:
             RPCCallHash& mrCallHash;
             RPCCallQueue& mrCallQueue;
+            std::priority_queue<entry, std::vector<entry>, std::greater<std::vector<entry>::value_type> > mEntries;
         };
       }
     }

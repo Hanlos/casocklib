@@ -130,6 +130,11 @@ namespace casock {
       return ret;
     }
 
+    int Lockable::cond_wait (const struct timespec& timeout) const
+    {
+      return pthread_cond_timedwait (&m_cond, &m_mutex, &timeout);
+    }
+
     void Lockable::cond_broadcast () const
     {
       LOGMSG (LOW_LEVEL, "%s - p [%p]\n", __PRETTY_FUNCTION__, this);

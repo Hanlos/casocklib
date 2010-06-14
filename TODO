@@ -27,9 +27,8 @@
   - DONE: Add a method to set timeout in RPCClientProxy;
   - DONE: Add a method to set timeout in RPCCallController;
   - DONE: Add a method to build an RPCCallController from RPCClientProxy and deny direct costruction of RPCCallController;
-  - Implement cond_wait by useconds in casock::util::Lockable;
-  - Implement method find() that returns an RPCCall pointer (or NULL) in RPCCallHash;
-  - Create an RPCCall handler responsible for checking the timeout condition of each RPCCall. If a timeout happens, this handler should:
+  - DONE: Implement cond_wait by useconds in casock::util::Lockable;
+  - DONE: Create an RPCCall handler responsible for checking the timeout condition of each RPCCall. If a timeout happens, this handler should:
     . Remove the RPCCall from the hash;
     . Set the timeout condition in RPCCall::controller ();
     . Put the RPCCall in the RPCCallQueue.

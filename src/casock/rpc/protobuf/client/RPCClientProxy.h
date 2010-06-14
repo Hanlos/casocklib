@@ -77,7 +77,7 @@ namespace casock {
             void registerRPCCall (const uint32& id, RPCCall* pRPCCall);
 
           public:
-            RPCCallController* buildRPCCallController () const;
+            virtual RPCCallController* buildRPCCallController () const;
 
           //public:
             //void setTimeoutInSeconds (const time_t& seconds);

@@ -60,6 +60,20 @@ class LockableTestFixture : public ::testing::Test, public casock::util::Lockabl
     {
       delete pThread;
     }
+
+  protected:
+    const struct timespec timeoutInTimespec (const struct timeval& timeout) const
+    {
+      struct timeval tv_now;
+      struct timespec ts_timeout;
+
+      gettimeofday (&tv_now, NULL);
+
+      ts_timeout.tv_sec = (tv_now.tv_sec + timeout.tv_sec) + (tv_now.tv_usec + timeout.tv_usec) / 1000000;
+      ts_timeout.tv_nsec = ((tv_now.tv_usec + timeout.tv_usec) % 1000000) * 1000;
+
+      return ts_timeout;
+    }
 };
 
 
@@ -92,6 +106,24 @@ TEST_F(LockableTestFixture, CondWaitTimeoutTimeval) {
 
   gettimeofday (&tv_ini, NULL);
   cond_wait (timeout);
+  gettimeofday (&tv_end, NULL);
+
+  int diff = (tv_end.tv_sec - tv_ini.tv_sec) * 1000000 + (tv_end.tv_usec - tv_ini.tv_usec);
+
+  EXPECT_LE (900, diff);
+  EXPECT_GE (1100, diff);
+}
+
+TEST_F(LockableTestFixture, CondWaitTimeoutTimespec) {
+  struct timeval tv_ini;
+  struct timeval tv_end;
+  struct timeval timeout;
+
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 1000;
+
+  gettimeofday (&tv_ini, NULL);
+  cond_wait (timeoutInTimespec (timeout));
   gettimeofday (&tv_end, NULL);
 
   int diff = (tv_end.tv_sec - tv_ini.tv_sec) * 1000000 + (tv_end.tv_usec - tv_ini.tv_usec);
@@ -171,6 +203,31 @@ TEST_F(LockableTestFixture, ThreadCondWaitTimeoutTimeval) {
   timeout.tv_sec = 0;
   timeout.tv_usec = 999999;
   EXPECT_CALL(*pThread, run()).WillOnce(run_CondWaitTimeoutTimeval(this, timeout, 1000000));
+
+  lock ();
+  pThread->start ();
+  unlock ();
+  usleep (500000);
+
+  EXPECT_TRUE (tryLock ());
+
+  unlock ();
+  usleep (1000000);
+
+  EXPECT_FALSE (tryLock ());
+
+  usleep (1000000);
+
+  EXPECT_TRUE (tryLock ());
+
+  unlock ();
+}
+
+TEST_F(LockableTestFixture, ThreadCondWaitTimeoutTimespec) {
+  struct timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 999999;
+  EXPECT_CALL(*pThread, run()).WillOnce(run_CondWaitTimeoutTimeval(this, timeoutInTimespec (timeout), 1000000));
 
   lock ();
   pThread->start ();

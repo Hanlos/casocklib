@@ -43,6 +43,8 @@
 #include <sys/syscall.h>
 #endif
 
+#include <glog/logging.h>
+
 #include "casock/util/Logger.h"
 
 namespace casock {

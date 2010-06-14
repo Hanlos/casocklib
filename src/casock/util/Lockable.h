@@ -53,6 +53,7 @@ namespace casock {
 
         int cond_wait (const uint32& timeout = 0) const;
         int cond_wait (const struct timeval& timeout) const;
+        int cond_wait (const struct timespec& timeout) const;
         void cond_broadcast () const;
         void cond_signal () const;
 

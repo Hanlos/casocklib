@@ -46,10 +46,7 @@ namespace casock {
       namespace client {
         class RPCCallController : public google::protobuf::RpcController, public casock::util::TimeoutConfigurable
         {
-          private:
-            friend class RPCClientProxy;
-
-          private:
+          public:
             RPCCallController ()
             {
               Reset ();
