@@ -52,6 +52,18 @@ namespace casock {
 
           return pRequest;
         }
+
+        casock::rpc::protobuf::api::RpcRequest* RPCRequestBuilder::buildRpcRequest (
+            const std::string& operation,
+            const google::protobuf::Message* request) const
+        {
+          casock::rpc::protobuf::api::RpcRequest* pRequest = new casock::rpc::protobuf::api::RpcRequest ();
+          pRequest->set_id (++mID);
+          pRequest->set_operation (operation);
+          pRequest->set_request (request->SerializeAsString ());
+
+          return pRequest;
+        }
       }
     }
   }

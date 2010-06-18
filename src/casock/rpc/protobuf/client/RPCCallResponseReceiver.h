@@ -20,7 +20,7 @@
  */
 
 /*!
- * \file casock/rpc/protobuf/client/RPCRequestBuilder.h
+ * \file casock/rpc/protobuf/client/RPCCallResponseReceiver.h
  * \brief [brief description]
  * \author Leandro Costa
  * \date 2010
@@ -30,49 +30,35 @@
  * $Revision$
  */
 
-#ifndef __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_
-#define __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_
-
-#include <string>
-#include "casock/util/types.h"
-
-namespace google {
-  namespace protobuf {
-    class MethodDescriptor;
-    class Message;
-  }
-}
+#ifndef __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_RESPONSE_RECEIVER_H_
+#define __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_RESPONSE_RECEIVER_H_
 
 namespace casock {
   namespace rpc {
     namespace protobuf {
       namespace api {
-        class RpcRequest;
+        class RpcResponse;
       }
 
       namespace client {
-        class RPCRequestBuilder
+        class RPCCallHash;
+        class RPCCallQueue;
+
+        class RPCCallResponseReceiver
         {
           public:
-            RPCRequestBuilder ()
-              : mID (0)
-            { }
+            RPCCallResponseReceiver (RPCCallHash& rCallHash, RPCCallQueue& rCallQueue);
 
           public:
-            casock::rpc::protobuf::api::RpcRequest* buildRpcRequest (
-                const google::protobuf::MethodDescriptor* method,
-                const google::protobuf::Message* request) const;
-
-            casock::rpc::protobuf::api::RpcRequest* buildRpcRequest (
-                const std::string& operation,
-                const google::protobuf::Message* request) const;
+            void handle (casock::rpc::protobuf::api::RpcResponse* pRpcResponse);
 
           private:
-            mutable uint32 mID;
+            RPCCallHash& mrCallHash;
+            RPCCallQueue& mrCallQueue;
         };
       }
     }
   }
 }
 
-#endif // __CASOCKLIB__CASOCK_RPC_PROTOBUF_CLIENT__RPC_REQUEST_BUILDER_H_
+#endif // __CASOCKLIB__CASOCK_RPC_SIGIO_PROTOBUF_CLIENT__RPC_CALL_RESPONSE_RECEIVER_H_
